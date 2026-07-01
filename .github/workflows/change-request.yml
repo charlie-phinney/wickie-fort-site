@@ -1,0 +1,39 @@
+name: Wickie change request
+
+# When Wickie types something into the "Ask for a change" box in /admin and
+# saves, TinaCMS commits it to src/data/site.json. This turns that into a
+# GitHub issue so the request reaches Charlie automatically — no email needed.
+# Only fires when the request text actually changes to something non-empty.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/data/site.json'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  open-request:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: File an issue if there's a new change request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cur=$(jq -r '.changeRequest // ""' src/data/site.json)
+          prev=$(git show HEAD~1:src/data/site.json 2>/dev/null | jq -r '.changeRequest // ""' || echo "")
+          if [ -z "$cur" ] || [ "$cur" = "$prev" ]; then
+            echo "No new change request — nothing to file."
+            exit 0
+          fi
+          short=$(printf '%s' "$cur" | head -c 60 | tr '\n' ' ')
+          body=$(printf 'Wickie asked for this from the site editor (/admin):\n\n> %s\n\n_Auto-filed from `src/data/site.json` → `changeRequest`. Handle it, then clear the box in /admin so the next one comes through clean._' "$cur")
+          gh label create wickie-request --color FBBF24 --description "Change request from Wickie via the site editor" 2>/dev/null || true
+          gh issue create --title "✨ Wickie change request: $short" --body "$body" --label wickie-request
+          echo "Filed issue for: $short"
