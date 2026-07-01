@@ -1,6 +1,8 @@
 {
   "name": "Wickie",
   "brand": "Wickie's Kitchen",
+  "statVideosOver1M": 11,
+  "statTopViews": "24M",
   "tagline": "From corporate to culinary.",
   "heroKicker": "I left my desk job to learn how to actually cook.",
   "heroSub": "Now I'm a culinary school grad in New York sharing the simple, real food I make at home, so you can make it too. Come cook with me.",
@@ -40,5 +42,8 @@
     { "text": "Product features & reviews" },
     { "text": "Brand partnerships" },
     { "text": "UGC-style content" }
-  ]
+  ],
+  "shopHeading": "Shop my kitchen",
+  "shopIntro": "The tools, pans, and pantry staples I actually cook with, all in one place.",
+  "shopEmbed": ""
 }
