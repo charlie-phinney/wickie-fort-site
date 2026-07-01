@@ -8,16 +8,17 @@
 import data from './site.json';
 import statsData from './stats.json';
 
-/* Live media-kit numbers, refreshed daily by the refresh-stats GitHub
-   Action (src/data/stats.json). Formatted here for display. */
+/* Media-kit numbers for the "By the numbers" band.
+   - Follower counts auto-refresh daily (src/data/stats.json, refresh-stats Action).
+   - "Videos over 1M" and "most-viewed video" are set by hand in /admin: they span
+     Instagram + TikTok + YouTube, which can't be tallied automatically for free, so
+     they live in site.json where Wickie keeps them accurate. */
 const kFollowers = (n: number) => `${Math.floor(n / 1000)}K+`;
-const mViews = (n: number) =>
-  n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : n >= 1e3 ? `${Math.round(n / 1e3)}K` : String(n);
 
 export const stats = {
   totalFollowers: kFollowers(statsData.totalFollowers),
-  viralOver1M: `${statsData.viralOver1M}+`,
-  topVideoViews: mViews(statsData.topVideoViews),
+  videosOver1M: String(data.statVideosOver1M ?? ''),
+  topViews: data.statTopViews || '',
   updated: statsData.updated,
 };
 
@@ -104,6 +105,16 @@ export const workWithMe = {
   intro: data.workIntro,
   cta: data.workCta,
   offerings: data.workOfferings.map((o) => o.text),
+};
+
+// Shop section. `embed` is the iframe HTML Wickie pastes from ShopMy
+// (collection → Settings & Sharing → Embeddable Components). Until it's set,
+// the section shows a button linking out to her ShopMy shop instead.
+export const shop = {
+  heading: (data as { shopHeading?: string }).shopHeading || 'Shop my kitchen',
+  intro: (data as { shopIntro?: string }).shopIntro || '',
+  embed: (data as { shopEmbed?: string }).shopEmbed || '',
+  url: data.socials.find((s) => /shopmy/i.test(s.label))?.href || '',
 };
 
 /* Navigation anchors — structural, kept in code (not editable in the CMS

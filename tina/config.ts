@@ -198,6 +198,44 @@ export default defineConfig({
             fields: [{ type: 'string', name: 'text', label: 'Offering' }],
           },
 
+          // ===== Your numbers (the "By the numbers" band) =====
+          {
+            type: 'number',
+            name: 'statVideosOver1M',
+            label: 'How many videos have over 1 million views',
+            description:
+              'Add up Instagram + TikTok + YouTube. Follower counts update on their own; this one you keep current here.',
+          },
+          {
+            type: 'string',
+            name: 'statTopViews',
+            label: 'Views on your most-viewed video',
+            description: 'Type it how you want it shown, e.g. “24M”.',
+          },
+
+          // ===== Shop section =====
+          {
+            type: 'string',
+            name: 'shopHeading',
+            label: 'Shop section — heading',
+            description: 'The title of your shop section, like “Shop my kitchen”.',
+          },
+          {
+            type: 'string',
+            name: 'shopIntro',
+            label: 'Shop section — intro',
+            description: 'A short line about what you share in your shop.',
+            ui: { component: 'textarea' },
+          },
+          {
+            type: 'string',
+            name: 'shopEmbed',
+            label: 'Shop embed code (optional — shows your shop right on the page)',
+            description:
+              'To show your ShopMy shop directly on the page: in ShopMy open a collection → Settings & Sharing → Embeddable Components → copy the code → paste it here. Leave blank to show a button that opens your shop instead.',
+            ui: { component: 'textarea' },
+          },
+
           // ===== 5. Your contact + social links =====
           {
             type: 'string',

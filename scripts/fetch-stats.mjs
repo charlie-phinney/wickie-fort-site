@@ -9,7 +9,7 @@
   refreshed, is; the rest holds steady until it can.
 
   Sources:
-    - Instagram: public web_profile_info + feed (followers, 1M+ count, top views)
+    - Instagram: official Graph API (followers), with a public og:description fallback
     - TikTok:    public profile page JSON (followers)
     - YouTube:   public channel page (subscribers)
     - Facebook:  not fetchable without auth -> seeded, held steady
@@ -22,7 +22,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const STATS_PATH = join(__dirname, '..', 'src', 'data', 'stats.json');
 
 const IG_USER = 'wickieskitchen';
-const IG_USER_ID = '80213314569';
 const TT_USER = 'wickieskitchen';
 const YT_HANDLE = 'wickieskitchen';
 
@@ -90,29 +89,9 @@ async function instagram() {
       if (n && n > 0) out.followers = n;
     }
   }
-  // Feed: 1M+ count + top views (best-effort; often blocked without a session)
-  const plays = [];
-  let max = '';
-  for (let i = 0; i < 4; i++) {
-    const feed = await getText(
-      `https://www.instagram.com/api/v1/feed/user/${IG_USER_ID}/?count=33${max ? `&max_id=${max}` : ''}`,
-      { 'X-IG-App-ID': '936619743392459' }
-    );
-    if (!feed) break;
-    let j;
-    try {
-      j = JSON.parse(feed);
-    } catch {
-      break;
-    }
-    (j.items || []).forEach((it) => plays.push(it.play_count || it.view_count || 0));
-    if (j.more_available) max = j.next_max_id;
-    else break;
-  }
-  if (plays.length) {
-    out.viralOver1M = plays.filter((v) => v >= 1e6).length;
-    out.topVideoViews = Math.max(...plays);
-  }
+  // Note: "videos over 1M" and "most-viewed video" are NOT computed here.
+  // They span Instagram + TikTok + YouTube, which can't be tallied for free,
+  // so they're kept by hand in site.json (statVideosOver1M / statTopViews).
   return out;
 }
 
@@ -175,8 +154,6 @@ async function main() {
     next.followers.instagram = ig.followers;
     ok.instagram = true;
   }
-  if (ig.viralOver1M != null) next.viralOver1M = ig.viralOver1M;
-  if (ig.topVideoViews) next.topVideoViews = ig.topVideoViews;
 
   if (tt.followers) {
     next.followers.tiktok = tt.followers;
