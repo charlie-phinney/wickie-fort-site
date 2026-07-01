@@ -1,0 +1,13 @@
+{
+  "name": "Wickie's Kitchen",
+  "short_name": "Wickie's Kitchen",
+  "description": "Simple, real food from a culinary school grad in New York.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fdf7f2",
+  "theme_color": "#c05a3c",
+  "icons": [
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
