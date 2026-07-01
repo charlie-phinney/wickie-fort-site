@@ -50,16 +50,55 @@ export type Recipe = {
   blurb: string;
   tag?: string;
   image?: string;
-  href?: string;
+  href?: string; // where the card links: its on-site recipe page, or an external URL override
+  slug?: string; // on-site detail-page slug (absent only when the card links out externally)
+  ingredients: string[];
+  steps: string[];
+  serves?: string;
+  time?: string;
 };
 
-export const recipes: Recipe[] = data.recipes.map((r) => ({
-  title: r.title,
-  blurb: r.blurb,
-  tag: r.tag || undefined,
-  image: r.image || undefined,
-  href: r.href || undefined,
-}));
+// The full-recipe fields (ingredients/steps/serves/time) are filled in later
+// through the /admin editor — a recipe starts as a title + blurb and gains its
+// method when Wickie writes it up.
+type RawRecipe = {
+  title: string;
+  blurb: string;
+  tag?: string;
+  image?: string;
+  href?: string;
+  slug?: string;
+  serves?: string;
+  time?: string;
+  ingredients?: { text: string }[];
+  steps?: { text: string }[];
+};
+
+const slugify = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/&/g, ' and ')
+    .replace(/['’]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+export const recipes: Recipe[] = (data.recipes as RawRecipe[]).map((r) => {
+  // An explicit http(s) link means the card opens that instead of an on-site page.
+  const external = r.href && /^https?:\/\//i.test(r.href) ? r.href : '';
+  const slug = external ? undefined : r.slug || slugify(r.title);
+  return {
+    title: r.title,
+    blurb: r.blurb,
+    tag: r.tag || undefined,
+    image: r.image || undefined,
+    ingredients: (r.ingredients || []).map((i) => i.text).filter(Boolean),
+    steps: (r.steps || []).map((s) => s.text).filter(Boolean),
+    serves: r.serves || undefined,
+    time: r.time || undefined,
+    slug,
+    href: external || `/recipes/${slug}`,
+  };
+});
 
 export const workWithMe = {
   heading: data.workHeading,
