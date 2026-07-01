@@ -1,0 +1,43 @@
+# Keeps the Instagram Graph API token alive with zero manual effort.
+#
+# Instagram-Login long-lived tokens last ~60 days. This refreshes IG_TOKEN
+# weekly (each refresh extends it another 60 days) and writes the new value
+# back into the IG_TOKEN secret via a repo-scoped PAT (GH_REFRESH_PAT) — the
+# default Actions token can't write secrets, so a fine-grained PAT with
+# Secrets:write on this repo only is used.
+#
+# Safety: if the refresh call fails or returns anything that isn't a valid
+# token, the job errors WITHOUT overwriting IG_TOKEN, so a bad response can
+# never clobber a working token.
+name: Refresh IG token
+
+on:
+  schedule:
+    - cron: '17 6 * * 0' # weekly, Sundays 06:17 UTC
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Refresh long-lived Instagram token and update secret
+        env:
+          IG_TOKEN: ${{ secrets.IG_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_REFRESH_PAT }}
+        run: |
+          set -euo pipefail
+          resp=$(curl -sS -G "https://graph.instagram.com/refresh_access_token" \
+            --data-urlencode "grant_type=ig_refresh_token" \
+            --data-urlencode "access_token=${IG_TOKEN}")
+          new=$(printf '%s' "$resp" | jq -r '.access_token // empty')
+          expires=$(printf '%s' "$resp" | jq -r '.expires_in // 0')
+          case "$new" in
+            IGAA*) : ;;
+            *)
+              echo "Refresh did not return a valid token; keeping the existing one."
+              echo "Response: $resp"
+              exit 1
+              ;;
+          esac
+          printf '%s' "$new" | gh secret set IG_TOKEN --repo "${{ github.repository }}"
+          echo "IG_TOKEN refreshed. New token valid ~$((expires / 86400)) days."
