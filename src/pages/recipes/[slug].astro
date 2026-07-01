@@ -52,7 +52,7 @@ if (recipe.steps.length) {
 <Base title={title} description={recipe.blurb} jsonLd={recipeLd}>
   <!-- Slim on-brand header (the homepage nav's in-page anchors don't apply on a
        sub-page, so this gives a clean way home + back to the recipe grid). -->
-  <header class="sticky top-0 z-[30] border-b border-line/70 bg-bg/80 backdrop-blur-md">
+  <header class="no-print sticky top-0 z-[30] border-b border-line/70 bg-bg/80 backdrop-blur-md">
     <div class="mx-auto flex max-w-4xl items-center justify-between px-5 py-3.5 sm:px-8">
       <a
         href="/"
@@ -73,6 +73,11 @@ if (recipe.steps.length) {
 
   <main id="main">
     <article class="mx-auto max-w-4xl px-5 pb-20 pt-10 sm:px-8 md:pb-28 md:pt-14">
+      <!-- Shown only on the printed page, so a print-out is attributable. -->
+      <p class="print-brand hidden font-serif text-sm text-ink">
+        {site.brand} · wickiefort.com
+      </p>
+
       <!-- ------------------------------ header ------------------------------ -->
       <header class="max-w-prose">
         {
@@ -109,15 +114,34 @@ if (recipe.steps.length) {
         }
       </header>
 
+      {
+        hasMethod && (
+          <div class="no-print mt-7">
+            <button
+              type="button"
+              data-print
+              class="inline-flex items-center gap-2 rounded-full border border-line bg-bg px-4 py-2 text-sm font-semibold text-ink transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-primary hover:text-primary"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 9V2h12v7" />
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                <path d="M6 14h12v8H6z" />
+              </svg>
+              Print recipe
+            </button>
+          </div>
+        )
+      }
+
       <!-- ------------------------------- photo ------------------------------ -->
-      <div class="mt-9 overflow-hidden rounded-[2rem] border-4 border-bg shadow-lift">
+      <div class="recipe-photo mt-9 overflow-hidden rounded-[2rem] border-4 border-bg shadow-lift">
         <Media src={recipe.image} alt={recipe.title} label="Photo coming soon" ratio="16/9" />
       </div>
 
       {
         hasMethod ? (
           <!-- ------------------- full recipe: ingredients + method ------------------- -->
-          <div class="mt-12 grid gap-10 md:mt-16 md:grid-cols-[0.8fr_1.2fr] md:gap-14">
+          <div class="recipe-method mt-12 grid gap-10 md:mt-16 md:grid-cols-[0.8fr_1.2fr] md:gap-14">
             {recipe.ingredients.length > 0 && (
               <section aria-labelledby="ingredients-heading" class="md:sticky md:top-24 md:self-start">
                 <h2 id="ingredients-heading" class="font-serif text-2xl font-semibold text-ink">
@@ -142,7 +166,7 @@ if (recipe.steps.length) {
                 <ol class="mt-6 space-y-6">
                   {recipe.steps.map((step, i) => (
                     <li class="flex gap-4">
-                      <span class="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-primary-deep font-serif text-sm font-semibold text-bg">
+                      <span class="step-num flex h-8 w-8 flex-none items-center justify-center rounded-full bg-primary-deep font-serif text-sm font-semibold text-bg">
                         {i + 1}
                       </span>
                       <p class="pt-0.5 text-lg leading-relaxed text-ink/90">{step}</p>
@@ -191,7 +215,7 @@ if (recipe.steps.length) {
       }
 
       <!-- ------------------------------- footer nav ------------------------------- -->
-      <div class="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-8 md:mt-20">
+      <div class="no-print mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-8 md:mt-20">
         <a
           href="/#recipes"
           class="group inline-flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-primary"
@@ -214,3 +238,53 @@ if (recipe.steps.length) {
 
   <Footer />
 </Base>
+
+<style is:global>
+  /* Print-friendly recipe: drop the chrome and decoration, keep a clean
+     ingredients + method card that reads well on paper. Only recipes with a
+     written method expose the Print button, so this only ever runs on a page
+     that has something worth printing. */
+  @media print {
+    .no-print,
+    footer {
+      display: none !important;
+    }
+    .print-brand {
+      display: block !important;
+      margin-bottom: 0.75rem;
+    }
+    /* the big decorative photo wastes ink and page height on paper */
+    .recipe-photo {
+      display: none !important;
+    }
+    /* single clean column instead of the screen's sticky two-column split */
+    .recipe-method {
+      display: block !important;
+      margin-top: 1.5rem !important;
+    }
+    .recipe-method > section + section {
+      margin-top: 1.75rem;
+    }
+    /* numbered step badges rely on a background fill that browsers drop when
+       printing — give them an ink outline so the numbers still read */
+    .step-num {
+      background: transparent !important;
+      color: #000 !important;
+      border: 1.5px solid #000;
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+    body {
+      background: #fff !important;
+    }
+    * {
+      box-shadow: none !important;
+    }
+  }
+</style>
+
+<script>
+  document
+    .querySelector<HTMLButtonElement>('[data-print]')
+    ?.addEventListener('click', () => window.print());
+</script>
