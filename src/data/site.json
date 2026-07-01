@@ -55,9 +55,15 @@
   "recipes": [
     {
       "title": "Smash Burgers with Special Sauce",
-      "blurb": "The crispy-edged smash burgers I make on repeat, with caramelized onions and a pickly sauce that ends up on everything.",
+      "blurb": "These burgers are SO GOOD. They are thin patties that get an amazing crust, topped with American cheese, caramelized onion, and my not-so secret special sauce. ",
       "tag": "On repeat",
       "image": "",
+      "time": "35 minutes ",
+      "ingredients": [
+        {
+          "text": "1 package ground beef "
+        }
+      ],
       "href": ""
     },
     {
