@@ -33,6 +33,12 @@ const ogImage = new URL(image, Astro.site).href;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${site.brand} — Recipes`}
+      href={`${base}/rss.xml`}
+    />
     <meta name="theme-color" content="#c05a3c" />
 
     <!-- Open Graph -->
