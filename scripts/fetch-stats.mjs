@@ -26,16 +26,20 @@ const IG_USER_ID = '80213314569';
 const TT_USER = 'wickieskitchen';
 const YT_HANDLE = 'wickieskitchen';
 
+// Desktop UA works for TikTok/YouTube. Meta sites (Instagram/Facebook)
+// only expose the follower count in og:description to a MOBILE UA.
 const UA =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
+const MOBILE_UA =
+  'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1';
 
-async function getText(url, headers = {}, tries = 3) {
+async function getText(url, headers = {}, tries = 3, ua = UA) {
   for (let i = 0; i < tries; i++) {
     try {
       const ctrl = new AbortController();
       const t = setTimeout(() => ctrl.abort(), 20000);
       const res = await fetch(url, {
-        headers: { 'User-Agent': UA, 'Accept-Language': 'en-US,en;q=0.9', ...headers },
+        headers: { 'User-Agent': ua, 'Accept-Language': 'en-US,en;q=0.9', ...headers },
         signal: ctrl.signal,
       });
       clearTimeout(t);
@@ -62,25 +66,13 @@ function parseAbbrev(s) {
 
 async function instagram() {
   const out = {};
-  const prof = await getText(
-    `https://www.instagram.com/api/v1/users/web_profile_info/?username=${IG_USER}`,
-    { 'X-IG-App-ID': '936619743392459' }
-  );
-  if (prof) {
-    try {
-      const u = JSON.parse(prof).data.user;
-      if (u?.edge_followed_by?.count > 0) out.followers = u.edge_followed_by.count;
-    } catch {}
-  }
-  // Fallback: the public profile page's og:description carries the count,
-  // e.g. "29,865 Followers, 105 Following, 100 Posts - ..."
-  if (!out.followers) {
-    const html = await getText(`https://www.instagram.com/${IG_USER}/`);
-    const m = html && html.match(/([\d,.]+[KMB]?)\s+Followers/i);
-    if (m) {
-      const n = parseAbbrev(m[1]);
-      if (n && n > 0) out.followers = n;
-    }
+  // Followers: the public profile page's og:description carries the count,
+  // but ONLY for a mobile UA. e.g. "30K Followers, 104 Following, 100 Posts"
+  const html = await getText(`https://www.instagram.com/${IG_USER}/`, {}, 3, MOBILE_UA);
+  const m = html && html.match(/([\d,.]+[KMB]?)\s+Followers/i);
+  if (m) {
+    const n = parseAbbrev(m[1]);
+    if (n && n > 0) out.followers = n;
   }
   // Feed: 1M+ count + top views (best-effort; often blocked without a session)
   const plays = [];
@@ -134,12 +126,34 @@ async function youtube() {
   return {};
 }
 
+async function facebook() {
+  // A Page's og:description carries "... 378 likes ...". Mobile UA required.
+  const html = await getText(
+    'https://www.facebook.com/profile.php?id=61572108161965',
+    {},
+    3,
+    MOBILE_UA
+  );
+  if (!html) return {};
+  const m = html.match(/([\d,.]+[KMB]?)\s+(?:followers|likes)/i);
+  if (m) {
+    const n = parseAbbrev(m[1]);
+    if (n && n > 0) return { followers: n };
+  }
+  return {};
+}
+
 async function main() {
   const prev = JSON.parse(readFileSync(STATS_PATH, 'utf8'));
   const next = structuredClone(prev);
   const ok = {};
 
-  const [ig, tt, yt] = await Promise.all([instagram(), tiktok(), youtube()]);
+  const [ig, tt, yt, fb] = await Promise.all([
+    instagram(),
+    tiktok(),
+    youtube(),
+    facebook(),
+  ]);
 
   if (ig.followers) {
     next.followers.instagram = ig.followers;
@@ -156,6 +170,10 @@ async function main() {
     next.followers.youtube = yt.followers;
     ok.youtube = true;
   }
+  if (fb.followers) {
+    next.followers.facebook = fb.followers;
+    ok.facebook = true;
+  }
 
   next.totalFollowers =
     (next.followers.instagram || 0) +
@@ -167,7 +185,7 @@ async function main() {
     instagram: !!ok.instagram,
     tiktok: !!ok.tiktok,
     youtube: !!ok.youtube,
-    facebook: false,
+    facebook: !!ok.facebook,
   };
   next.updated = new Date().toISOString().slice(0, 10);
 
