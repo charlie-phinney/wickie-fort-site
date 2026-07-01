@@ -13,9 +13,31 @@ const collabMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
 const helloMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
   'Hello, Wickie!'
 )}`;
+
+// Structured data: tells Google who Wickie is (a food creator) and links her
+// verified profiles, so the site can surface as a proper knowledge entity.
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: site.brand,
+    url: 'https://wickiefort.com/',
+    inLanguage: 'en',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Wickie Fort',
+    alternateName: site.brand,
+    url: 'https://wickiefort.com/',
+    jobTitle: 'Chef and food creator',
+    description: site.heroSub,
+    sameAs: activeSocials.map((s) => s.href),
+  },
+];
 ---
 
-<Base>
+<Base jsonLd={jsonLd}>
   <span id="top" class="sr-only"></span>
   <Nav />
 

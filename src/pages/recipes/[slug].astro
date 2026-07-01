@@ -25,9 +25,31 @@ const askMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
 )}`;
 
 const title = `${recipe.title} · ${site.brand}`;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+
+// Recipe structured data. Only the fields that actually exist are emitted, so
+// the markup is always valid and automatically becomes a full rich-result
+// candidate the moment Wickie adds a photo + ingredients + steps in /admin.
+const recipeLd: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Recipe',
+  name: recipe.title,
+  description: recipe.blurb,
+  url: canonical,
+  author: { '@type': 'Person', name: 'Wickie Fort' },
+};
+if (recipe.image) recipeLd.image = new URL(recipe.image, Astro.site).href;
+if (recipe.serves) recipeLd.recipeYield = recipe.serves;
+if (recipe.ingredients.length) recipeLd.recipeIngredient = recipe.ingredients;
+if (recipe.steps.length) {
+  recipeLd.recipeInstructions = recipe.steps.map((text) => ({
+    '@type': 'HowToStep',
+    text,
+  }));
+}
 ---
 
-<Base title={title} description={recipe.blurb}>
+<Base title={title} description={recipe.blurb} jsonLd={recipeLd}>
   <!-- Slim on-brand header (the homepage nav's in-page anchors don't apply on a
        sub-page, so this gives a clean way home + back to the recipe grid). -->
   <header class="sticky top-0 z-[30] border-b border-line/70 bg-bg/80 backdrop-blur-md">
