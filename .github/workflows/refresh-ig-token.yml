@@ -34,8 +34,12 @@ jobs:
           case "$new" in
             IGAA*) : ;;
             *)
+              # Log only sanitized error fields — never the raw body, which can
+              # contain token material.
+              err_code=$(printf '%s' "$resp" | jq -r '.error.code // "unknown"')
+              err_msg=$(printf '%s' "$resp" | jq -r '.error.message // "no message"')
               echo "Refresh did not return a valid token; keeping the existing one."
-              echo "Response: $resp"
+              echo "Instagram error code: $err_code — $err_msg"
               exit 1
               ;;
           esac
