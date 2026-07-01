@@ -1,0 +1,194 @@
+---
+/*
+  A single recipe's page. Built from the same content each card uses (see
+  src/data/site.ts). Ingredients + method are optional: until Wickie writes
+  them in /admin, the page shows a warm "coming soon" state instead of an
+  empty shell, so every card leads somewhere that feels finished.
+*/
+import Base from '../../layouts/Base.astro';
+import Footer from '../../components/Footer.astro';
+import Media from '../../components/Media.astro';
+import { site, recipes, emails } from '../../data/site';
+
+export function getStaticPaths() {
+  return recipes
+    .filter((r) => r.slug)
+    .map((r) => ({ params: { slug: r.slug! }, props: { recipe: r } }));
+}
+
+const { recipe } = Astro.props;
+const hasMethod = recipe.ingredients.length > 0 || recipe.steps.length > 0;
+
+const instagram = 'https://www.instagram.com/wickieskitchen';
+const askMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
+  `Recipe request: ${recipe.title}`
+)}`;
+
+const title = `${recipe.title} · ${site.brand}`;
+---
+
+<Base title={title} description={recipe.blurb}>
+  <!-- Slim on-brand header (the homepage nav's in-page anchors don't apply on a
+       sub-page, so this gives a clean way home + back to the recipe grid). -->
+  <header class="sticky top-0 z-[30] border-b border-line/70 bg-bg/80 backdrop-blur-md">
+    <div class="mx-auto flex max-w-4xl items-center justify-between px-5 py-3.5 sm:px-8">
+      <a
+        href="/"
+        class="group inline-flex items-baseline gap-1.5 font-serif text-lg font-semibold tracking-tight text-ink"
+      >
+        <span class="transition-colors group-hover:text-primary">{site.brand}</span>
+        <span class="h-1.5 w-1.5 translate-y-[-1px] rounded-full bg-pop transition-transform duration-300 ease-out-expo group-hover:scale-125"></span>
+      </a>
+      <a
+        href="/#recipes"
+        class="group inline-flex items-center gap-1.5 text-sm font-semibold text-muted transition-colors hover:text-ink"
+      >
+        <span class="transition-transform duration-300 ease-out-expo group-hover:-translate-x-1" aria-hidden="true">&larr;</span>
+        All recipes
+      </a>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="mx-auto max-w-4xl px-5 pb-20 pt-10 sm:px-8 md:pb-28 md:pt-14">
+      <!-- ------------------------------ header ------------------------------ -->
+      <header class="max-w-prose">
+        {
+          recipe.tag && (
+            <span class="inline-flex w-fit rounded-full border border-primary/25 bg-primary-tint/60 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary-deep">
+              {recipe.tag}
+            </span>
+          )
+        }
+        <h1
+          class={`font-serif font-semibold leading-[1.02] text-ink text-[clamp(2.3rem,6.5vw,3.6rem)] ${recipe.tag ? 'mt-4' : ''}`}
+        >
+          {recipe.title}
+        </h1>
+        <p class="mt-5 text-lg leading-relaxed text-muted">{recipe.blurb}</p>
+
+        {
+          (recipe.serves || recipe.time) && (
+            <dl class="mt-6 flex flex-wrap gap-x-8 gap-y-2 text-sm">
+              {recipe.serves && (
+                <div class="flex items-center gap-2">
+                  <dt class="font-semibold uppercase tracking-wide text-primary-deep">Serves</dt>
+                  <dd class="text-ink">{recipe.serves}</dd>
+                </div>
+              )}
+              {recipe.time && (
+                <div class="flex items-center gap-2">
+                  <dt class="font-semibold uppercase tracking-wide text-primary-deep">Time</dt>
+                  <dd class="text-ink">{recipe.time}</dd>
+                </div>
+              )}
+            </dl>
+          )
+        }
+      </header>
+
+      <!-- ------------------------------- photo ------------------------------ -->
+      <div class="mt-9 overflow-hidden rounded-[2rem] border-4 border-bg shadow-lift">
+        <Media src={recipe.image} alt={recipe.title} label="Photo coming soon" ratio="16/9" />
+      </div>
+
+      {
+        hasMethod ? (
+          <!-- ------------------- full recipe: ingredients + method ------------------- -->
+          <div class="mt-12 grid gap-10 md:mt-16 md:grid-cols-[0.8fr_1.2fr] md:gap-14">
+            {recipe.ingredients.length > 0 && (
+              <section aria-labelledby="ingredients-heading" class="md:sticky md:top-24 md:self-start">
+                <h2 id="ingredients-heading" class="font-serif text-2xl font-semibold text-ink">
+                  <span class="mark-underline">Ingredients</span>
+                </h2>
+                <ul class="mt-5 space-y-3">
+                  {recipe.ingredients.map((item) => (
+                    <li class="flex items-start gap-3 text-[1.02rem] leading-snug text-ink">
+                      <span class="mt-2 h-1.5 w-1.5 flex-none rounded-full bg-primary" aria-hidden="true" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {recipe.steps.length > 0 && (
+              <section aria-labelledby="method-heading">
+                <h2 id="method-heading" class="font-serif text-2xl font-semibold text-ink">
+                  <span class="mark-underline">Method</span>
+                </h2>
+                <ol class="mt-6 space-y-6">
+                  {recipe.steps.map((step, i) => (
+                    <li class="flex gap-4">
+                      <span class="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-primary-deep font-serif text-sm font-semibold text-bg">
+                        {i + 1}
+                      </span>
+                      <p class="pt-0.5 text-lg leading-relaxed text-ink/90">{step}</p>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            )}
+          </div>
+        ) : (
+          <!-- ------------------------ graceful "coming soon" ------------------------ -->
+          <section class="mt-12 md:mt-16">
+            <div class="relative overflow-hidden rounded-3xl border border-line bg-surface px-6 py-12 text-center shadow-soft sm:px-10 sm:py-14">
+              <div
+                class="pointer-events-none absolute inset-0 opacity-70"
+                style="background:radial-gradient(120% 80% at 82% 8%, oklch(0.86 0.09 60 / 0.6), transparent 58%), radial-gradient(120% 80% at 12% 96%, oklch(0.82 0.11 40 / 0.4), transparent 55%)"
+                aria-hidden="true"
+              />
+              <div class="relative mx-auto max-w-md">
+                <p class="font-hand text-3xl text-primary">Full recipe coming soon</p>
+                <p class="mt-3 text-base leading-relaxed text-muted">
+                  I'm writing up the ingredients and steps for this one. In the
+                  meantime, you can watch me make it on Instagram, or ask me for
+                  it directly and I'll send it your way.
+                </p>
+                <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
+                  <a
+                    href={instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="rounded-full bg-primary-deep px-5 py-2.5 text-sm font-semibold text-bg shadow-soft transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:bg-primary hover:shadow-lift"
+                  >
+                    Watch on Instagram
+                  </a>
+                  <a
+                    href={askMailto}
+                    class="rounded-full border border-line bg-bg px-5 py-2.5 text-sm font-semibold text-ink transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-primary hover:text-primary"
+                  >
+                    Ask me for this recipe
+                  </a>
+                </div>
+              </div>
+            </div>
+          </section>
+        )
+      }
+
+      <!-- ------------------------------- footer nav ------------------------------- -->
+      <div class="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-8 md:mt-20">
+        <a
+          href="/#recipes"
+          class="group inline-flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-primary"
+        >
+          <span class="transition-transform duration-300 ease-out-expo group-hover:-translate-x-1" aria-hidden="true">&larr;</span>
+          Back to all recipes
+        </a>
+        <a
+          href={instagram}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-deep transition-colors hover:text-primary"
+        >
+          More on Instagram
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</Base>
