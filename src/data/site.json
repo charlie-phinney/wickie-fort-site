@@ -48,5 +48,14 @@
   "shopEmbed": "<iframe title=\"Favorite Cookbooks\" src=\"https://shopmy.us/collections/embed/6101199?\" style=\"width: 100%; min-height: 340px; border: none;\"></iframe>",
   "colorTheme": "tomato",
   "fontPairing": "fraunces",
-  "textSize": "medium"
+  "textSize": "medium",
+  "sections": [
+    { "id": "stats", "show": true },
+    { "id": "about", "show": true },
+    { "id": "work", "show": true },
+    { "id": "shop", "show": true },
+    { "id": "philosophy", "show": true },
+    { "id": "recipes", "show": true },
+    { "id": "contact", "show": true }
+  ]
 }
