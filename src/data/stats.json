@@ -10,7 +10,7 @@
   "topVideoViews": 19747904,
   "updated": "2026-07-01",
   "sources": {
-    "instagram": true,
+    "instagram": false,
     "tiktok": true,
     "youtube": true,
     "facebook": true
