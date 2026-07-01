@@ -1,60 +1,36 @@
 /* ==================================================================== */
-/*  WICKIE'S KITCHEN — SITE CONTENT                                      */
-/*  This is the only file you need to edit to change the site's words,   */
-/*  recipes, links, and emails. No coding required — just edit the text  */
-/*  inside the quotes. Save, and the site updates.                       */
+/*  WICKIE'S KITCHEN — SITE CONTENT (reads from site.json)               */
+/*  Wickie edits the content through the TinaCMS editor (see /admin),    */
+/*  which saves to `site.json` in this folder. You can also edit that    */
+/*  JSON file directly. This file just shapes that data for the site —   */
+/*  you normally don't need to touch it.                                 */
 /* ==================================================================== */
+import data from './site.json';
 
 export const site = {
-  name: 'Wickie Fort',
-  brand: "Wickie's Kitchen",
+  name: data.name,
+  brand: data.brand,
   domain: 'wickiefort.com',
-
-  /* Pick ONE tagline for the hero (or write your own). */
-  tagline: 'Simple, cozy recipes from Wickie’s Kitchen.',
-  /* Other options — swap into `tagline` above if you prefer:
-     'Recipes, home cooking, and kitchen favorites.'
-     'Home cooking, everyday recipes, and kitchen favorites.' */
-
-  heroKicker: 'Home cooking · recipes · lifestyle',
-  heroSub:
-    'Everyday recipes and kitchen favorites made to feel warm, doable, and a little bit special.',
+  tagline: data.tagline,
+  heroKicker: data.heroKicker,
+  heroSub: data.heroSub,
+  heroImage: data.heroImage || undefined,
 };
 
-/* --- Emails --------------------------------------------------------- */
 export const emails = {
-  general: 'hello@wickiefort.com',
-  partnerships: 'collabs@wickiefort.com',
-  contact: 'contact@wickiefort.com',
+  general: data.emailGeneral,
+  partnerships: data.emailPartnerships,
+  contact: data.emailContact,
 };
 
-/* --- Social links --------------------------------------------------- */
-/*  REPLACE the `href` values with Wickie's real profile URLs.           */
-/*  Set `href` to '' to hide a platform.                                 */
-export const socials = [
-  { label: 'Instagram', handle: '@wickieskitchen', href: 'https://www.instagram.com/wickieskitchen' },
-  { label: 'TikTok', handle: '@wickieskitchen', href: 'https://www.tiktok.com/@wickieskitchen' },
-  { label: 'YouTube', handle: '@wickieskitchen', href: 'https://youtube.com/@wickieskitchen' },
-  { label: 'Facebook', handle: 'Wickie’s Kitchen', href: 'https://www.facebook.com/share/1bbQG6mRhh/' },
-  { label: 'ShopMy', handle: 'Shop my kitchen', href: 'https://shopmy.us/shop/wickiefort' },
-];
+export const socials = data.socials.filter((s) => s.href);
 
-/* --- About ---------------------------------------------------------- */
 export const about = {
-  heading: 'Hi, I’m Wickie.',
-  /* Keep it warm and real. Edit freely — a few short paragraphs is plenty. */
-  paragraphs: [
-    'Wickie’s Kitchen started the way most good things do: with people I love, gathered around a table, asking for the recipe.',
-    'I cook the kind of food that fits into a real week — unfussy, comforting, and worth making twice. Think slow weekend bakes, fast weeknight dinners, and the little kitchen habits that make everyday cooking feel good.',
-    'This is where I share those recipes and the home-and-lifestyle bits in between. Pull up a chair.',
-  ],
+  heading: data.aboutHeading,
+  image: data.aboutImage || undefined,
+  paragraphs: data.aboutParagraphs.map((p) => p.text),
 };
 
-/* --- Recipes / Featured content ------------------------------------- */
-/*  Add, remove, or reorder cards freely. Each needs a title + blurb.    */
-/*  `image` is optional: point it at a file in /public/images once you    */
-/*  have photos (e.g. image: '/images/banana-bread.jpg'). Leave it out    */
-/*  and a warm placeholder shows instead.                                 */
 export type Recipe = {
   title: string;
   blurb: string;
@@ -63,56 +39,23 @@ export type Recipe = {
   href?: string;
 };
 
-export const recipes: Recipe[] = [
-  {
-    title: 'Brown Butter Banana Bread',
-    blurb: 'Deeply cozy, one bowl, and better on day two. The loaf everyone asks for.',
-    tag: 'Baking',
-  },
-  {
-    title: 'Weeknight Lemon Orzo',
-    blurb: 'Bright, buttery, and on the table in 20 minutes. A back-pocket dinner.',
-    tag: 'Weeknight',
-  },
-  {
-    title: 'Tomato Soup & Crispy Grilled Cheese',
-    blurb: 'The comfort classic, done right — silky soup and a proper golden crust.',
-    tag: 'Comfort',
-  },
-  {
-    title: 'Honey Garlic Salmon',
-    blurb: 'Sticky, sweet, and roasted on one pan. Weeknight-easy, dinner-party-good.',
-    tag: 'Dinner',
-  },
-  {
-    title: 'Maple Cinnamon Granola',
-    blurb: 'Clustery, warmly spiced, and made for slow mornings and gifting in jars.',
-    tag: 'Breakfast',
-  },
-  {
-    title: 'One-Pan Herb Roast Chicken',
-    blurb: 'Crisp skin, jammy vegetables, and a whole meal from a single pan.',
-    tag: 'Sunday',
-  },
-];
+export const recipes: Recipe[] = data.recipes.map((r) => ({
+  title: r.title,
+  blurb: r.blurb,
+  tag: r.tag || undefined,
+  image: r.image || undefined,
+  href: r.href || undefined,
+}));
 
-/* --- Work With Me --------------------------------------------------- */
 export const workWithMe = {
-  heading: 'Work with me',
-  intro:
-    'I partner with brands I genuinely love to create warm, appetizing content that feels at home in Wickie’s Kitchen — not like an ad. If your product belongs in a real kitchen, let’s talk.',
-  offerings: [
-    'Sponsored recipe & content',
-    'Brand partnerships',
-    'Product features',
-    'Recipe development',
-    'Short-form video content',
-    'UGC-style assets',
-  ],
-  cta: 'Start a partnership',
+  heading: data.workHeading,
+  intro: data.workIntro,
+  cta: data.workCta,
+  offerings: data.workOfferings.map((o) => o.text),
 };
 
-/* --- Navigation (anchors on the single page) ------------------------ */
+/* Navigation anchors — structural, kept in code (not editable in the CMS
+   so the on-page links can't break). */
 export const nav = [
   { label: 'About', href: '#about' },
   { label: 'Recipes', href: '#recipes' },

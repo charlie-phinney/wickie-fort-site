@@ -1,0 +1,44 @@
+{
+  "name": "Wickie Fort",
+  "brand": "Wickie's Kitchen",
+  "tagline": "Simple, cozy recipes from Wickie’s Kitchen.",
+  "heroKicker": "Home cooking · recipes · lifestyle",
+  "heroSub": "Everyday recipes and kitchen favorites made to feel warm, doable, and a little bit special.",
+  "emailGeneral": "hello@wickiefort.com",
+  "emailPartnerships": "collabs@wickiefort.com",
+  "emailContact": "contact@wickiefort.com",
+  "heroImage": "",
+  "aboutImage": "",
+  "aboutHeading": "Hi, I’m Wickie.",
+  "aboutParagraphs": [
+    { "text": "Wickie’s Kitchen started the way most good things do: with people I love, gathered around a table, asking for the recipe." },
+    { "text": "I cook the kind of food that fits into a real week — unfussy, comforting, and worth making twice. Think slow weekend bakes, fast weeknight dinners, and the little kitchen habits that make everyday cooking feel good." },
+    { "text": "This is where I share those recipes and the home-and-lifestyle bits in between. Pull up a chair." }
+  ],
+  "socials": [
+    { "label": "Instagram", "handle": "@wickieskitchen", "href": "https://www.instagram.com/wickieskitchen" },
+    { "label": "TikTok", "handle": "@wickieskitchen", "href": "https://www.tiktok.com/@wickieskitchen" },
+    { "label": "YouTube", "handle": "@wickieskitchen", "href": "https://youtube.com/@wickieskitchen" },
+    { "label": "Facebook", "handle": "Wickie’s Kitchen", "href": "https://www.facebook.com/share/1bbQG6mRhh/" },
+    { "label": "ShopMy", "handle": "Shop my kitchen", "href": "https://shopmy.us/shop/wickiefort" }
+  ],
+  "recipes": [
+    { "title": "Brown Butter Banana Bread", "blurb": "Deeply cozy, one bowl, and better on day two. The loaf everyone asks for.", "tag": "Baking", "image": "", "href": "" },
+    { "title": "Weeknight Lemon Orzo", "blurb": "Bright, buttery, and on the table in 20 minutes. A back-pocket dinner.", "tag": "Weeknight", "image": "", "href": "" },
+    { "title": "Tomato Soup & Crispy Grilled Cheese", "blurb": "The comfort classic, done right — silky soup and a proper golden crust.", "tag": "Comfort", "image": "", "href": "" },
+    { "title": "Honey Garlic Salmon", "blurb": "Sticky, sweet, and roasted on one pan. Weeknight-easy, dinner-party-good.", "tag": "Dinner", "image": "", "href": "" },
+    { "title": "Maple Cinnamon Granola", "blurb": "Clustery, warmly spiced, and made for slow mornings and gifting in jars.", "tag": "Breakfast", "image": "", "href": "" },
+    { "title": "One-Pan Herb Roast Chicken", "blurb": "Crisp skin, jammy vegetables, and a whole meal from a single pan.", "tag": "Sunday", "image": "", "href": "" }
+  ],
+  "workHeading": "Work with me",
+  "workIntro": "I partner with brands I genuinely love to create warm, appetizing content that feels at home in Wickie’s Kitchen — not like an ad. If your product belongs in a real kitchen, let’s talk.",
+  "workCta": "Start a partnership",
+  "workOfferings": [
+    { "text": "Sponsored recipe & content" },
+    { "text": "Brand partnerships" },
+    { "text": "Product features" },
+    { "text": "Recipe development" },
+    { "text": "Short-form video content" },
+    { "text": "UGC-style assets" }
+  ]
+}

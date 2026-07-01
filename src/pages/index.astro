@@ -72,6 +72,7 @@ const helloMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
             class="overflow-hidden rounded-[2rem] border border-line shadow-lift"
           >
             <Media
+              src={site.heroImage}
               label="Add hero photo"
               alt="Wickie in the kitchen"
               ratio="4/5"
@@ -94,7 +95,7 @@ const helloMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
       >
         <div data-reveal class="order-2 md:order-1">
           <div class="overflow-hidden rounded-[2rem] border border-line shadow-soft">
-            <Media label="Add a photo of Wickie" alt="Portrait of Wickie" ratio="1/1" />
+            <Media src={about.image} label="Add a photo of Wickie" alt="Portrait of Wickie" ratio="1/1" />
           </div>
         </div>
         <div data-reveal class="order-1 md:order-2">
