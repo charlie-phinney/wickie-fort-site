@@ -16,9 +16,12 @@ export default {
         line: 'var(--line)',
       },
       fontFamily: {
-        serif: ['Fraunces', 'Georgia', 'Cambria', 'serif'],
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-        hand: ['Caveat', 'ui-rounded', 'cursive'],
+        // Resolve through CSS variables so the "Look & Feel" font pairing
+        // (see src/data/theme.ts, injected in Base.astro) can re-skin the
+        // whole site. Defaults live in global.css :root.
+        serif: ['var(--font-serif)'],
+        sans: ['var(--font-sans)'],
+        hand: ['var(--font-hand)'],
       },
       maxWidth: {
         prose: '68ch',

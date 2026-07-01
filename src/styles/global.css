@@ -24,6 +24,12 @@
 
   --line: oklch(0.89 0.016 58);         /* hairline borders                            */
 
+  /* Font stacks — defaults; the chosen "Look & Feel" pairing overrides these
+     in Base.astro (see src/data/theme.ts). */
+  --font-serif: 'Fraunces', Georgia, Cambria, serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-hand: 'Caveat', ui-rounded, cursive;
+
   --shadow-soft: 0 1px 2px oklch(0.4 0.03 40 / 0.05),
     0 10px 28px oklch(0.4 0.06 40 / 0.08);
   --shadow-lift: 0 2px 6px oklch(0.4 0.03 40 / 0.06),
