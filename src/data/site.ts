@@ -32,10 +32,11 @@ export const emails = {
 /*  REPLACE the `href` values with Wickie's real profile URLs.           */
 /*  Set `href` to '' to hide a platform.                                 */
 export const socials = [
-  { label: 'Instagram', handle: '@wickiefort', href: 'https://instagram.com/wickiefort' },
-  { label: 'TikTok', handle: '@wickiefort', href: 'https://tiktok.com/@wickiefort' },
-  { label: 'YouTube', handle: 'Wickie’s Kitchen', href: 'https://youtube.com/@wickiefort' },
-  { label: 'ShopMy', handle: 'Shop my kitchen', href: 'https://shopmy.us/wickiefort' },
+  { label: 'Instagram', handle: '@wickieskitchen', href: 'https://www.instagram.com/wickieskitchen' },
+  { label: 'TikTok', handle: '@wickieskitchen', href: 'https://www.tiktok.com/@wickieskitchen' },
+  { label: 'YouTube', handle: '@wickieskitchen', href: 'https://youtube.com/@wickieskitchen' },
+  { label: 'Facebook', handle: 'Wickie’s Kitchen', href: 'https://www.facebook.com/share/1bbQG6mRhh/' },
+  { label: 'ShopMy', handle: 'Shop my kitchen', href: 'https://shopmy.us/shop/wickiefort' },
 ];
 
 /* --- About ---------------------------------------------------------- */
