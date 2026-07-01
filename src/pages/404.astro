@@ -1,0 +1,63 @@
+---
+/*
+  Branded 404. GitHub Pages serves this as 404.html for any unknown path
+  (including a mistyped recipe URL), so it should feel like the rest of the
+  site and hand the visitor an easy way back, not a dead end.
+*/
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+---
+
+<Base title={`Page not found · ${site.brand}`} description="That page went off the menu.">
+  <!-- Slim header, just a way home. -->
+  <header class="sticky top-0 z-[30] border-b border-line/70 bg-bg/80 backdrop-blur-md">
+    <div class="mx-auto flex max-w-4xl items-center justify-between px-5 py-3.5 sm:px-8">
+      <a
+        href="/"
+        class="group inline-flex items-baseline gap-1.5 font-serif text-lg font-semibold tracking-tight text-ink"
+      >
+        <span class="transition-colors group-hover:text-primary">{site.brand}</span>
+        <span class="h-1.5 w-1.5 translate-y-[-1px] rounded-full bg-pop transition-transform duration-300 ease-out-expo group-hover:scale-125"></span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main" class="relative overflow-hidden">
+    <!-- soft warm glow, matches the hero -->
+    <div
+      class="pointer-events-none absolute -left-40 -top-32 h-[30rem] w-[30rem] rounded-full opacity-50 blur-3xl"
+      style="background:radial-gradient(circle, oklch(0.9 0.08 60 / 0.8), transparent 65%)"
+      aria-hidden="true"
+    >
+    </div>
+
+    <section class="relative mx-auto flex max-w-2xl flex-col items-center px-5 py-24 text-center sm:px-8 md:py-32">
+      <p class="font-hand text-3xl text-primary">Well, this is awkward</p>
+      <h1 class="mt-3 font-serif text-[clamp(3.5rem,14vw,7rem)] font-semibold leading-none text-ink">
+        <span class="mark-underline">404</span>
+      </h1>
+      <p class="mt-6 max-w-md text-lg leading-relaxed text-muted">
+        That page went off the menu. It may have moved, or the link had a typo.
+        Let's get you back to something good.
+      </p>
+
+      <div class="mt-9 flex flex-wrap items-center justify-center gap-3">
+        <a
+          href="/"
+          class="rounded-full bg-primary-deep px-6 py-3 text-base font-semibold text-bg shadow-soft transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:bg-primary hover:shadow-lift"
+        >
+          Back to home
+        </a>
+        <a
+          href="/#recipes"
+          class="rounded-full border border-line bg-bg px-6 py-3 text-base font-semibold text-ink transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-primary hover:text-primary"
+        >
+          See the recipes
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
