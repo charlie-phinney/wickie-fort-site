@@ -1,16 +1,16 @@
 {
   "followers": {
-    "instagram": 30000,
+    "instagram": 29871,
     "tiktok": 13800,
     "youtube": 20200,
     "facebook": 378
   },
-  "totalFollowers": 64378,
+  "totalFollowers": 64249,
   "viralOver1M": 5,
   "topVideoViews": 19747904,
   "updated": "2026-07-01",
   "sources": {
-    "instagram": false,
+    "instagram": true,
     "tiktok": true,
     "youtube": true,
     "facebook": true

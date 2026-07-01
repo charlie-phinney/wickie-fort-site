@@ -73,7 +73,7 @@ async function instagram() {
   if (token && igId) {
     try {
       const r = await fetch(
-        `https://graph.facebook.com/v21.0/${igId}?fields=followers_count`,
+        `https://graph.instagram.com/v21.0/${igId}?fields=followers_count`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const j = await r.json();
