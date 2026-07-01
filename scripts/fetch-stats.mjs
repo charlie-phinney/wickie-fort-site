@@ -66,13 +66,28 @@ function parseAbbrev(s) {
 
 async function instagram() {
   const out = {};
-  // Followers: the public profile page's og:description carries the count,
-  // but ONLY for a mobile UA. e.g. "30K Followers, 104 Following, 100 Posts"
-  const html = await getText(`https://www.instagram.com/${IG_USER}/`, {}, 3, MOBILE_UA);
-  const m = html && html.match(/([\d,.]+[KMB]?)\s+Followers/i);
-  if (m) {
-    const n = parseAbbrev(m[1]);
-    if (n && n > 0) out.followers = n;
+  // Preferred: official Graph API (exact count, works from ANY IP incl. CI).
+  // Enabled once IG_TOKEN + IG_USER_ID secrets exist.
+  const token = process.env.IG_TOKEN;
+  const igId = process.env.IG_USER_ID;
+  if (token && igId) {
+    try {
+      const r = await fetch(
+        `https://graph.facebook.com/v21.0/${igId}?fields=followers_count&access_token=${token}`
+      );
+      const j = await r.json();
+      if (j?.followers_count > 0) out.followers = j.followers_count;
+    } catch {}
+  }
+  // Fallback: public profile page og:description, mobile UA only. e.g.
+  // "30K Followers, 104 Following, 100 Posts" (rounded; residential IPs only).
+  if (!out.followers) {
+    const html = await getText(`https://www.instagram.com/${IG_USER}/`, {}, 3, MOBILE_UA);
+    const m = html && html.match(/([\d,.]+[KMB]?)\s+Followers/i);
+    if (m) {
+      const n = parseAbbrev(m[1]);
+      if (n && n > 0) out.followers = n;
+    }
   }
   // Feed: 1M+ count + top views (best-effort; often blocked without a session)
   const plays = [];
