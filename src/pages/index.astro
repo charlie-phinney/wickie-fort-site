@@ -60,15 +60,6 @@ const helloMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
               Work with me
             </a>
           </div>
-
-          <div class="mt-8 flex items-center gap-3 text-sm text-muted">
-            <span class="flex -space-x-2" aria-hidden="true">
-              <span class="h-6 w-6 rounded-full border-2 border-bg bg-primary/80"></span>
-              <span class="h-6 w-6 rounded-full border-2 border-bg bg-pop"></span>
-              <span class="h-6 w-6 rounded-full border-2 border-bg bg-primary-deep/70"></span>
-            </span>
-            <span><strong class="font-semibold text-ink">29K+</strong> friends cooking along on Instagram</span>
-          </div>
         </div>
 
         <!-- Hero portrait on an offset color backplate -->
@@ -167,9 +158,8 @@ const helloMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
 
     <!-- ========================= WORK WITH ME ========================= -->
     <section id="work" class="bg-ink text-bg">
-      <div
-        class="mx-auto grid max-w-6xl gap-10 px-5 py-16 sm:px-8 md:grid-cols-[1.1fr_0.9fr] md:gap-16 md:py-24"
-      >
+      <div class="mx-auto max-w-6xl px-5 py-16 sm:px-8 md:py-24">
+        <div class="grid gap-10 md:grid-cols-[1.1fr_0.9fr] md:gap-16">
         <div data-reveal>
           <h2 class="font-serif text-[clamp(2.1rem,5.5vw,3.2rem)] font-semibold">
             {workWithMe.heading}
@@ -205,6 +195,27 @@ const helloMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
               ))
             }
           </ul>
+        </div>
+        </div>
+
+        <!-- Metrics band (media-kit stats). Numbers verified 2026-07-01;
+             update here as her audience grows. -->
+        <div data-reveal class="mt-14 border-t border-bg/15 pt-12 md:mt-16">
+          <p class="font-hand text-2xl text-pop">By the numbers</p>
+          <dl class="mt-6 grid gap-8 sm:grid-cols-3">
+            <div>
+              <dt class="font-serif text-[clamp(2.4rem,6vw,3.4rem)] font-semibold leading-none text-bg">64K+</dt>
+              <dd class="mt-2 text-sm leading-snug text-bg/70">followers across Instagram, TikTok &amp; YouTube</dd>
+            </div>
+            <div>
+              <dt class="font-serif text-[clamp(2.4rem,6vw,3.4rem)] font-semibold leading-none text-bg">5+</dt>
+              <dd class="mt-2 text-sm leading-snug text-bg/70">videos with over 1 million views</dd>
+            </div>
+            <div>
+              <dt class="font-serif text-[clamp(2.4rem,6vw,3.4rem)] font-semibold leading-none text-bg">19.7M</dt>
+              <dd class="mt-2 text-sm leading-snug text-bg/70">views on my most-viewed reel</dd>
+            </div>
+          </dl>
         </div>
       </div>
     </section>
