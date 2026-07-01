@@ -247,15 +247,19 @@ const helloMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
 <script>
   // Progressive enhancement: only hide-then-reveal if JS runs and motion is OK.
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const els = document.querySelectorAll<HTMLElement>('[data-reveal]');
+  const els = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));
+  const reveal = (el: HTMLElement) => {
+    el.classList.add('reveal-in');
+    el.classList.remove('reveal-init');
+  };
+
   if (!reduce && 'IntersectionObserver' in window) {
     els.forEach((el) => el.classList.add('reveal-init'));
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('reveal-in');
-            entry.target.classList.remove('reveal-init');
+            reveal(entry.target as HTMLElement);
             io.unobserve(entry.target);
           }
         });
@@ -263,5 +267,23 @@ const helloMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
       { rootMargin: '0px 0px -8% 0px', threshold: 0.08 }
     );
     els.forEach((el) => io.observe(el));
+
+    // Failsafe: content must NEVER stay hidden if the observer can't fire
+    // (background tabs, headless renderers, bfcache restores). Reveal anything
+    // that's on-screen; scrolling still reveals the rest normally.
+    const revealInView = () => {
+      els.forEach((el) => {
+        if (!el.classList.contains('reveal-init')) return;
+        const r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight && r.bottom > 0) reveal(el);
+      });
+    };
+    window.addEventListener('load', () => setTimeout(revealInView, 600));
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) revealInView();
+    });
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted) revealInView();
+    });
   }
 </script>
