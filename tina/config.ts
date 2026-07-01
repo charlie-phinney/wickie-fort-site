@@ -44,6 +44,19 @@ export default defineConfig({
         // each one tells Wickie exactly what it does. Anything marked optional can
         // be left blank and simply won't show on the site.
         fields: [
+          // ===== Ask for a change (the escape hatch) =====
+          // Anything the editor can't do, Wickie types here and Saves. A
+          // GitHub Action (.github/workflows/change-request.yml) turns it into
+          // a request that reaches Charlie automatically.
+          {
+            type: 'string',
+            name: 'changeRequest',
+            label: '✨ Want a change you can\'t make below? Ask here',
+            description:
+              "Describe anything you'd like changed that these controls don't let you do (a new kind of section, a custom layout, anything at all), then hit Save. It goes straight to Charlie and he'll take care of it. Clear this box once it's done.",
+            ui: { component: 'textarea' },
+          },
+
           // ===== Look & Feel (safe, whole-site style controls) =====
           // These three re-skin the entire site. Every option is a tested,
           // good-looking preset, so any choice still looks right — see
