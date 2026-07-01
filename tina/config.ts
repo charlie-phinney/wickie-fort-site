@@ -102,6 +102,45 @@ export default defineConfig({
               { value: 'large', label: 'Large (easier to read)' },
             ],
           },
+          {
+            type: 'object',
+            name: 'sections',
+            label: '🧩 Sections (drag to reorder, switch to show/hide)',
+            description:
+              'Drag these into the order you want them on your page, and turn any of them off with the switch. Your top banner always stays first.',
+            list: true,
+            ui: {
+              itemProps: (item) => ({
+                label:
+                  ({
+                    stats: 'By the numbers',
+                    about: 'About you',
+                    work: 'Work with me',
+                    shop: 'Shop',
+                    philosophy: 'Your quote',
+                    recipes: 'Recipes',
+                    contact: 'Contact',
+                  }[item?.id] || 'Section') + (item?.show === false ? ' — hidden' : ''),
+              }),
+            },
+            fields: [
+              {
+                type: 'string',
+                name: 'id',
+                label: 'Section',
+                options: [
+                  { value: 'stats', label: 'By the numbers' },
+                  { value: 'about', label: 'About you' },
+                  { value: 'work', label: 'Work with me' },
+                  { value: 'shop', label: 'Shop' },
+                  { value: 'philosophy', label: 'Your quote' },
+                  { value: 'recipes', label: 'Recipes' },
+                  { value: 'contact', label: 'Contact' },
+                ],
+              },
+              { type: 'boolean', name: 'show', label: 'Show on page' },
+            ],
+          },
 
           // ===== 1. The top of your page =====
           {
