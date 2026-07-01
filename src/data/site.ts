@@ -31,10 +31,9 @@ export const site = {
   heroImage: data.heroImage || undefined,
 };
 
+// One address for everything — the contact button, work-with-me, and footer.
 export const emails = {
   general: data.emailGeneral,
-  partnerships: data.emailPartnerships,
-  contact: data.emailContact,
 };
 
 export const socials = data.socials.filter((s) => s.href);

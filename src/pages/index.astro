@@ -7,7 +7,7 @@ import RecipeCard from '../components/RecipeCard.astro';
 import { site, emails, socials, about, recipes, workWithMe, stats } from '../data/site';
 
 const activeSocials = socials.filter((s) => s.href);
-const collabMailto = `mailto:${emails.partnerships}?subject=${encodeURIComponent(
+const collabMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
   "Partnership inquiry, Wickie's Kitchen"
 )}`;
 const helloMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
@@ -176,7 +176,7 @@ const helloMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
           <p class="mt-4 text-sm text-bg/70">
             Or email
             <a href={collabMailto} class="font-semibold text-bg underline decoration-pop underline-offset-4">
-              {emails.partnerships}
+              {emails.general}
             </a>
           </p>
         </div>
