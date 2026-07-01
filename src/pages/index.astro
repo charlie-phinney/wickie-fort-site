@@ -221,24 +221,22 @@ const helloMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
         </p>
       </div>
 
-      <div data-reveal class="mt-10 grid gap-5 sm:grid-cols-2">
-        <a
-          href={helloMailto}
-          class="group flex flex-col rounded-2xl border border-line bg-bg p-6 shadow-soft transition-all duration-300 ease-out-expo hover:-translate-y-1 hover:border-primary hover:shadow-lift"
+      <a
+        href={helloMailto}
+        data-reveal
+        class="group mt-10 flex flex-col gap-4 rounded-2xl border border-line bg-bg p-7 shadow-soft transition-all duration-300 ease-out-expo hover:-translate-y-1 hover:border-primary hover:shadow-lift sm:flex-row sm:items-center sm:justify-between sm:p-8"
+      >
+        <div>
+          <span class="text-sm font-semibold text-primary-deep">Questions, kind notes, or brand partnerships</span>
+          <span class="mt-1 block font-serif text-2xl text-ink sm:text-3xl">{emails.general}</span>
+        </div>
+        <span
+          class="inline-flex w-fit shrink-0 items-center gap-2 rounded-full bg-primary-deep px-5 py-3 text-base font-semibold text-bg transition-all duration-300 ease-out-expo group-hover:bg-primary"
         >
-          <span class="text-sm font-semibold text-primary-deep">Say hi &amp; press</span>
-          <span class="mt-1 font-serif text-xl text-ink">{emails.general}</span>
-          <span class="mt-2 text-sm text-muted">Questions, notes, or a quick hello &rarr;</span>
-        </a>
-        <a
-          href={collabMailto}
-          class="group flex flex-col rounded-2xl border border-line bg-bg p-6 shadow-soft transition-all duration-300 ease-out-expo hover:-translate-y-1 hover:border-primary hover:shadow-lift"
-        >
-          <span class="text-sm font-semibold text-primary-deep">Brands &amp; partnerships</span>
-          <span class="mt-1 font-serif text-xl text-ink">{emails.partnerships}</span>
-          <span class="mt-2 text-sm text-muted">Let's make something together &rarr;</span>
-        </a>
-      </div>
+          Email me
+          <span class="transition-transform duration-300 ease-out-expo group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
+        </span>
+      </a>
 
       {
         activeSocials.length > 0 && (
