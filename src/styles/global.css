@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------ */
+/*  Wickie's Kitchen — design tokens                                   */
+/*  Warm terracotta on near-white. Warmth lives in the brand color +   */
+/*  serif type + imagery, NOT in a cream body (that's the AI cliché).  */
+/*  Colors are OKLCH; edit these six roles to re-skin the whole site.  */
+/* ------------------------------------------------------------------ */
+:root {
+  --bg: oklch(0.994 0.004 70);          /* page background — a whisper of warm white */
+  --surface: oklch(0.963 0.014 55);     /* warm oat band for alternating sections    */
+  --ink: oklch(0.27 0.032 40);          /* primary text — deep warm brown-black       */
+  --muted: oklch(0.47 0.028 45);        /* secondary text — warm gray (AA on bg)      */
+  --primary: oklch(0.55 0.145 30);      /* terracotta — links, brand marks            */
+  --primary-deep: oklch(0.44 0.135 28); /* brick — solid buttons, hovers              */
+  --accent: oklch(0.52 0.062 145);      /* sage/herb — tags, small accents            */
+  --accent-soft: oklch(0.93 0.02 140);  /* pale sage — tag backgrounds                */
+  --line: oklch(0.88 0.012 60);         /* hairline borders                           */
+
+  --shadow-soft: 0 1px 2px oklch(0.4 0.03 40 / 0.04),
+    0 8px 24px oklch(0.4 0.06 40 / 0.07);
+  --shadow-lift: 0 2px 4px oklch(0.4 0.03 40 / 0.05),
+    0 16px 40px oklch(0.4 0.08 40 / 0.12);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem; /* clears the sticky nav on anchor jumps */
+  }
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: theme('fontFamily.sans');
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3 {
+    font-family: theme('fontFamily.serif');
+    text-wrap: balance;
+    letter-spacing: -0.02em;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

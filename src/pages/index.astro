@@ -1,0 +1,267 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Media from '../components/Media.astro';
+import RecipeCard from '../components/RecipeCard.astro';
+import { site, emails, socials, about, recipes, workWithMe } from '../data/site';
+
+const activeSocials = socials.filter((s) => s.href);
+const collabMailto = `mailto:${emails.partnerships}?subject=${encodeURIComponent(
+  'Partnership inquiry — Wickie’s Kitchen'
+)}`;
+const helloMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
+  'Hello, Wickie!'
+)}`;
+---
+
+<Base>
+  <span id="top" class="sr-only"></span>
+  <Nav />
+
+  <main id="main">
+    <!-- ============================ HERO ============================ -->
+    <section class="relative overflow-hidden">
+      <div
+        class="mx-auto grid max-w-6xl items-center gap-10 px-5 pb-16 pt-14 sm:px-8 md:grid-cols-2 md:gap-14 md:pb-24 md:pt-20"
+      >
+        <div data-reveal>
+          <p
+            class="mb-5 inline-flex items-center gap-2 rounded-full border border-line bg-bg px-3.5 py-1.5 text-sm font-medium text-primary"
+          >
+            <span class="text-base leading-none">🌿</span>
+            {site.heroKicker}
+          </p>
+          <h1
+            class="font-serif text-[clamp(2.6rem,7vw,4.6rem)] font-semibold leading-[0.98] text-ink"
+          >
+            {site.name}
+          </h1>
+          <p class="mt-4 font-serif text-2xl text-primary sm:text-3xl">
+            {site.tagline}
+          </p>
+          <p class="mt-5 max-w-prose text-lg leading-relaxed text-muted">
+            {site.heroSub}
+          </p>
+
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a
+              href="#work"
+              class="rounded-full bg-primary-deep px-6 py-3 text-base font-semibold text-bg shadow-soft transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:bg-primary hover:shadow-lift"
+            >
+              Work With Me
+            </a>
+            <a
+              href="#contact"
+              class="rounded-full border border-line bg-bg px-6 py-3 text-base font-semibold text-ink transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-primary hover:text-primary"
+            >
+              Contact
+            </a>
+            <a
+              href="#recipes"
+              class="rounded-full px-6 py-3 text-base font-semibold text-muted transition-colors hover:text-primary"
+            >
+              Follow Along →
+            </a>
+          </div>
+        </div>
+
+        <!-- Hero image space -->
+        <div data-reveal class="relative">
+          <div
+            class="overflow-hidden rounded-[2rem] border border-line shadow-lift"
+          >
+            <Media
+              label="Add hero photo"
+              alt="Wickie in the kitchen"
+              ratio="4/5"
+            />
+          </div>
+          <div
+            class="absolute -bottom-4 -left-4 hidden rounded-2xl border border-line bg-bg px-4 py-3 shadow-soft sm:block"
+          >
+            <p class="font-serif text-base font-medium text-ink">{site.brand}</p>
+            <p class="text-xs text-muted">Recipes &amp; home cooking</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ ABOUT ============================ -->
+    <section id="about" class="bg-surface">
+      <div
+        class="mx-auto grid max-w-6xl items-center gap-10 px-5 py-16 sm:px-8 md:grid-cols-[0.9fr_1.1fr] md:gap-16 md:py-24"
+      >
+        <div data-reveal class="order-2 md:order-1">
+          <div class="overflow-hidden rounded-[2rem] border border-line shadow-soft">
+            <Media label="Add a photo of Wickie" alt="Portrait of Wickie" ratio="1/1" />
+          </div>
+        </div>
+        <div data-reveal class="order-1 md:order-2">
+          <h2 class="font-serif text-[clamp(2rem,5vw,3rem)] font-semibold text-ink">
+            {about.heading}
+          </h2>
+          <div class="mt-6 space-y-4 text-lg leading-relaxed text-muted">
+            {about.paragraphs.map((p) => <p>{p}</p>)}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================== RECIPES =========================== -->
+    <section id="recipes" class="mx-auto max-w-6xl px-5 py-16 sm:px-8 md:py-24">
+      <div data-reveal class="max-w-prose">
+        <h2 class="font-serif text-[clamp(2rem,5vw,3rem)] font-semibold text-ink">
+          From the kitchen
+        </h2>
+        <p class="mt-4 text-lg leading-relaxed text-muted">
+          A handful of favorites to cook this week. New recipes added all the time.
+        </p>
+      </div>
+
+      <div
+        data-reveal
+        class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+      >
+        {recipes.map((recipe) => <RecipeCard recipe={recipe} />)}
+      </div>
+    </section>
+
+    <!-- ========================= WORK WITH ME ========================= -->
+    <section id="work" class="bg-primary-deep text-bg">
+      <div
+        class="mx-auto grid max-w-6xl gap-10 px-5 py-16 sm:px-8 md:grid-cols-2 md:gap-16 md:py-24"
+      >
+        <div data-reveal>
+          <h2 class="font-serif text-[clamp(2rem,5vw,3rem)] font-semibold">
+            {workWithMe.heading}
+          </h2>
+          <p class="mt-6 max-w-prose text-lg leading-relaxed text-bg/85">
+            {workWithMe.intro}
+          </p>
+          <a
+            href={collabMailto}
+            class="mt-8 inline-flex rounded-full bg-bg px-6 py-3 text-base font-semibold text-primary-deep shadow-soft transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:shadow-lift"
+          >
+            {workWithMe.cta}
+          </a>
+          <p class="mt-4 text-sm text-bg/70">
+            Or email
+            <a href={collabMailto} class="font-semibold text-bg underline underline-offset-4">
+              {emails.partnerships}
+            </a>
+          </p>
+        </div>
+
+        <div data-reveal class="md:pt-2">
+          <p class="text-sm font-semibold uppercase tracking-wider text-bg/60">
+            How we can work together
+          </p>
+          <ul class="mt-5 grid gap-x-8 gap-y-3.5 sm:grid-cols-2">
+            {
+              workWithMe.offerings.map((item) => (
+                <li class="flex items-start gap-3 text-bg/90">
+                  <span class="mt-2 h-1.5 w-1.5 flex-none rounded-full bg-bg/70" />
+                  <span class="text-base leading-snug">{item}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================== CONTACT =========================== -->
+    <section id="contact" class="mx-auto max-w-6xl px-5 py-16 sm:px-8 md:py-24">
+      <div data-reveal class="max-w-prose">
+        <h2 class="font-serif text-[clamp(2rem,5vw,3rem)] font-semibold text-ink">
+          Say hello
+        </h2>
+        <p class="mt-4 text-lg leading-relaxed text-muted">
+          For questions, kind notes, and everything in between — I’d love to hear from you.
+        </p>
+      </div>
+
+      <div data-reveal class="mt-10 grid gap-5 sm:grid-cols-2">
+        <a
+          href={helloMailto}
+          class="group flex flex-col rounded-2xl border border-line bg-bg p-6 shadow-soft transition-all duration-300 ease-out-expo hover:-translate-y-1 hover:border-primary hover:shadow-lift"
+        >
+          <span class="text-sm font-semibold text-primary">General &amp; press</span>
+          <span class="mt-1 font-serif text-xl text-ink">{emails.general}</span>
+          <span class="mt-2 text-sm text-muted">Say hi, ask a question, or send a note →</span>
+        </a>
+        <a
+          href={collabMailto}
+          class="group flex flex-col rounded-2xl border border-line bg-bg p-6 shadow-soft transition-all duration-300 ease-out-expo hover:-translate-y-1 hover:border-primary hover:shadow-lift"
+        >
+          <span class="text-sm font-semibold text-primary">Brands &amp; partnerships</span>
+          <span class="mt-1 font-serif text-xl text-ink">{emails.partnerships}</span>
+          <span class="mt-2 text-sm text-muted">Let’s create something together →</span>
+        </a>
+      </div>
+
+      {
+        activeSocials.length > 0 && (
+          <div data-reveal class="mt-10">
+            <p class="text-sm font-medium text-muted">Follow along</p>
+            <div class="mt-3 flex flex-wrap gap-3">
+              {activeSocials.map((s) => (
+                <a
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="rounded-full border border-line bg-bg px-4 py-2 text-sm font-semibold text-ink transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-primary hover:text-primary"
+                >
+                  {s.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        )
+      }
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  /* Reveal-on-scroll: content is visible by default; JS opts in to the
+     animation only when motion is allowed, so nothing ever ships blank. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global([data-reveal].reveal-init) {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    :global([data-reveal].reveal-in) {
+      opacity: 1;
+      transform: none;
+      transition:
+        opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+  }
+</style>
+
+<script>
+  // Progressive enhancement: only hide-then-reveal if JS runs and motion is OK.
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const els = document.querySelectorAll<HTMLElement>('[data-reveal]');
+  if (!reduce && 'IntersectionObserver' in window) {
+    els.forEach((el) => el.classList.add('reveal-init'));
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('reveal-in');
+            entry.target.classList.remove('reveal-init');
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.08 }
+    );
+    els.forEach((el) => io.observe(el));
+  }
+</script>

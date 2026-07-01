@@ -1,0 +1,85 @@
+---
+import { site, nav } from '../data/site';
+---
+
+<header
+  class="sticky top-0 z-30 border-b border-line/70 bg-bg/85 backdrop-blur-md"
+>
+  <nav
+    class="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5 sm:px-8"
+    aria-label="Primary"
+  >
+    <a
+      href="#top"
+      class="font-serif text-lg font-semibold tracking-tight text-ink transition-colors hover:text-primary"
+    >
+      {site.brand}
+    </a>
+
+    <!-- Desktop links -->
+    <div class="hidden items-center gap-8 md:flex">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            class="text-sm font-medium text-muted transition-colors hover:text-ink"
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <a
+        href="#work"
+        class="rounded-full bg-primary-deep px-4 py-2 text-sm font-semibold text-bg shadow-soft transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:bg-primary"
+      >
+        Work With Me
+      </a>
+    </div>
+
+    <!-- Mobile toggle (CSS-only via hidden checkbox) -->
+    <input type="checkbox" id="nav-toggle" class="peer hidden" />
+    <label
+      for="nav-toggle"
+      class="flex cursor-pointer items-center justify-center rounded-lg p-2 text-ink md:hidden"
+      aria-label="Toggle menu"
+    >
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </label>
+
+    <!-- Mobile panel -->
+    <div
+      class="absolute inset-x-0 top-full hidden origin-top flex-col gap-1 border-b border-line bg-bg px-5 py-4 shadow-lift peer-checked:flex md:!hidden"
+    >
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            class="rounded-lg px-3 py-2.5 text-base font-medium text-ink transition-colors hover:bg-surface"
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <a
+        href="#work"
+        class="mt-1 rounded-full bg-primary-deep px-4 py-2.5 text-center text-base font-semibold text-bg"
+      >
+        Work With Me
+      </a>
+    </div>
+  </nav>
+</header>
+
+<script>
+  // Close the mobile menu after a link is tapped.
+  const toggle = document.getElementById('nav-toggle') as HTMLInputElement | null;
+  document.querySelectorAll('.peer-checked\\:flex a').forEach((link) => {
+    link.addEventListener('click', () => {
+      if (toggle) toggle.checked = false;
+    });
+  });
+</script>

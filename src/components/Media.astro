@@ -1,0 +1,45 @@
+---
+/*
+  Renders a real image when `src` is provided, otherwise a warm branded
+  placeholder. Drop photos into /public/images and set the path in the
+  content file (src/data/site.ts) to replace any placeholder.
+*/
+interface Props {
+  src?: string;
+  alt?: string;
+  label?: string;
+  class?: string;
+  ratio?: string; // e.g. '4/3', '1/1', '16/9'
+}
+const { src, alt = '', label = 'Add photo', class: klass = '', ratio = '4/3' } =
+  Astro.props;
+---
+
+{
+  src ? (
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      decoding="async"
+      class={`h-full w-full object-cover ${klass}`}
+      style={`aspect-ratio:${ratio}`}
+    />
+  ) : (
+    <div
+      class={`flex items-center justify-center bg-gradient-to-br from-surface to-accent-soft ${klass}`}
+      style={`aspect-ratio:${ratio}`}
+      role="img"
+      aria-label={`${label} placeholder`}
+    >
+      <span class="flex flex-col items-center gap-2 text-primary/70">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="3" />
+          <circle cx="8.5" cy="8.5" r="1.6" />
+          <path d="M21 15l-5-5L5 21" />
+        </svg>
+        <span class="text-xs font-medium tracking-wide">{label}</span>
+      </span>
+    </div>
+  )
+}
