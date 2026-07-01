@@ -7,13 +7,17 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "cms": "tinacms dev -c \"astro dev\"",
+    "build": "tinacms build && astro build",
+    "build:site": "astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
     "@astrojs/tailwind": "^5.1.2",
+    "@tinacms/cli": "^2.5.2",
     "astro": "^4.16.7",
-    "tailwindcss": "^3.4.14"
+    "tailwindcss": "^3.4.14",
+    "tinacms": "^3.9.4"
   }
 }
