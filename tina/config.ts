@@ -44,6 +44,47 @@ export default defineConfig({
         // each one tells Wickie exactly what it does. Anything marked optional can
         // be left blank and simply won't show on the site.
         fields: [
+          // ===== Look & Feel (safe, whole-site style controls) =====
+          // These three re-skin the entire site. Every option is a tested,
+          // good-looking preset, so any choice still looks right — see
+          // src/data/theme.ts. Change one, Save, and the whole site updates.
+          {
+            type: 'string',
+            name: 'colorTheme',
+            label: '🎨 Color theme',
+            description: 'Sets the colors across your whole site. Pick the mood you like.',
+            options: [
+              { value: 'tomato', label: 'Tomato & Marigold (warm, punchy)' },
+              { value: 'berry', label: 'Berry & Rose (bright, playful)' },
+              { value: 'olive', label: 'Olive & Honey (earthy, calm)' },
+              { value: 'cocoa', label: 'Cocoa & Gold (cozy, refined)' },
+              { value: 'ocean', label: 'Ocean & Coral (fresh, coastal)' },
+            ],
+          },
+          {
+            type: 'string',
+            name: 'fontPairing',
+            label: '✍️ Fonts',
+            description: 'The lettering style for your headings and text.',
+            options: [
+              { value: 'fraunces', label: 'Fraunces + Inter (warm editorial)' },
+              { value: 'playfair', label: 'Playfair + Inter (classic, elegant)' },
+              { value: 'dmserif', label: 'DM Serif + DM Sans (modern, clean)' },
+              { value: 'cormorant', label: 'Cormorant + Nunito Sans (soft, refined)' },
+            ],
+          },
+          {
+            type: 'string',
+            name: 'textSize',
+            label: '🔠 Text size',
+            description: 'Make everything a little smaller or bigger, all at once.',
+            options: [
+              { value: 'small', label: 'Compact' },
+              { value: 'medium', label: 'Standard' },
+              { value: 'large', label: 'Large (easier to read)' },
+            ],
+          },
+
           // ===== 1. The top of your page =====
           {
             type: 'string',

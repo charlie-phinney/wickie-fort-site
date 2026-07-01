@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { site } from '../data/site';
+import { theme } from '../data/theme';
 
 interface Props {
   title?: string;
@@ -20,10 +21,25 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const favicon = `${base}/favicon.svg`;
 const ogImage = new URL(image, Astro.site).href;
+
+// "Look & Feel" theme (src/data/theme.ts): Wickie's chosen palette, font
+// pairing, and text size. Applied as inline custom properties on <html> so
+// they always win over the global.css defaults, and the matching font files
+// are loaded below. This is what lets her re-skin the whole site safely.
+const themeVars = [
+  ...Object.entries(theme.colors).map(([role, value]) => `--${role}:${value}`),
+  `--font-serif:${theme.fonts.serif}`,
+  `--font-sans:${theme.fonts.sans}`,
+  `--font-hand:${theme.fonts.hand}`,
+  `font-size:${theme.rootPercent}%`,
+].join(';');
+const fontsHref = `https://fonts.googleapis.com/css2?${theme.fonts.googleFamilies
+  .map((f) => `family=${f}`)
+  .join('&')}&family=Caveat:wght@600;700&display=swap`;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" style={themeVars}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -59,10 +75,7 @@ const ogImage = new URL(image, Astro.site).href;
     <!-- Fonts: Fraunces (display serif) + Inter (body) + Caveat (hand accent). Free via Google Fonts. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap"
-    />
+    <link rel="stylesheet" href={fontsHref} />
 
     {
       jsonLd && (
