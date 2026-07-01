@@ -44,6 +44,6 @@
     { "text": "UGC-style content" }
   ],
   "shopHeading": "Shop my kitchen",
-  "shopIntro": "The tools, pans, and pantry staples I actually cook with, all in one place.",
-  "shopEmbed": ""
+  "shopIntro": "The cookbooks I actually cook from and keep coming back to.",
+  "shopEmbed": "<iframe title=\"Favorite Cookbooks\" src=\"https://shopmy.us/collections/embed/6101199?\" style=\"width: 100%; min-height: 340px; border: none;\"></iframe>"
 }
