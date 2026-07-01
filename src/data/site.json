@@ -1,44 +1,44 @@
 {
-  "name": "Wickie Fort",
+  "name": "Wickie",
   "brand": "Wickie's Kitchen",
-  "tagline": "Simple, cozy recipes from Wickie’s Kitchen.",
-  "heroKicker": "Home cooking · recipes · lifestyle",
-  "heroSub": "Everyday recipes and kitchen favorites made to feel warm, doable, and a little bit special.",
-  "emailGeneral": "hello@wickiefort.com",
-  "emailPartnerships": "collabs@wickiefort.com",
-  "emailContact": "contact@wickiefort.com",
+  "tagline": "From corporate to culinary.",
+  "heroKicker": "I left my desk job to learn how to actually cook.",
+  "heroSub": "Now I'm a culinary school grad in New York sharing the simple, real food I make at home, so you can make it too. Come cook with me.",
+  "emailGeneral": "wickie@wickiefort.com",
+  "emailPartnerships": "wickie@wickiefort.com",
+  "emailContact": "wickie@wickiefort.com",
   "heroImage": "",
   "aboutImage": "",
-  "aboutHeading": "Hi, I’m Wickie.",
+  "aboutHeading": "Hi, I'm Wickie!",
   "aboutParagraphs": [
-    { "text": "Wickie’s Kitchen started the way most good things do: with people I love, gathered around a table, asking for the recipe." },
-    { "text": "I cook the kind of food that fits into a real week — unfussy, comforting, and worth making twice. Think slow weekend bakes, fast weeknight dinners, and the little kitchen habits that make everyday cooking feel good." },
-    { "text": "This is where I share those recipes and the home-and-lifestyle bits in between. Pull up a chair." }
+    { "text": "A couple years ago I was sitting at a corporate desk job wondering what I was doing with my life. So I did the slightly insane thing and left it to go to culinary school in New York City." },
+    { "text": "Turns out I love it. I spent months learning technique, burning the occasional thing, getting graded on my sauces, and figuring out how to actually cook, and I shared every step of it along the way. You made a scary leap feel a lot less scary." },
+    { "text": "This is home base now: the recipes I come back to, the things I'm still learning, and whatever I'm cooking lately. Pull up a chair." }
   ],
   "socials": [
     { "label": "Instagram", "handle": "@wickieskitchen", "href": "https://www.instagram.com/wickieskitchen" },
     { "label": "TikTok", "handle": "@wickieskitchen", "href": "https://www.tiktok.com/@wickieskitchen" },
     { "label": "YouTube", "handle": "@wickieskitchen", "href": "https://youtube.com/@wickieskitchen" },
-    { "label": "Facebook", "handle": "Wickie’s Kitchen", "href": "https://www.facebook.com/share/1bbQG6mRhh/" },
+    { "label": "Facebook", "handle": "Wickie's Kitchen", "href": "https://www.facebook.com/share/1bbQG6mRhh/" },
     { "label": "ShopMy", "handle": "Shop my kitchen", "href": "https://shopmy.us/shop/wickiefort" }
   ],
   "recipes": [
-    { "title": "Brown Butter Banana Bread", "blurb": "Deeply cozy, one bowl, and better on day two. The loaf everyone asks for.", "tag": "Baking", "image": "", "href": "" },
-    { "title": "Weeknight Lemon Orzo", "blurb": "Bright, buttery, and on the table in 20 minutes. A back-pocket dinner.", "tag": "Weeknight", "image": "", "href": "" },
-    { "title": "Tomato Soup & Crispy Grilled Cheese", "blurb": "The comfort classic, done right — silky soup and a proper golden crust.", "tag": "Comfort", "image": "", "href": "" },
-    { "title": "Honey Garlic Salmon", "blurb": "Sticky, sweet, and roasted on one pan. Weeknight-easy, dinner-party-good.", "tag": "Dinner", "image": "", "href": "" },
-    { "title": "Maple Cinnamon Granola", "blurb": "Clustery, warmly spiced, and made for slow mornings and gifting in jars.", "tag": "Breakfast", "image": "", "href": "" },
-    { "title": "One-Pan Herb Roast Chicken", "blurb": "Crisp skin, jammy vegetables, and a whole meal from a single pan.", "tag": "Sunday", "image": "", "href": "" }
+    { "title": "Smash Burgers with Special Sauce", "blurb": "The crispy-edged smash burgers I make on repeat, with caramelized onions and a pickly sauce that ends up on everything.", "tag": "On repeat", "image": "", "href": "" },
+    { "title": "Simple Seared Steak", "blurb": "Good steak really doesn't need much. A hot pan, real salt, and a quick pan sauce you'll want to drink. School approved.", "tag": "Dinner", "image": "", "href": "" },
+    { "title": "Summer Veg Plate", "blurb": "Light, fresh, and vegetable forward. Proof that simple ingredients at their peak beat fussy every single time.", "tag": "Light", "image": "", "href": "" },
+    { "title": "Weeknight Pasta", "blurb": "The five ingredient pasta I lean on when I'm tired but still want something that tastes like I tried.", "tag": "Weeknight", "image": "", "href": "" },
+    { "title": "Roast Chicken & Jammy Veg", "blurb": "One pan, crispy skin, soft vegetables underneath. The Sunday dinner I genuinely never get sick of.", "tag": "Sunday", "image": "", "href": "" },
+    { "title": "The Basics, Done Right", "blurb": "Eggs, sauces, knife work. The little techniques from school that quietly make everything else you cook better.", "tag": "From school", "image": "", "href": "" }
   ],
   "workHeading": "Work with me",
-  "workIntro": "I partner with brands I genuinely love to create warm, appetizing content that feels at home in Wickie’s Kitchen — not like an ad. If your product belongs in a real kitchen, let’s talk.",
-  "workCta": "Start a partnership",
+  "workIntro": "I team up with brands I actually use and love, and make warm, honest content that feels like it belongs in my kitchen instead of in an ad. If your product would earn a real spot on my counter, let's talk.",
+  "workCta": "Let's work together",
   "workOfferings": [
-    { "text": "Sponsored recipe & content" },
-    { "text": "Brand partnerships" },
-    { "text": "Product features" },
     { "text": "Recipe development" },
-    { "text": "Short-form video content" },
-    { "text": "UGC-style assets" }
+    { "text": "Sponsored recipes & reels" },
+    { "text": "Short-form video (IG + TikTok)" },
+    { "text": "Product features & reviews" },
+    { "text": "Brand partnerships" },
+    { "text": "UGC-style content" }
   ]
 }

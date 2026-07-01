@@ -10,13 +10,15 @@ export default {
         muted: 'var(--muted)',
         primary: 'var(--primary)',
         'primary-deep': 'var(--primary-deep)',
-        accent: 'var(--accent)',
-        'accent-soft': 'var(--accent-soft)',
+        'primary-tint': 'var(--primary-tint)',
+        pop: 'var(--pop)',
+        'pop-deep': 'var(--pop-deep)',
         line: 'var(--line)',
       },
       fontFamily: {
         serif: ['Fraunces', 'Georgia', 'Cambria', 'serif'],
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        hand: ['Caveat', 'ui-rounded', 'cursive'],
       },
       maxWidth: {
         prose: '68ch',

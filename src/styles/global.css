@@ -4,25 +4,34 @@
 
 /* ------------------------------------------------------------------ */
 /*  Wickie's Kitchen — design tokens                                   */
-/*  Warm terracotta on near-white. Warmth lives in the brand color +   */
-/*  serif type + imagery, NOT in a cream body (that's the AI cliché).  */
-/*  Colors are OKLCH; edit these six roles to re-skin the whole site.  */
+/*  "From corporate to culinary." A young, honest, NYC culinary-school */
+/*  journey. Energy lives in a committed tomato/marigold palette +     */
+/*  expressive type — NOT in a cream body (that's the food-blog cliche)*/
+/*  Colors are OKLCH; edit these roles to re-skin the whole site.      */
 /* ------------------------------------------------------------------ */
 :root {
-  --bg: oklch(0.994 0.004 70);          /* page background — a whisper of warm white */
-  --surface: oklch(0.963 0.014 55);     /* warm oat band for alternating sections    */
-  --ink: oklch(0.27 0.032 40);          /* primary text — deep warm brown-black       */
-  --muted: oklch(0.47 0.028 45);        /* secondary text — warm gray (AA on bg)      */
-  --primary: oklch(0.55 0.145 30);      /* terracotta — links, brand marks            */
-  --primary-deep: oklch(0.44 0.135 28); /* brick — solid buttons, hovers              */
-  --accent: oklch(0.52 0.062 145);      /* sage/herb — tags, small accents            */
-  --accent-soft: oklch(0.93 0.02 140);  /* pale sage — tag backgrounds                */
-  --line: oklch(0.88 0.012 60);         /* hairline borders                           */
+  --bg: oklch(0.991 0.006 78);          /* clean warm paper-white (canvas, not cream) */
+  --surface: oklch(0.958 0.022 52);     /* soft blush band for alternating sections   */
+  --ink: oklch(0.24 0.028 44);          /* primary text — warm near-black              */
+  --muted: oklch(0.44 0.03 42);         /* secondary text — warm gray (AA on bg)       */
 
-  --shadow-soft: 0 1px 2px oklch(0.4 0.03 40 / 0.04),
-    0 8px 24px oklch(0.4 0.06 40 / 0.07);
-  --shadow-lift: 0 2px 4px oklch(0.4 0.03 40 / 0.05),
-    0 16px 40px oklch(0.4 0.08 40 / 0.12);
+  --primary: oklch(0.605 0.185 33);     /* tomato/paprika — the brand red              */
+  --primary-deep: oklch(0.50 0.165 31); /* brick — small colored text, solid buttons   */
+  --primary-tint: oklch(0.93 0.045 45); /* pale tomato — wells, backplates             */
+
+  --pop: oklch(0.80 0.135 78);          /* marigold — underlines, highlights, tags     */
+  --pop-deep: oklch(0.60 0.12 70);      /* deep honey — pop text on light              */
+
+  --line: oklch(0.89 0.016 58);         /* hairline borders                            */
+
+  --shadow-soft: 0 1px 2px oklch(0.4 0.03 40 / 0.05),
+    0 10px 28px oklch(0.4 0.06 40 / 0.08);
+  --shadow-lift: 0 2px 6px oklch(0.4 0.03 40 / 0.06),
+    0 22px 50px oklch(0.4 0.08 40 / 0.16);
+
+  /* semantic z-scale — never arbitrary 9999 */
+  --z-sticky: 30;
+  --z-menu: 40;
 }
 
 @layer base {
@@ -40,10 +49,12 @@
   h1, h2, h3 {
     font-family: theme('fontFamily.serif');
     text-wrap: balance;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
   }
-  p {
-    text-wrap: pretty;
+  p { text-wrap: pretty; }
+  ::selection {
+    background: var(--pop);
+    color: var(--ink);
   }
   :focus-visible {
     outline: 2px solid var(--primary);
@@ -52,13 +63,19 @@
   }
 }
 
+/* Marigold hand-drawn underline — the signature accent under key words.
+   Sits just below the baseline (clears descenders) as a bold marker stroke. */
+.mark-underline {
+  background-image: linear-gradient(var(--pop), var(--pop));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 0.14em;
+  padding-bottom: 0.12em;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  *,
-  *::before,
-  *::after {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
