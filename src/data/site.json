@@ -1,62 +1,157 @@
 {
-  "name": "Wickie",
-  "brand": "Wickie's Kitchen",
-  "statVideosOver1M": 11,
-  "statTopViews": "24M",
-  "tagline": "From corporate to culinary.",
-  "heroKicker": "I left my desk job to learn how to actually cook.",
-  "heroSub": "Now I'm a culinary school grad in New York sharing the simple, real food I make at home, so you can make it too. Come cook with me.",
-  "emailGeneral": "wickie@wickiefort.com",
   "emailPartnerships": "wickie@wickiefort.com",
   "emailContact": "wickie@wickiefort.com",
-  "heroImage": "",
-  "aboutImage": "",
-  "aboutHeading": "Hi, I'm Wickie!",
-  "aboutParagraphs": [
-    { "text": "A couple years ago I was sitting at a corporate desk job wondering what I was doing with my life. So I did the slightly insane thing and left it to go to culinary school in New York City." },
-    { "text": "Turns out I love it. I spent months learning technique, burning the occasional thing, getting graded on my sauces, and figuring out how to actually cook, and I shared every step of it along the way. You made a scary leap feel a lot less scary." },
-    { "text": "This is home base now: the recipes I come back to, the things I'm still learning, and whatever I'm cooking lately. Pull up a chair." }
-  ],
-  "socials": [
-    { "label": "Instagram", "handle": "@wickieskitchen", "href": "https://www.instagram.com/wickieskitchen" },
-    { "label": "TikTok", "handle": "@wickieskitchen", "href": "https://www.tiktok.com/@wickieskitchen" },
-    { "label": "YouTube", "handle": "@wickieskitchen", "href": "https://youtube.com/@wickieskitchen" },
-    { "label": "Facebook", "handle": "Wickie's Kitchen", "href": "https://www.facebook.com/share/1bbQG6mRhh/" },
-    { "label": "ShopMy", "handle": "Shop my kitchen", "href": "https://shopmy.us/shop/wickiefort" }
-  ],
-  "recipes": [
-    { "title": "Smash Burgers with Special Sauce", "blurb": "The crispy-edged smash burgers I make on repeat, with caramelized onions and a pickly sauce that ends up on everything.", "tag": "On repeat", "image": "", "href": "" },
-    { "title": "Simple Seared Steak", "blurb": "Good steak really doesn't need much. A hot pan, real salt, and a quick pan sauce you'll want to drink. School approved.", "tag": "Dinner", "image": "", "href": "" },
-    { "title": "Summer Veg Plate", "blurb": "Light, fresh, and vegetable forward. Proof that simple ingredients at their peak beat fussy every single time.", "tag": "Light", "image": "", "href": "" },
-    { "title": "Weeknight Pasta", "blurb": "The five ingredient pasta I lean on when I'm tired but still want something that tastes like I tried.", "tag": "Weeknight", "image": "", "href": "" },
-    { "title": "Roast Chicken & Jammy Veg", "blurb": "One pan, crispy skin, soft vegetables underneath. The Sunday dinner I genuinely never get sick of.", "tag": "Sunday", "image": "", "href": "" },
-    { "title": "The Basics, Done Right", "blurb": "Eggs, sauces, knife work. The little techniques from school that quietly make everything else you cook better.", "tag": "From school", "image": "", "href": "" }
-  ],
-  "workHeading": "Work with me",
-  "workIntro": "I team up with brands I actually use and love, and make warm, honest content that feels like it belongs in my kitchen instead of in an ad. If your product would earn a real spot on my counter, let's talk.",
-  "workCta": "Let's work together",
-  "workOfferings": [
-    { "text": "Recipe development" },
-    { "text": "Sponsored recipes & reels" },
-    { "text": "Short-form video (IG + TikTok)" },
-    { "text": "Product features & reviews" },
-    { "text": "Brand partnerships" },
-    { "text": "UGC-style content" }
-  ],
-  "shopHeading": "Shop my kitchen",
-  "shopIntro": "The cookbooks I actually cook from and keep coming back to.",
-  "shopEmbed": "<iframe title=\"Favorite Cookbooks\" src=\"https://shopmy.us/collections/embed/6101199?\" style=\"width: 100%; min-height: 340px; border: none;\"></iframe>",
   "changeRequest": "",
   "colorTheme": "tomato",
   "fontPairing": "fraunces",
   "textSize": "medium",
   "sections": [
-    { "id": "stats", "show": true },
-    { "id": "about", "show": true },
-    { "id": "work", "show": true },
-    { "id": "shop", "show": true },
-    { "id": "philosophy", "show": true },
-    { "id": "recipes", "show": true },
-    { "id": "contact", "show": true }
-  ]
+    {
+      "id": "stats",
+      "show": true
+    },
+    {
+      "id": "about",
+      "show": true
+    },
+    {
+      "id": "work",
+      "show": true
+    },
+    {
+      "id": "shop",
+      "show": true
+    },
+    {
+      "id": "philosophy",
+      "show": true
+    },
+    {
+      "id": "recipes",
+      "show": true
+    },
+    {
+      "id": "contact",
+      "show": true
+    }
+  ],
+  "tagline": "From corporate to culinary!",
+  "heroKicker": "I left my 9-5 job to pursue my passion for cooking",
+  "heroSub": "Now I'm a culinary school grad in New York sharing the simple, real food I make at home, so you can make it too. Come cook with me!",
+  "heroImage": "",
+  "aboutHeading": "Hi, I'm Wickie!",
+  "aboutImage": "",
+  "aboutParagraphs": [
+    {
+      "text": "About a year ago, I was sitting at a corporate desk job, wondering what I was doing with my life. After many long days of questioning everything and a few tears shed, I made what felt like a crazy decision to quit my job and go to culinary school in New York City. "
+    },
+    {
+      "text": "Turns out I love it. I spent months learning technique, burning the occasional thing, getting graded on my sauces, and figuring out how to actually cook, and I shared every step of it along the way. You made a scary leap feel a lot less scary."
+    },
+    {
+      "text": "This is home base now: the recipes I come back to, the things I'm still learning, and whatever I'm cooking lately. Pull up a chair."
+    }
+  ],
+  "recipes": [
+    {
+      "title": "Smash Burgers with Special Sauce",
+      "blurb": "The crispy-edged smash burgers I make on repeat, with caramelized onions and a pickly sauce that ends up on everything.",
+      "tag": "On repeat",
+      "image": "",
+      "href": ""
+    },
+    {
+      "title": "Simple Seared Steak",
+      "blurb": "Good steak really doesn't need much. A hot pan, real salt, and a quick pan sauce you'll want to drink. School approved.",
+      "tag": "Dinner",
+      "image": "",
+      "href": ""
+    },
+    {
+      "title": "Summer Veg Plate",
+      "blurb": "Light, fresh, and vegetable forward. Proof that simple ingredients at their peak beat fussy every single time.",
+      "tag": "Light",
+      "image": "",
+      "href": ""
+    },
+    {
+      "title": "Weeknight Pasta",
+      "blurb": "The five ingredient pasta I lean on when I'm tired but still want something that tastes like I tried.",
+      "tag": "Weeknight",
+      "image": "",
+      "href": ""
+    },
+    {
+      "title": "Roast Chicken & Jammy Veg",
+      "blurb": "One pan, crispy skin, soft vegetables underneath. The Sunday dinner I genuinely never get sick of.",
+      "tag": "Sunday",
+      "image": "",
+      "href": ""
+    },
+    {
+      "title": "The Basics, Done Right",
+      "blurb": "Eggs, sauces, knife work. The little techniques from school that quietly make everything else you cook better.",
+      "tag": "From school",
+      "image": "",
+      "href": ""
+    }
+  ],
+  "workHeading": "Work with me",
+  "workIntro": "I team up with brands I actually use and love, and make warm, honest content that feels like it belongs in my kitchen instead of in an ad. If your product would earn a real spot on my counter, let's talk.",
+  "workCta": "Let's work together",
+  "workOfferings": [
+    {
+      "text": "Recipe development"
+    },
+    {
+      "text": "Sponsored recipes & reels"
+    },
+    {
+      "text": "Short-form video (IG + TikTok)"
+    },
+    {
+      "text": "Product features & reviews"
+    },
+    {
+      "text": "Brand partnerships"
+    },
+    {
+      "text": "UGC-style content"
+    }
+  ],
+  "statVideosOver1M": 11,
+  "statTopViews": "24M",
+  "shopHeading": "Shop my kitchen",
+  "shopIntro": "The cookbooks I actually cook from and keep coming back to.",
+  "shopEmbed": "<iframe title=\"Favorite Cookbooks\" src=\"https://shopmy.us/collections/embed/6101199?\" style=\"width: 100%; min-height: 340px; border: none;\"></iframe>",
+  "emailGeneral": "wickie@wickiefort.com",
+  "socials": [
+    {
+      "label": "Instagram",
+      "handle": "@wickieskitchen",
+      "href": "https://www.instagram.com/wickieskitchen"
+    },
+    {
+      "label": "TikTok",
+      "handle": "@wickieskitchen",
+      "href": "https://www.tiktok.com/@wickieskitchen"
+    },
+    {
+      "label": "YouTube",
+      "handle": "@wickieskitchen",
+      "href": "https://youtube.com/@wickieskitchen"
+    },
+    {
+      "label": "Facebook",
+      "handle": "Wickie's Kitchen",
+      "href": "https://www.facebook.com/share/1bbQG6mRhh/"
+    },
+    {
+      "label": "ShopMy",
+      "handle": "Shop my kitchen",
+      "href": "https://shopmy.us/shop/wickiefort"
+    }
+  ],
+  "name": "Wickie",
+  "brand": "Wickie's Kitchen"
 }
