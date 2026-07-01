@@ -125,9 +125,28 @@ const breadcrumbLd = {
         }
       </header>
 
-      {
-        hasMethod && (
-          <div class="no-print mt-7">
+      <!-- Share (every recipe page is shareable) + Print (only once there's a
+           written method worth printing). -->
+      <div class="no-print mt-7 flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          data-share
+          data-url={canonical}
+          data-title={recipe.title}
+          data-text={recipe.blurb}
+          class="inline-flex items-center gap-2 rounded-full border border-line bg-bg px-4 py-2 text-sm font-semibold text-ink transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-primary hover:text-primary"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="18" cy="5" r="3" />
+            <circle cx="6" cy="12" r="3" />
+            <circle cx="18" cy="19" r="3" />
+            <path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4" />
+          </svg>
+          <span data-share-label>Share</span>
+        </button>
+
+        {
+          hasMethod && (
             <button
               type="button"
               data-print
@@ -140,9 +159,11 @@ const breadcrumbLd = {
               </svg>
               Print recipe
             </button>
-          </div>
-        )
-      }
+          )
+        }
+
+        <span data-share-status role="status" aria-live="polite" class="sr-only" />
+      </div>
 
       <!-- ------------------------------- photo ------------------------------ -->
       <div class="recipe-photo mt-9 overflow-hidden rounded-[2rem] border-4 border-bg shadow-lift">
@@ -298,4 +319,46 @@ const breadcrumbLd = {
   document
     .querySelector<HTMLButtonElement>('[data-print]')
     ?.addEventListener('click', () => window.print());
+
+  // Share: use the native share sheet where available (mobile), otherwise
+  // copy the link to the clipboard with a brief on-button confirmation.
+  const shareBtn = document.querySelector<HTMLButtonElement>('[data-share]');
+  if (shareBtn) {
+    const label = shareBtn.querySelector<HTMLElement>('[data-share-label]');
+    const status = document.querySelector<HTMLElement>('[data-share-status]');
+    const url = shareBtn.dataset.url || window.location.href;
+    const title = shareBtn.dataset.title || document.title;
+    const text = shareBtn.dataset.text || '';
+    const original = label?.textContent ?? 'Share';
+    let timer: ReturnType<typeof setTimeout>;
+
+    const flash = (msg: string) => {
+      if (label) label.textContent = msg;
+      if (status) status.textContent = msg;
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        if (label) label.textContent = original;
+        if (status) status.textContent = '';
+      }, 2000);
+    };
+
+    shareBtn.addEventListener('click', async () => {
+      if (navigator.share) {
+        try {
+          await navigator.share({ title, text, url });
+          return;
+        } catch (err) {
+          // User dismissed the share sheet — do nothing. Any other error
+          // falls through to the copy-link path below.
+          if (err instanceof Error && err.name === 'AbortError') return;
+        }
+      }
+      try {
+        await navigator.clipboard.writeText(url);
+        flash('Link copied!');
+      } catch {
+        flash('Press and hold to copy');
+      }
+    });
+  }
 </script>
