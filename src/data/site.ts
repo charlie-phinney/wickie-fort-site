@@ -6,6 +6,20 @@
 /*  you normally don't need to touch it.                                 */
 /* ==================================================================== */
 import data from './site.json';
+import statsData from './stats.json';
+
+/* Live media-kit numbers, refreshed daily by the refresh-stats GitHub
+   Action (src/data/stats.json). Formatted here for display. */
+const kFollowers = (n: number) => `${Math.floor(n / 1000)}K+`;
+const mViews = (n: number) =>
+  n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : n >= 1e3 ? `${Math.round(n / 1e3)}K` : String(n);
+
+export const stats = {
+  totalFollowers: kFollowers(statsData.totalFollowers),
+  viralOver1M: `${statsData.viralOver1M}+`,
+  topVideoViews: mViews(statsData.topVideoViews),
+  updated: statsData.updated,
+};
 
 export const site = {
   name: data.name,

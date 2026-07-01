@@ -1,0 +1,181 @@
+/*
+  Refreshes Wickie's real, cross-platform numbers for the "By the numbers"
+  band. Runs free on GitHub Actions (daily) — no paid APIs, no accounts.
+
+  It reads follower counts from each platform's free public endpoints and
+  writes src/data/stats.json. Resilience is the point: if any platform
+  blocks or changes shape, that field KEEPS its last good value instead of
+  going to zero, so the site never shows a broken number. Whatever can be
+  refreshed, is; the rest holds steady until it can.
+
+  Sources:
+    - Instagram: public web_profile_info + feed (followers, 1M+ count, top views)
+    - TikTok:    public profile page JSON (followers)
+    - YouTube:   public channel page (subscribers)
+    - Facebook:  not fetchable without auth -> seeded, held steady
+*/
+import { readFileSync, writeFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const STATS_PATH = join(__dirname, '..', 'src', 'data', 'stats.json');
+
+const IG_USER = 'wickieskitchen';
+const IG_USER_ID = '80213314569';
+const TT_USER = 'wickieskitchen';
+const YT_HANDLE = 'wickieskitchen';
+
+const UA =
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
+
+async function getText(url, headers = {}, tries = 3) {
+  for (let i = 0; i < tries; i++) {
+    try {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 20000);
+      const res = await fetch(url, {
+        headers: { 'User-Agent': UA, 'Accept-Language': 'en-US,en;q=0.9', ...headers },
+        signal: ctrl.signal,
+      });
+      clearTimeout(t);
+      if (res.ok) return await res.text();
+    } catch {
+      /* retry */
+    }
+    await new Promise((r) => setTimeout(r, 1500 * (i + 1)));
+  }
+  return null;
+}
+
+function parseAbbrev(s) {
+  if (!s) return null;
+  const m = String(s).replace(/,/g, '').match(/([\d.]+)\s*([KMB])?/i);
+  if (!m) return null;
+  let n = parseFloat(m[1]);
+  const u = (m[2] || '').toUpperCase();
+  if (u === 'K') n *= 1e3;
+  else if (u === 'M') n *= 1e6;
+  else if (u === 'B') n *= 1e9;
+  return Math.round(n);
+}
+
+async function instagram() {
+  const out = {};
+  const prof = await getText(
+    `https://www.instagram.com/api/v1/users/web_profile_info/?username=${IG_USER}`,
+    { 'X-IG-App-ID': '936619743392459' }
+  );
+  if (prof) {
+    try {
+      const u = JSON.parse(prof).data.user;
+      if (u?.edge_followed_by?.count > 0) out.followers = u.edge_followed_by.count;
+    } catch {}
+  }
+  // Fallback: the public profile page's og:description carries the count,
+  // e.g. "29,865 Followers, 105 Following, 100 Posts - ..."
+  if (!out.followers) {
+    const html = await getText(`https://www.instagram.com/${IG_USER}/`);
+    const m = html && html.match(/([\d,.]+[KMB]?)\s+Followers/i);
+    if (m) {
+      const n = parseAbbrev(m[1]);
+      if (n && n > 0) out.followers = n;
+    }
+  }
+  // Feed: 1M+ count + top views (best-effort; often blocked without a session)
+  const plays = [];
+  let max = '';
+  for (let i = 0; i < 4; i++) {
+    const feed = await getText(
+      `https://www.instagram.com/api/v1/feed/user/${IG_USER_ID}/?count=33${max ? `&max_id=${max}` : ''}`,
+      { 'X-IG-App-ID': '936619743392459' }
+    );
+    if (!feed) break;
+    let j;
+    try {
+      j = JSON.parse(feed);
+    } catch {
+      break;
+    }
+    (j.items || []).forEach((it) => plays.push(it.play_count || it.view_count || 0));
+    if (j.more_available) max = j.next_max_id;
+    else break;
+  }
+  if (plays.length) {
+    out.viralOver1M = plays.filter((v) => v >= 1e6).length;
+    out.topVideoViews = Math.max(...plays);
+  }
+  return out;
+}
+
+async function tiktok() {
+  const html = await getText(`https://www.tiktok.com/@${TT_USER}`);
+  if (!html) return {};
+  // followerCount lives in the embedded rehydration JSON
+  const m = html.match(/"followerCount":\s*(\d+)/);
+  if (m) {
+    const n = parseInt(m[1], 10);
+    if (n > 0) return { followers: n };
+  }
+  return {};
+}
+
+async function youtube() {
+  const html = await getText(`https://www.youtube.com/@${YT_HANDLE}?hl=en`);
+  if (!html) return {};
+  // e.g. "subscriberCountText" ... "20.2K subscribers", or plain "20.2K subscribers"
+  const m =
+    html.match(/"([\d.,]+[KMB]?)\s+subscribers"/i) ||
+    html.match(/([\d.,]+[KMB]?)\s+subscribers/i);
+  if (m) {
+    const n = parseAbbrev(m[1]);
+    if (n && n > 0) return { followers: n };
+  }
+  return {};
+}
+
+async function main() {
+  const prev = JSON.parse(readFileSync(STATS_PATH, 'utf8'));
+  const next = structuredClone(prev);
+  const ok = {};
+
+  const [ig, tt, yt] = await Promise.all([instagram(), tiktok(), youtube()]);
+
+  if (ig.followers) {
+    next.followers.instagram = ig.followers;
+    ok.instagram = true;
+  }
+  if (ig.viralOver1M != null) next.viralOver1M = ig.viralOver1M;
+  if (ig.topVideoViews) next.topVideoViews = ig.topVideoViews;
+
+  if (tt.followers) {
+    next.followers.tiktok = tt.followers;
+    ok.tiktok = true;
+  }
+  if (yt.followers) {
+    next.followers.youtube = yt.followers;
+    ok.youtube = true;
+  }
+
+  next.totalFollowers =
+    (next.followers.instagram || 0) +
+    (next.followers.tiktok || 0) +
+    (next.followers.youtube || 0) +
+    (next.followers.facebook || 0);
+
+  next.sources = {
+    instagram: !!ok.instagram,
+    tiktok: !!ok.tiktok,
+    youtube: !!ok.youtube,
+    facebook: false,
+  };
+  next.updated = new Date().toISOString().slice(0, 10);
+
+  writeFileSync(STATS_PATH, JSON.stringify(next, null, 2) + '\n');
+  console.log('Refreshed stats:', JSON.stringify({ total: next.totalFollowers, ok }));
+}
+
+main().catch((e) => {
+  console.error('fetch-stats failed (keeping previous values):', e.message);
+  process.exit(0); // never fail the build; last-good stays
+});

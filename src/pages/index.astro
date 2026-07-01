@@ -4,7 +4,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Media from '../components/Media.astro';
 import RecipeCard from '../components/RecipeCard.astro';
-import { site, emails, socials, about, recipes, workWithMe } from '../data/site';
+import { site, emails, socials, about, recipes, workWithMe, stats } from '../data/site';
 
 const activeSocials = socials.filter((s) => s.href);
 const collabMailto = `mailto:${emails.partnerships}?subject=${encodeURIComponent(
@@ -198,21 +198,21 @@ const helloMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
         </div>
         </div>
 
-        <!-- Metrics band (media-kit stats). Numbers verified 2026-07-01;
-             update here as her audience grows. -->
+        <!-- Metrics band (media-kit stats). Numbers live from
+             src/data/stats.json, refreshed daily by the refresh-stats action. -->
         <div data-reveal class="mt-14 border-t border-bg/15 pt-12 md:mt-16">
           <p class="font-hand text-2xl text-pop">By the numbers</p>
           <dl class="mt-6 grid gap-8 sm:grid-cols-3">
             <div>
-              <dt class="font-serif text-[clamp(2.4rem,6vw,3.4rem)] font-semibold leading-none text-bg">64K+</dt>
-              <dd class="mt-2 text-sm leading-snug text-bg/70">followers across Instagram, TikTok &amp; YouTube</dd>
+              <dt class="font-serif text-[clamp(2.4rem,6vw,3.4rem)] font-semibold leading-none text-bg">{stats.totalFollowers}</dt>
+              <dd class="mt-2 text-sm leading-snug text-bg/70">followers across all platforms</dd>
             </div>
             <div>
-              <dt class="font-serif text-[clamp(2.4rem,6vw,3.4rem)] font-semibold leading-none text-bg">5+</dt>
+              <dt class="font-serif text-[clamp(2.4rem,6vw,3.4rem)] font-semibold leading-none text-bg">{stats.viralOver1M}</dt>
               <dd class="mt-2 text-sm leading-snug text-bg/70">videos with over 1 million views</dd>
             </div>
             <div>
-              <dt class="font-serif text-[clamp(2.4rem,6vw,3.4rem)] font-semibold leading-none text-bg">19.7M</dt>
+              <dt class="font-serif text-[clamp(2.4rem,6vw,3.4rem)] font-semibold leading-none text-bg">{stats.topVideoViews}</dt>
               <dd class="mt-2 text-sm leading-snug text-bg/70">views on my most-viewed reel</dd>
             </div>
           </dl>
