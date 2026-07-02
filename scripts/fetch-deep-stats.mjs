@@ -91,19 +91,40 @@ async function instagramDeep() {
     } else {
       let sum = probe.body?.data?.[0]?.values?.[0]?.value || 0;
       let counted = 1;
+      let maxViews = sum;
+      let over1M = sum >= 1e6 ? 1 : 0;
       for (const v of videos.slice(1)) {
         await sleep(350); // stay well inside the per-hour call budget
         const r = await ig(`${v.id}/insights`, 'metric=views');
         const val = r.ok ? r.body?.data?.[0]?.values?.[0]?.value || 0 : 0;
         sum += val;
+        if (val > maxViews) maxViews = val;
+        if (val >= 1e6) over1M++;
         if (r.ok) counted++;
       }
       if (sum > 0) {
         out.igViews = sum;
         out.igViewsCounted = counted;
-        console.log(`deep: IG views ${sum} across ${counted} reels.`);
+        out.igMaxReelViews = maxViews;
+        out.igReels1M = over1M;
+        console.log(
+          `deep: IG views ${sum} across ${counted} reels (top ${maxViews}, ${over1M} over 1M).`
+        );
       }
     }
+  }
+
+  // Audience spread (collected for a possible "fans in N countries" tile).
+  const geo = await ig(
+    'me/insights',
+    'metric=follower_demographics&period=lifetime&breakdown=country&metric_type=total_value'
+  );
+  const results = geo.ok
+    ? geo.body?.data?.[0]?.total_value?.breakdowns?.[0]?.results
+    : null;
+  if (Array.isArray(results) && results.length) {
+    out.igCountries = results.length;
+    console.log(`deep: followers in ${results.length} countries.`);
   }
 
   // Account-level 28-day views (momentum).
@@ -132,7 +153,10 @@ async function tiktokTop() {
     const plays = [...html.matchAll(/"playCount":\s*(\d+)/g)].map((m) => parseInt(m[1], 10));
     if (plays.length) {
       console.log(`deep: TikTok first-page top video ${Math.max(...plays)} plays (${plays.length} items).`);
-      return { ttTopViews: Math.max(...plays) };
+      return {
+        ttTopViews: Math.max(...plays),
+        ttOver1M: plays.filter((p) => p >= 1e6).length,
+      };
     }
   } catch (e) {
     console.log('deep: TikTok fetch failed —', e.message);

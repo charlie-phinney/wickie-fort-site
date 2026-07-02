@@ -9,13 +9,10 @@ import data from './site.json';
 import statsData from './stats.json';
 import reelsData from './reels.json';
 
-/* Media-kit numbers for the "By the numbers" band.
-   - Follower counts auto-refresh daily (src/data/stats.json, refresh-stats Action).
-   - "Videos over 1M" and "most-viewed video" are set by hand in /admin: they span
-     Instagram + TikTok + YouTube, which can't be tallied automatically for free, so
-     they live in site.json where Wickie keeps them accurate. */
-const kFollowers = (n: number) => `${Math.floor(n / 1000)}K+`;
-
+/* Media-kit numbers for the "By the numbers" band. Everything auto-refreshes
+   daily (refresh-stats Action -> stats.json); the two hand-kept /admin fields
+   (statVideosOver1M / statTopViews) act as FLOORS under the live-computed
+   composites, never as the display value itself. */
 // Real growth per day, measured from the daily history (fetch-stats appends
 // one entry per run). Compared against the newest entry that's at least a
 // day old — up to a week back — so the homepage tickers extrapolate from
@@ -44,10 +41,26 @@ const likes = (statsData as { likes?: { tiktok?: number } }).likes || {};
 type Deep = {
   igLikes?: number;
   igViews?: number;
+  igViewsCounted?: number;
+  igMaxReelViews?: number;
+  igReels1M?: number;
   igRecentEngagement?: number;
   igRecentCount?: number;
+  ttTopViews?: number;
+  ttOver1M?: number;
+  ytVideoCount?: number;
 };
 const deep: Deep = (statsData as { deep?: Deep }).deep || {};
+
+// Parse a hand-kept figure like "24M" / "1.5m" / "900K" into a number, so
+// Wickie's /admin entries act as FLOORS under the live-computed values —
+// the displayed number is whichever is higher, and only ever grows.
+const parseHand = (s: string): number => {
+  const m = (s || '').replace(/,/g, '').match(/([\d.]+)\s*([KMB])?/i);
+  if (!m) return 0;
+  const mult = { K: 1e3, M: 1e6, B: 1e9 }[(m[2] || '').toUpperCase() as 'K' | 'M' | 'B'] || 1;
+  return parseFloat(m[1]) * mult;
+};
 
 // Average engagement rate: likes+comments per recent post vs Instagram
 // followers — the number brands ask for. Shown only when it's computed from
@@ -59,9 +72,6 @@ const erValue =
     : 0;
 
 export const stats = {
-  totalFollowers: kFollowers(statsData.totalFollowers),
-  videosOver1M: String(data.statVideosOver1M ?? ''),
-  topViews: data.statTopViews || '',
   updated: statsData.updated,
   // Raw values + measured growth for the animated band. A zero value hides
   // its tile, so a platform going unfetchable can never show a broken 0.
@@ -69,16 +79,35 @@ export const stats = {
   // lifetime count, stated as an honest FLOOR of her true all-platform
   // total (TikTok doesn't expose lifetime views; the "+" carries it).
   live: {
-    followers: { value: statsData.totalFollowers, perDay: perDay('f') },
     views: {
       value: (views.youtube || 0) + (deep.igViews || 0),
       perDay: perDay('yv') + perDay('iv'),
     },
   },
-  // Lifetime likes: every IG post + TikTok hearts. Static tile.
+  // Lifetime likes: every IG post + TikTok hearts.
   totalLikes: (deep.igLikes || 0) + (likes.tiktok || 0),
   // e.g. "15.6" — null hides the tile.
   engagementRate: erValue >= 1.5 && erValue < 1000 ? erValue.toFixed(1) : null,
+  // Composite: measured views over the videos they came from (IG reels
+  // counted + YouTube uploads). Hidden until both sides have data.
+  avgViews:
+    deep.igViews && deep.igViewsCounted && deep.ytVideoCount && views.youtube
+      ? Math.floor(
+          ((deep.igViews || 0) + (views.youtube || 0)) /
+            ((deep.igViewsCounted || 0) + (deep.ytVideoCount || 0))
+        )
+      : 0,
+  // Live composites floored at Wickie's hand-kept /admin numbers, so they
+  // only ever grow and are never below what she knows to be true.
+  videos1M: Math.max(
+    parseInt(String(data.statVideosOver1M ?? '0'), 10) || 0,
+    (deep.igReels1M || 0) + (deep.ttOver1M || 0)
+  ),
+  topVideoViews: Math.max(
+    parseHand(data.statTopViews || ''),
+    deep.igMaxReelViews || 0,
+    deep.ttTopViews || 0
+  ),
 };
 
 export const site = {
