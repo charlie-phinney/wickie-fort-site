@@ -57,10 +57,22 @@ type Deep = {
 };
 const deep: Deep = (statsData as { deep?: Deep }).deep || {};
 
-// Profile links for the band's table rows and pills, from Wickie's socials
-// in /admin — the numbers link straight to the real accounts, so anyone can
-// verify them in one tap.
-const profileFor = (label: string) => data.socials.find((s) => s.label === label && s.href);
+// Profile cards for the band: link + handle from Wickie's socials in /admin,
+// avatar + latest-video strip refreshed daily by fetch-deep-stats (Instagram's
+// strip reuses the reel wall's local thumbnails). The numbers link straight to
+// the real accounts, so anyone can verify them in one tap.
+type ProfileMedia = { avatar?: string; recent?: { url: string; image: string }[] };
+const profileMedia = (statsData as { profiles?: Record<string, ProfileMedia> }).profiles || {};
+const igRecent = (reelsData as { reels?: { permalink: string; image: string }[] }).reels
+  ?.slice(0, 3)
+  .map((r) => ({ url: r.permalink, image: r.image }));
+const profileFor = (label: string) => {
+  const social = data.socials.find((s) => s.label === label && s.href);
+  if (!social) return undefined;
+  const media = profileMedia[label.toLowerCase()] || {};
+  const recent = label === 'Instagram' && igRecent?.length === 3 ? igRecent : media.recent;
+  return { href: social.href, handle: social.handle, avatar: media.avatar, recent };
+};
 
 export const stats = {
   updated: statsData.updated,
