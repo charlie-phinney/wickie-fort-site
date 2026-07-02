@@ -106,7 +106,13 @@ export const stats = {
       perDay: perDay('yv') + perDay('iv') + perDay('tv'),
     },
   },
-  totalFollowers: statsData.totalFollowers || 0,
+  // Sum of the platforms actually shown (Facebook stays out of the band
+  // entirely — 378 followers, nothing to show — so the headline always
+  // matches what the columns add up to).
+  followersShown:
+    (statsData.followers.instagram || 0) +
+    (statsData.followers.tiktok || 0) +
+    (statsData.followers.youtube || 0),
   // Floored at Wickie's hand-kept /admin number so it never undercounts what
   // she knows to be true.
   videos1M: Math.max(

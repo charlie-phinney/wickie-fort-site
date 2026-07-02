@@ -169,7 +169,29 @@ const jsonLd = [
           <div class="mx-auto max-w-6xl px-5 py-14 sm:px-8 md:py-20">
             <p data-reveal class="font-hand text-2xl text-pop">By the numbers</p>
 
-            <div data-reveal class="mt-8 grid gap-y-8 sm:grid-cols-3 sm:gap-x-8">
+            {stats.live.views.value > 0 && (
+              <div data-reveal class="mt-6">
+                <p class="font-serif text-[clamp(3rem,9vw,5.5rem)] font-semibold leading-none tabular-nums">
+                  <span
+                    data-stat
+                    data-value={stats.live.views.value}
+                    data-perday={stats.live.views.perDay}
+                    data-fmt="m"
+                  >
+                    {fmtM(stats.live.views.value)}
+                  </span>
+                  <span class="ml-3 font-sans text-[0.24em] font-normal text-bg/75">views all together</span>
+                </p>
+                <p class="mt-4 font-serif text-[clamp(1.25rem,3vw,1.75rem)] font-semibold leading-snug">
+                  {stats.followersShown > 0 && <span>{fmtCount(stats.followersShown)} followers</span>}
+                  {stats.videos1M > 0 && (
+                    <span class="text-bg/85"> · {stats.videos1M} videos over 1 million views</span>
+                  )}
+                </p>
+              </div>
+            )}
+
+            <div data-reveal class="mt-12 grid gap-y-8 sm:grid-cols-3 sm:gap-x-8">
               {stats.platforms.map((p) => (
                 <dl class="border-t-2 border-bg/25 pt-4">
                   <dt class="font-serif text-lg font-semibold tracking-wide">{p.name}</dt>
@@ -193,30 +215,9 @@ const jsonLd = [
               ))}
             </div>
 
-            {stats.live.views.value > 0 && (
-              <p data-reveal class="mt-10 border-t-2 border-bg/25 pt-6 font-serif text-[clamp(1.4rem,3.5vw,2rem)] font-semibold leading-snug">
-                <span
-                  class="tabular-nums"
-                  data-stat
-                  data-value={stats.live.views.value}
-                  data-perday={stats.live.views.perDay}
-                  data-fmt="m"
-                >
-                  {fmtM(stats.live.views.value)}
-                </span>{' '}
-                views all together
-                {stats.totalFollowers > 0 && (
-                  <span class="text-bg/75"> · {fmtCount(stats.totalFollowers)} followers</span>
-                )}
-                {stats.videos1M > 0 && (
-                  <span class="text-bg/75"> · {stats.videos1M} videos over 1 million</span>
-                )}
-              </p>
-            )}
-
             {stats.platforms.some((p) => p.hit) && (
               <div data-reveal class="mt-12">
-                <p class="font-hand text-2xl text-pop">The big ones — tap to watch</p>
+                <p class="font-hand text-2xl text-pop">The big ones · tap to watch</p>
                 <div class="mt-5 grid grid-cols-3 gap-3 sm:gap-5">
                   {stats.platforms
                     .filter((p) => p.hit)
@@ -226,7 +227,7 @@ const jsonLd = [
                         target="_blank"
                         rel="noopener"
                         class="group relative block overflow-hidden rounded-2xl shadow-soft transition-all duration-300 ease-out-expo hover:-translate-y-1 hover:shadow-lift"
-                        aria-label={`Wickie's most-viewed ${p.name} video — ${fmtCount(p.hit!.views)} ${p.viewsLabel}, opens on ${p.name}`}
+                        aria-label={`Wickie's most-viewed ${p.name} video: ${fmtCount(p.hit!.views)} ${p.viewsLabel}, opens on ${p.name}`}
                       >
                         <img
                           src={p.hit!.image}
