@@ -37,7 +37,6 @@ const perDay = (key: keyof Omit<Hist, 'd'>): number => {
 };
 
 const views = (statsData as { views?: { youtube?: number } }).views || {};
-const likes = (statsData as { likes?: { tiktok?: number } }).likes || {};
 
 export const stats = {
   totalFollowers: kFollowers(statsData.totalFollowers),
@@ -46,10 +45,12 @@ export const stats = {
   updated: statsData.updated,
   // Raw values + measured growth for the animated band. A zero value hides
   // its tile, so a platform going unfetchable can never show a broken 0.
+  // `views` is her all-platform total stated as an honest FLOOR: YouTube's
+  // lifetime count alone proves total views are at least that (IG/TikTok
+  // don't expose lifetime views), and the "+" carries the undercount.
   live: {
     followers: { value: statsData.totalFollowers, perDay: perDay('f') },
-    ytViews: { value: views.youtube || 0, perDay: perDay('yv') },
-    ttLikes: { value: likes.tiktok || 0, perDay: perDay('tl') },
+    views: { value: views.youtube || 0, perDay: perDay('yv') },
   },
 };
 
