@@ -9,8 +9,8 @@
 import type { APIRoute } from 'astro';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
-import { readFileSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { readFileSync, realpathSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { recipes, site, type Recipe } from '../../data/site';
 
 export function getStaticPaths() {
@@ -29,13 +29,24 @@ const TINT = '#f6e7d8';
 const fontFile = (rel: string) =>
   readFileSync(join(process.cwd(), 'node_modules', rel));
 
+// The image path comes from the CMS (same semi-trusted source as the shop
+// embed), so confine reads to public/ — a pasted "../" path or a symlink
+// pointing elsewhere yields the no-photo card instead of foreign bytes.
 const photoDataUri = (image?: string): string => {
   if (!image) return '';
-  const file = join(process.cwd(), 'public', image);
-  if (!existsSync(file)) return '';
-  const ext = file.toLowerCase().split('.').pop();
+  const publicDir = resolve(process.cwd(), 'public');
+  const candidate = resolve(publicDir, image.replace(/^\//, ''));
+  if (!candidate.startsWith(publicDir + '/')) return '';
+  let real: string;
+  try {
+    real = realpathSync(candidate);
+  } catch {
+    return ''; // missing file → monogram fallback
+  }
+  if (!real.startsWith(realpathSync(publicDir) + '/')) return '';
+  const ext = real.toLowerCase().split('.').pop();
   const mime = ext === 'png' ? 'image/png' : 'image/jpeg';
-  return `data:${mime};base64,${readFileSync(file).toString('base64')}`;
+  return `data:${mime};base64,${readFileSync(real).toString('base64')}`;
 };
 
 // satori element helper (no JSX in .ts endpoints)
