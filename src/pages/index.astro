@@ -229,7 +229,7 @@ const jsonLd = [
     <!-- ============================= SHOP ============================= -->
     {
       isVisible('shop') && (
-        <section id="shop" class="mx-auto max-w-6xl px-5 py-16 sm:px-8 md:py-24" style={ord('shop')}>
+        <section id="shop" class="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 md:py-24" style={ord('shop')}>
           <div data-reveal class="max-w-prose">
             <h2 class="font-serif text-[clamp(2.1rem,5.5vw,3.2rem)] font-semibold text-ink">
               {shop.heading}
@@ -283,7 +283,7 @@ const jsonLd = [
     <!-- =========================== RECIPES =========================== -->
     {
       isVisible('recipes') && (
-        <section id="recipes" class="mx-auto max-w-6xl px-5 py-16 sm:px-8 md:py-24" style={ord('recipes')}>
+        <section id="recipes" class="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 md:py-24" style={ord('recipes')}>
           <div data-reveal class="flex flex-wrap items-end justify-between gap-4">
             <div class="max-w-prose">
               <h2 class="font-serif text-[clamp(2.1rem,5.5vw,3.2rem)] font-semibold text-ink">
@@ -315,7 +315,7 @@ const jsonLd = [
     <!-- =========================== CONTACT =========================== -->
     {
       isVisible('contact') && (
-        <section id="contact" class="mx-auto max-w-6xl px-5 py-16 sm:px-8 md:py-24" style={ord('contact')}>
+        <section id="contact" class="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 md:py-24" style={ord('contact')}>
           <div data-reveal class="max-w-prose">
             <h2 class="font-serif text-[clamp(2.1rem,5.5vw,3.2rem)] font-semibold text-ink">
               Say hello
@@ -369,6 +369,16 @@ const jsonLd = [
 </Base>
 
 <style>
+  /* The ShopMy embed Wickie pastes ships min-height:340px inline, but its
+     shelf actually renders ~356px tall (more when product titles wrap), so
+     the buy buttons got shaved off. !important because the pasted style is
+     inline on the iframe; :global because set:html content isn't scoped. */
+  #shop :global(iframe) {
+    display: block;
+    width: 100% !important;
+    min-height: 400px !important;
+  }
+
   /* Reveal-on-scroll: content is visible by default; JS opts in to the
      animation only when motion is allowed, so nothing ever ships blank. */
   @media (prefers-reduced-motion: no-preference) {
