@@ -94,5 +94,21 @@ const fontsHref = `https://fonts.googleapis.com/css2?${theme.fonts.googleFamilie
       Skip to content
     </a>
     <slot />
+    <script is:inline>
+      // Smooth scrolling arms on the first interaction only — reload
+      // scroll-restoration happens before any interaction, so it snaps
+      // instantly instead of visibly gliding (the "creep" on hard reload).
+      (function () {
+        var arm = function () {
+          document.documentElement.classList.add('smooth');
+          ['pointerdown', 'keydown', 'touchstart'].forEach(function (t) {
+            removeEventListener(t, arm);
+          });
+        };
+        ['pointerdown', 'keydown', 'touchstart'].forEach(function (t) {
+          addEventListener(t, arm, { passive: true });
+        });
+      })();
+    </script>
   </body>
 </html>
