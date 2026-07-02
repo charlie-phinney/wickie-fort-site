@@ -57,38 +57,37 @@ type Deep = {
 };
 const deep: Deep = (statsData as { deep?: Deep }).deep || {};
 
-// Top-video "receipts": each platform's biggest video, saved daily with a
-// local thumbnail by fetch-deep-stats. The band shows them as tappable proof
-// under the scoreboard — a number next to the actual video isn't hand-wavy.
-type Hit = { views: number; url: string; image: string };
-const hitsData = (statsData as { hits?: Record<string, Hit> }).hits || {};
+// Profile links for the band's table rows and pills, from Wickie's socials
+// in /admin — the numbers link straight to the real accounts, so anyone can
+// verify them in one tap.
+const profileFor = (label: string) => data.socials.find((s) => s.label === label && s.href);
 
 export const stats = {
   updated: statsData.updated,
-  // Scoreboard: one column per platform, every number explicitly scoped to
-  // its home. A platform whose numbers all go unfetchable simply drops its
-  // column (and its hit card) rather than showing broken zeros.
+  // Scoreboard: one row per platform, every number explicitly scoped to its
+  // home. A platform whose numbers all go unfetchable simply drops its row
+  // rather than showing broken zeros.
   platforms: [
     {
       name: 'Instagram',
       followers: statsData.followers.instagram || 0,
       views: deep.igViews || 0,
       over1M: deep.igReels1M || 0,
-      hit: hitsData.instagram,
+      profile: profileFor('Instagram'),
     },
     {
       name: 'TikTok',
       followers: statsData.followers.tiktok || 0,
       views: deep.ttViews || 0,
       over1M: deep.ttOver1M || 0,
-      hit: hitsData.tiktok,
+      profile: profileFor('TikTok'),
     },
     {
       name: 'YouTube',
       followers: statsData.followers.youtube || 0,
       views: views.youtube || 0,
       over1M: deep.ytOver1M || 0,
-      hit: hitsData.youtube,
+      profile: profileFor('YouTube'),
     },
   ].filter((p) => p.followers > 0 && p.views > 0),
   // Combined line under the columns. `views` = the three platforms' measured

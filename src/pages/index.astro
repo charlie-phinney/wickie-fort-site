@@ -234,37 +234,21 @@ const jsonLd = [
               </tbody>
             </table>
 
-            {stats.platforms.some((p) => p.hit) && (
-              <div data-reveal class="mt-14">
-                <p class="font-hand text-2xl text-pop">My most-watched videos</p>
-                <div class="mt-5 grid max-w-3xl grid-cols-3 gap-3 sm:gap-5">
-                  {stats.platforms
-                    .filter((p) => p.hit)
-                    .map((p) => (
-                      <a
-                        href={p.hit!.url}
-                        target="_blank"
-                        rel="noopener"
-                        class="group relative block overflow-hidden rounded-2xl shadow-soft transition-all duration-300 ease-out-expo hover:-translate-y-1 hover:shadow-lift"
-                        aria-label={`Watch Wickie's most-viewed ${p.name} video (${fmtCount(p.hit!.views)} views)`}
-                      >
-                        <img
-                          src={p.hit!.image}
-                          alt=""
-                          loading="lazy"
-                          width="540"
-                          height="960"
-                          class="aspect-[9/16] w-full object-cover transition-transform duration-500 ease-out-expo group-hover:scale-[1.03]"
-                        />
-                        <span class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-3 pb-3 pt-10 sm:px-4 sm:pb-4">
-                          <span class="block font-serif text-xl font-semibold leading-none tabular-nums text-white sm:text-2xl">
-                            {fmtCount(p.hit!.views)}
-                          </span>
-                          <span class="mt-1 block text-xs text-white/85 sm:text-sm">{p.name}</span>
-                        </span>
-                      </a>
-                    ))}
-                </div>
+            {stats.platforms.some((p) => p.profile) && (
+              <div data-reveal class="mt-12 flex flex-wrap gap-3">
+                {stats.platforms
+                  .filter((p) => p.profile)
+                  .map((p) => (
+                    <a
+                      href={p.profile!.href}
+                      target="_blank"
+                      rel="noopener"
+                      class="inline-flex items-baseline gap-2 rounded-full border-2 border-bg/30 px-5 py-2.5 text-base font-semibold transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-bg hover:bg-bg hover:text-primary-deep"
+                    >
+                      {p.name}
+                      <span class="text-sm font-normal opacity-75">{p.profile!.handle}</span>
+                    </a>
+                  ))}
               </div>
             )}
           </div>
