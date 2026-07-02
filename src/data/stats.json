@@ -25,23 +25,33 @@
       "f": 64263,
       "yv": 28850595,
       "tl": 2100000,
-      "iv": 52136678
+      "iv": 52137620,
+      "tv": 31131357
     }
   ],
   "deep": {
     "igMediaCount": 101,
     "igPosts": 105,
-    "igLikes": 2420653,
+    "igLikes": 2420690,
     "igComments": 7527,
     "igRecentEngagement": 56042,
     "igRecentCount": 12,
-    "igViews": 52136678,
+    "igViews": 52137620,
     "igViewsCounted": 99,
-    "igViews28": 83403,
+    "igViews28": 84225,
     "ytVideoCount": 79,
     "updated": "2026-07-02",
-    "igMaxReelViews": 19749586,
+    "igMaxReelViews": 19749640,
     "igReels1M": 6,
-    "igCountries": 45
+    "igCountries": 45,
+    "igReelEngagement": 2427124,
+    "igReelReach": 34095581,
+    "igTopReelReach": 12540869,
+    "ttViews": 31131357,
+    "ttTopViews": 18000000,
+    "ttOver1M": 4,
+    "ttVideoCount": 186,
+    "ytTopViews": 24445834,
+    "ytOver1M": 2
   }
 }

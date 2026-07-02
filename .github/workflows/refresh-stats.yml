@@ -39,8 +39,13 @@ jobs:
         env:
           IG_TOKEN: ${{ secrets.IG_TOKEN }}
         run: node scripts/fetch-reels.mjs
-      # Deep engagement metrics (per-reel views, likes, engagement). Same
-      # never-fail contract; denied API scopes just leave keys unpopulated.
+      # yt-dlp powers the TikTok + YouTube per-video pulls in fetch-deep-stats.
+      # If TikTok blocks the runner's IP those keys keep their last good value.
+      - name: Install yt-dlp
+        run: pipx install yt-dlp
+      # Deep engagement metrics (per-reel views + reach, likes, engagement,
+      # TikTok/YouTube per-video counts). Same never-fail contract; denied API
+      # scopes just leave keys unpopulated.
       - name: Refresh deep stats
         env:
           IG_TOKEN: ${{ secrets.IG_TOKEN }}
