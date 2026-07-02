@@ -60,6 +60,9 @@ async function instagramDeep() {
     if (!next) break;
     const u = new URL(next);
     url = u.pathname.replace(/^\/(v[\d.]+\/)?/, '');
+    // The API echoes the token into paging URLs — drop it; auth already
+    // travels in the Authorization header.
+    u.searchParams.delete('access_token');
     params = u.searchParams.toString();
   }
   if (media.length) {
