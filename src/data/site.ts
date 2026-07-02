@@ -17,9 +17,9 @@ import reelsData from './reels.json';
 // one entry per run). Compared against the newest entry that's at least a
 // day old — up to a week back — so the homepage tickers extrapolate from
 // actual momentum, never a made-up rate. 0 until two days of history exist.
-type Hist = { d: string; f: number; yv: number; tl: number; iv?: number };
+type Hist = { d: string; f: number; yv: number; tl: number; iv?: number; tv?: number };
 const history: Hist[] = (statsData as { history?: Hist[] }).history || [];
-const perDay = (key: 'f' | 'yv' | 'tl' | 'iv'): number => {
+const perDay = (key: 'f' | 'yv' | 'tl' | 'iv' | 'tv'): number => {
   if (history.length < 2) return 0;
   const last = history[history.length - 1];
   const days = (a: Hist, b: Hist) =>
@@ -44,10 +44,16 @@ type Deep = {
   igViewsCounted?: number;
   igMaxReelViews?: number;
   igReels1M?: number;
+  igReelEngagement?: number;
+  igReelReach?: number;
+  igTopReelReach?: number;
   igRecentEngagement?: number;
   igRecentCount?: number;
+  ttViews?: number;
   ttTopViews?: number;
   ttOver1M?: number;
+  ytTopViews?: number;
+  ytOver1M?: number;
   ytVideoCount?: number;
 };
 const deep: Deep = (statsData as { deep?: Deep }).deep || {};
@@ -62,13 +68,15 @@ const parseHand = (s: string): number => {
   return parseFloat(m[1]) * mult;
 };
 
-// Average engagement rate: likes+comments per recent post vs Instagram
-// followers — the number brands ask for. Shown only when it's computed from
-// enough posts and is genuinely strong; otherwise the tile hides.
-const igFollowers = statsData.followers.instagram || 0;
+// Average engagement rate BY REACH: lifetime likes+comments on every reel vs
+// the people those reels actually reached. The old per-post-vs-followers
+// average read 15.6% — arithmetically true, but 83% of it was one viral reel
+// (median post: 1.4%), the kind of number a brand's media buyer sniff-tests
+// and rejects. Engagement÷reach is robust to viral outliers because both
+// sides of the division grow together. Shown only when genuinely strong.
 const erValue =
-  deep.igRecentEngagement && deep.igRecentCount && deep.igRecentCount >= 6 && igFollowers > 0
-    ? (deep.igRecentEngagement / deep.igRecentCount / igFollowers) * 100
+  deep.igReelEngagement && deep.igReelReach
+    ? (deep.igReelEngagement / deep.igReelReach) * 100
     : 0;
 
 export const stats = {
@@ -76,38 +84,35 @@ export const stats = {
   // Raw values + measured growth for the animated band. A zero value hides
   // its tile, so a platform going unfetchable can never show a broken 0.
   // `views` = measured Instagram views (per-reel insights) + YouTube's
-  // lifetime count, stated as an honest FLOOR of her true all-platform
-  // total (TikTok doesn't expose lifetime views; the "+" carries it).
+  // lifetime count + TikTok's per-video total (yt-dlp), stated as an honest
+  // FLOOR of her true all-platform total (Facebook isn't measurable without
+  // auth; the "+" carries it).
   live: {
     views: {
-      value: (views.youtube || 0) + (deep.igViews || 0),
-      perDay: perDay('yv') + perDay('iv'),
+      value: (views.youtube || 0) + (deep.igViews || 0) + (deep.ttViews || 0),
+      perDay: perDay('yv') + perDay('iv') + perDay('tv'),
     },
   },
   // Lifetime likes: every IG post + TikTok hearts.
   totalLikes: (deep.igLikes || 0) + (likes.tiktok || 0),
-  // e.g. "15.6" — null hides the tile.
-  engagementRate: erValue >= 1.5 && erValue < 1000 ? erValue.toFixed(1) : null,
-  // Average views per Instagram reel — single-platform on purpose. A blended
-  // IG+YT average silently excluded TikTok/Facebook (the platforms that would
-  // drag it down), which overclaimed under a bare label. Scope rule for the
-  // band: FLOOR stats (views, likes, 1M+ count, top video) can stay
-  // unqualified because more platforms only raise them; non-floor stats like
-  // this one must name their platform.
-  avgViews:
-    deep.igViews && deep.igViewsCounted
-      ? Math.floor(deep.igViews / deep.igViewsCounted)
-      : 0,
+  // e.g. "7.1" — null hides the tile.
+  engagementRate: erValue >= 1.5 && erValue < 100 ? erValue.toFixed(1) : null,
+  // People reached by her single biggest reel — a real, uninflatable scale
+  // number (replaces the old mean views-per-reel, which two mega-viral reels
+  // dragged to 13× the median). Non-floor scope rule still applies: the tile
+  // label names Instagram.
+  topReelReach: deep.igTopReelReach || 0,
   // Live composites floored at Wickie's hand-kept /admin numbers, so they
   // only ever grow and are never below what she knows to be true.
   videos1M: Math.max(
     parseInt(String(data.statVideosOver1M ?? '0'), 10) || 0,
-    (deep.igReels1M || 0) + (deep.ttOver1M || 0)
+    (deep.igReels1M || 0) + (deep.ttOver1M || 0) + (deep.ytOver1M || 0)
   ),
   topVideoViews: Math.max(
     parseHand(data.statTopViews || ''),
     deep.igMaxReelViews || 0,
-    deep.ttTopViews || 0
+    deep.ttTopViews || 0,
+    deep.ytTopViews || 0
   ),
 };
 

@@ -9,15 +9,18 @@
   - Instagram Graph API (IG_TOKEN, Authorization header only):
       /me                    -> media_count
       /me/media (paginated)  -> per-post like_count + comments_count (basic scope)
-      /{media}/insights      -> per-reel lifetime views  (needs insights scope
-                                — probed once; skipped wholesale if denied)
+      /{media}/insights      -> per-reel lifetime views + reach  (needs insights
+                                scope — probed once; skipped wholesale if denied)
       /me/insights           -> account views, last 28 days (same scope)
-  - TikTok profile page      -> top-video playCount (first-page items incl. pinned)
-  - YouTube About page       -> video count
+  - TikTok, per video        -> yt-dlp (all videos: plays, top video, 1M+ count),
+                                falling back to the profile page's first-page JSON
+  - YouTube, per video       -> yt-dlp over /videos + /shorts (top video, 1M+
+                                count); About page for the official video count
 
   Derived in src/data/site.ts, not here — this script only records raw facts.
 */
 import { readFileSync, writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -79,36 +82,54 @@ async function instagramDeep() {
     console.log(`deep: ${media.length} IG posts, ${out.igLikes} likes, ${out.igComments} comments.`);
   }
 
-  // Per-reel lifetime views — probe the first video; if the scope is
-  // missing, every call fails the same way, so bail after one denial.
+  // Per-reel lifetime views + reach — probe the first video; if the scope
+  // is missing, every call fails the same way, so bail after one denial.
   const videos = media.filter((m) => m.media_type === 'VIDEO').slice(0, 150);
   if (videos.length) {
-    const probe = await ig(`${videos[0].id}/insights`, 'metric=views');
+    const parse = (r) => {
+      const vals = {};
+      if (r.ok && Array.isArray(r.body?.data))
+        for (const m of r.body.data) vals[m.name] = m.values?.[0]?.value || 0;
+      return vals;
+    };
+    const probe = await ig(`${videos[0].id}/insights`, 'metric=views,reach');
     if (!probe.ok) {
       console.log(
         `deep: media insights denied (${probe.status}: ${probe.body?.error?.message || 'no detail'}) — skipping per-reel views.`
       );
     } else {
-      let sum = probe.body?.data?.[0]?.values?.[0]?.value || 0;
-      let counted = 1;
-      let maxViews = sum;
-      let over1M = sum >= 1e6 ? 1 : 0;
-      for (const v of videos.slice(1)) {
-        await sleep(350); // stay well inside the per-hour call budget
-        const r = await ig(`${v.id}/insights`, 'metric=views');
-        const val = r.ok ? r.body?.data?.[0]?.values?.[0]?.value || 0 : 0;
-        sum += val;
-        if (val > maxViews) maxViews = val;
-        if (val >= 1e6) over1M++;
-        if (r.ok) counted++;
+      let sum = 0, counted = 0, maxViews = 0, over1M = 0, reachSum = 0, maxReach = 0, engagement = 0;
+      for (let i = 0; i < videos.length; i++) {
+        let vals;
+        if (i === 0) {
+          vals = parse(probe);
+        } else {
+          await sleep(350); // stay well inside the per-hour call budget
+          const r = await ig(`${videos[i].id}/insights`, 'metric=views,reach');
+          if (!r.ok) continue; // failed reel contributes nothing anywhere
+          vals = parse(r);
+        }
+        counted++;
+        sum += vals.views || 0;
+        if ((vals.views || 0) > maxViews) maxViews = vals.views;
+        if ((vals.views || 0) >= 1e6) over1M++;
+        reachSum += vals.reach || 0;
+        if ((vals.reach || 0) > maxReach) maxReach = vals.reach;
+        engagement += (videos[i].like_count || 0) + (videos[i].comments_count || 0);
       }
       if (sum > 0) {
         out.igViews = sum;
         out.igViewsCounted = counted;
         out.igMaxReelViews = maxViews;
         out.igReels1M = over1M;
+        // Engagement-rate-by-reach inputs (likes+comments vs people reached,
+        // lifetime, all reels) — robust to a single viral outlier, unlike a
+        // per-post average against followers.
+        out.igReelEngagement = engagement;
+        out.igReelReach = reachSum;
+        out.igTopReelReach = maxReach;
         console.log(
-          `deep: IG views ${sum} across ${counted} reels (top ${maxViews}, ${over1M} over 1M).`
+          `deep: IG views ${sum} across ${counted} reels (top ${maxViews}, ${over1M} over 1M, reach ${reachSum}).`
         );
       }
     }
@@ -140,7 +161,44 @@ async function instagramDeep() {
   return out;
 }
 
-async function tiktokTop() {
+// Per-video view counts via yt-dlp's flat playlist (no download, one call
+// per channel/tab). Returns a number array; [] on any failure so every
+// consumer keeps its last good value.
+function ytDlpViews(url) {
+  try {
+    const stdout = execFileSync('yt-dlp', ['--flat-playlist', '--print', '%(view_count)s', url], {
+      encoding: 'utf8',
+      timeout: 240000,
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+    return stdout
+      .split('\n')
+      .map((l) => parseInt(l, 10))
+      .filter((n) => Number.isFinite(n) && n >= 0);
+  } catch (e) {
+    console.log(`deep: yt-dlp failed for ${url} — ${e.message.slice(0, 120)}`);
+    return [];
+  }
+}
+
+async function tiktokDeep() {
+  // Preferred: every video's play count. TikTok sometimes blocks datacenter
+  // IPs — keep-last-good covers the misses.
+  const plays = ytDlpViews('https://www.tiktok.com/@wickieskitchen');
+  if (plays.length) {
+    const out = {
+      ttViews: plays.reduce((s, p) => s + p, 0),
+      ttTopViews: Math.max(...plays),
+      ttOver1M: plays.filter((p) => p >= 1e6).length,
+      ttVideoCount: plays.length,
+    };
+    console.log(
+      `deep: TikTok ${out.ttViews} plays across ${plays.length} videos (top ${out.ttTopViews}, ${out.ttOver1M} over 1M).`
+    );
+    return out;
+  }
+  // Fallback: first-page items from the profile page's rehydration JSON
+  // (top/1M-count only — no lifetime total, and only when TikTok serves it).
   try {
     const res = await fetch('https://www.tiktok.com/@wickieskitchen', {
       headers: {
@@ -150,18 +208,63 @@ async function tiktokTop() {
     });
     if (!res.ok) return {};
     const html = await res.text();
-    const plays = [...html.matchAll(/"playCount":\s*(\d+)/g)].map((m) => parseInt(m[1], 10));
-    if (plays.length) {
-      console.log(`deep: TikTok first-page top video ${Math.max(...plays)} plays (${plays.length} items).`);
+    const first = [...html.matchAll(/"playCount":\s*(\d+)/g)].map((m) => parseInt(m[1], 10));
+    if (first.length) {
+      console.log(`deep: TikTok first-page top video ${Math.max(...first)} plays (${first.length} items).`);
       return {
-        ttTopViews: Math.max(...plays),
-        ttOver1M: plays.filter((p) => p >= 1e6).length,
+        ttTopViews: Math.max(...first),
+        ttOver1M: first.filter((p) => p >= 1e6).length,
       };
     }
   } catch (e) {
     console.log('deep: TikTok fetch failed —', e.message);
   }
   return {};
+}
+
+// Per-video YouTube view counts (longform + Shorts tabs) for the top-video
+// and 1M+ composites. The lifetime channel total still comes from the About
+// page in fetch-stats.mjs — this is per-video only.
+function youtubeDeep() {
+  // url+views pairs so the top video can be re-fetched for its exact count
+  // (the flat playlist rounds: 24445740 arrives as 24000000).
+  const pairs = [];
+  for (const tab of ['videos', 'shorts']) {
+    try {
+      const stdout = execFileSync(
+        'yt-dlp',
+        ['--flat-playlist', '--print', '%(url)s %(view_count)s', `https://www.youtube.com/@wickieskitchen/${tab}`],
+        { encoding: 'utf8', timeout: 240000, stdio: ['ignore', 'pipe', 'ignore'] }
+      );
+      for (const line of stdout.split('\n')) {
+        const [url, v] = line.trim().split(/\s+/);
+        const n = parseInt(v, 10);
+        if (url && Number.isFinite(n) && n >= 0) pairs.push({ url, views: n });
+      }
+    } catch (e) {
+      console.log(`deep: yt-dlp failed for YouTube /${tab} — ${e.message.slice(0, 120)}`);
+    }
+  }
+  if (!pairs.length) return {};
+  const top = pairs.reduce((a, b) => (b.views > a.views ? b : a));
+  let topExact = top.views;
+  try {
+    const exact = parseInt(
+      execFileSync('yt-dlp', ['--print', 'view_count', top.url], {
+        encoding: 'utf8',
+        timeout: 60000,
+        stdio: ['ignore', 'pipe', 'ignore'],
+      }),
+      10
+    );
+    if (Number.isFinite(exact) && exact > topExact) topExact = exact;
+  } catch {}
+  const out = {
+    ytTopViews: topExact,
+    ytOver1M: pairs.filter((p) => p.views >= 1e6).length,
+  };
+  console.log(`deep: YouTube top video ${out.ytTopViews}, ${out.ytOver1M} over 1M (${pairs.length} videos).`);
+  return out;
 }
 
 async function youtubeCount() {
@@ -183,14 +286,17 @@ async function youtubeCount() {
 async function main() {
   const stats = JSON.parse(readFileSync(STATS_PATH, 'utf8'));
   const prev = stats.deep || {};
-  const [igd, tt, yt] = [await instagramDeep(), await tiktokTop(), await youtubeCount()];
+  const [igd, tt, yt, ytc] = [await instagramDeep(), await tiktokDeep(), youtubeDeep(), await youtubeCount()];
   // keep-last-good per key: only fetched keys overwrite.
-  stats.deep = { ...prev, ...igd, ...tt, ...yt, updated: new Date().toISOString().slice(0, 10) };
-  // Fold IG views into today's history entry (fetch-stats wrote it just
-  // before this step) so the homepage views ticker can measure real growth.
-  if (stats.deep.igViews && Array.isArray(stats.history) && stats.history.length) {
+  stats.deep = { ...prev, ...igd, ...tt, ...yt, ...ytc, updated: new Date().toISOString().slice(0, 10) };
+  // Fold IG + TikTok views into today's history entry (fetch-stats wrote it
+  // just before this step) so the homepage views ticker measures real growth.
+  if (Array.isArray(stats.history) && stats.history.length) {
     const today = stats.history[stats.history.length - 1];
-    if (today.d === stats.deep.updated) today.iv = stats.deep.igViews;
+    if (today.d === stats.deep.updated) {
+      if (stats.deep.igViews) today.iv = stats.deep.igViews;
+      if (stats.deep.ttViews) today.tv = stats.deep.ttViews;
+    }
   }
   writeFileSync(STATS_PATH, JSON.stringify(stats, null, 2) + '\n');
   console.log('deep: wrote', JSON.stringify(Object.keys(stats.deep)));
