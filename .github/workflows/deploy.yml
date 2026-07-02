@@ -59,9 +59,19 @@ jobs:
           command -v mogrify >/dev/null || sudo apt-get install -y -q imagemagick
           shopt -s nullglob nocaseglob
           for f in public/images/*.jpg public/images/*.jpeg public/images/*.png; do
-            if [ "$(stat -c%s "$f")" -gt 614400 ]; then
+            before=$(stat -c%s "$f")
+            if [ "$before" -gt 614400 ]; then
+              cp "$f" /tmp/orig-img
               mogrify -auto-orient -strip -resize '1600x1600>' -quality 82 "$f"
-              echo "optimized: $f"
+              after=$(stat -c%s "$f")
+              # PNG recompression can come out BIGGER (screenshots already
+              # optimized by macOS grew 1.8MB -> 2.7MB) — keep the smaller one.
+              if [ "$after" -ge "$before" ]; then
+                cp /tmp/orig-img "$f"
+                echo "kept original (recompression grew it): $f"
+              else
+                echo "optimized: $f ($before -> $after bytes)"
+              fi
             fi
           done
       - name: Commit housekeeping changes (lock + optimized images)
