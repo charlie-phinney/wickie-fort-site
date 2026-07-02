@@ -172,18 +172,6 @@ const jsonLd = [
                   <dd class="mt-2 text-sm leading-snug text-bg/75">video views</dd>
                 </div>
               )}
-              <div>
-                <dt
-                  class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none tabular-nums"
-                  data-stat
-                  data-value={stats.live.followers.value}
-                  data-perday={stats.live.followers.perDay}
-                  data-fmt="k"
-                >
-                  {stats.totalFollowers}
-                </dt>
-                <dd class="mt-2 text-sm leading-snug text-bg/75">followers</dd>
-              </div>
               {stats.totalLikes > 0 && (
                 <div>
                   <dt class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none tabular-nums">
@@ -200,18 +188,26 @@ const jsonLd = [
                   <dd class="mt-2 text-sm leading-snug text-bg/75">average engagement rate</dd>
                 </div>
               )}
-              {stats.videosOver1M && (
+              {stats.avgViews > 0 && (
                 <div>
                   <dt class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none tabular-nums">
-                    {stats.videosOver1M}
+                    {stats.avgViews >= 1e6 ? fmtM(stats.avgViews) : `${Math.floor(stats.avgViews / 1e3)}K+`}
+                  </dt>
+                  <dd class="mt-2 text-sm leading-snug text-bg/75">average views per video</dd>
+                </div>
+              )}
+              {stats.videos1M > 0 && (
+                <div>
+                  <dt class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none tabular-nums">
+                    {stats.videos1M}
                   </dt>
                   <dd class="mt-2 text-sm leading-snug text-bg/75">videos with over 1 million views</dd>
                 </div>
               )}
-              {stats.topViews && (
+              {stats.topVideoViews > 0 && (
                 <div>
                   <dt class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none tabular-nums">
-                    {stats.topViews}
+                    {fmtM(stats.topVideoViews)}
                   </dt>
                   <dd class="mt-2 text-sm leading-snug text-bg/75">views on my most-viewed video</dd>
                 </div>
