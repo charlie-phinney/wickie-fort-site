@@ -4,16 +4,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: 'var(--bg)',
-        surface: 'var(--surface)',
-        ink: 'var(--ink)',
-        muted: 'var(--muted)',
-        primary: 'var(--primary)',
-        'primary-deep': 'var(--primary-deep)',
-        'primary-tint': 'var(--primary-tint)',
-        pop: 'var(--pop)',
-        'pop-deep': 'var(--pop-deep)',
-        line: 'var(--line)',
+        bg: 'oklch(var(--bg) / <alpha-value>)',
+        surface: 'oklch(var(--surface) / <alpha-value>)',
+        ink: 'oklch(var(--ink) / <alpha-value>)',
+        muted: 'oklch(var(--muted) / <alpha-value>)',
+        primary: 'oklch(var(--primary) / <alpha-value>)',
+        'primary-deep': 'oklch(var(--primary-deep) / <alpha-value>)',
+        'primary-tint': 'oklch(var(--primary-tint) / <alpha-value>)',
+        pop: 'oklch(var(--pop) / <alpha-value>)',
+        'pop-deep': 'oklch(var(--pop-deep) / <alpha-value>)',
+        line: 'oklch(var(--line) / <alpha-value>)',
       },
       fontFamily: {
         // Resolve through CSS variables so the "Look & Feel" font pairing

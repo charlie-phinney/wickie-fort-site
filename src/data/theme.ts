@@ -267,7 +267,16 @@ const activeFonts = pick(fontPairings, d.fontPairing, 'fraunces');
 const activeSize = pick(textSizes, d.textSize, 'medium');
 
 export const theme = {
-  colors: activePalette.colors,
+  // Palettes above are written as full oklch(...) strings for readability and
+  // contrast-checking, but the CSS variables carry BARE CHANNELS ("0.24 0.028
+  // 44") — global.css and tailwind wrap them in oklch(var(--x) / alpha), which
+  // is what lets opacity utilities like bg-bg/80 work. Keep the two in step.
+  colors: Object.fromEntries(
+    Object.entries(activePalette.colors).map(([role, v]) => [
+      role,
+      v.replace(/^oklch\(/, '').replace(/\)$/, ''),
+    ])
+  ) as Palette,
   fonts: activeFonts,
   rootPercent: activeSize.rootPercent,
 };

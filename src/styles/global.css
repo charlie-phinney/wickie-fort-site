@@ -10,19 +10,19 @@
 /*  Colors are OKLCH; edit these roles to re-skin the whole site.      */
 /* ------------------------------------------------------------------ */
 :root {
-  --bg: oklch(0.991 0.006 78);          /* clean warm paper-white (canvas, not cream) */
-  --surface: oklch(0.958 0.022 52);     /* soft blush band for alternating sections   */
-  --ink: oklch(0.24 0.028 44);          /* primary text — warm near-black              */
-  --muted: oklch(0.44 0.03 42);         /* secondary text — warm gray (AA on bg)       */
+  --bg: 0.991 0.006 78;          /* clean warm paper-white (canvas, not cream) */
+  --surface: 0.958 0.022 52;     /* soft blush band for alternating sections   */
+  --ink: 0.24 0.028 44;          /* primary text — warm near-black              */
+  --muted: 0.44 0.03 42;         /* secondary text — warm gray (AA on bg)       */
 
-  --primary: oklch(0.605 0.185 33);     /* tomato/paprika — the brand red              */
-  --primary-deep: oklch(0.50 0.165 31); /* brick — small colored text, solid buttons   */
-  --primary-tint: oklch(0.93 0.045 45); /* pale tomato — wells, backplates             */
+  --primary: 0.605 0.185 33;     /* tomato/paprika — the brand red              */
+  --primary-deep: 0.50 0.165 31; /* brick — small colored text, solid buttons   */
+  --primary-tint: 0.93 0.045 45; /* pale tomato — wells, backplates             */
 
-  --pop: oklch(0.80 0.135 78);          /* marigold — underlines, highlights, tags     */
-  --pop-deep: oklch(0.60 0.12 70);      /* deep honey — pop text on light              */
+  --pop: 0.80 0.135 78;          /* marigold — underlines, highlights, tags     */
+  --pop-deep: 0.60 0.12 70;      /* deep honey — pop text on light              */
 
-  --line: oklch(0.89 0.016 58);         /* hairline borders                            */
+  --line: 0.89 0.016 58;         /* hairline borders                            */
 
   /* Font stacks — defaults; the chosen "Look & Feel" pairing overrides these
      in Base.astro (see src/data/theme.ts). */
@@ -52,8 +52,8 @@
     scroll-behavior: smooth;
   }
   body {
-    background-color: var(--bg);
-    color: var(--ink);
+    background-color: oklch(var(--bg));
+    color: oklch(var(--ink));
     font-family: theme('fontFamily.sans');
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -65,11 +65,11 @@
   }
   p { text-wrap: pretty; }
   ::selection {
-    background: var(--pop);
-    color: var(--ink);
+    background: oklch(var(--pop));
+    color: oklch(var(--ink));
   }
   :focus-visible {
-    outline: 2px solid var(--primary);
+    outline: 2px solid oklch(var(--primary));
     outline-offset: 3px;
     border-radius: 4px;
   }
@@ -78,7 +78,7 @@
 /* Marigold hand-drawn underline — the signature accent under key words.
    Sits just below the baseline (clears descenders) as a bold marker stroke. */
 .mark-underline {
-  background-image: linear-gradient(var(--pop), var(--pop));
+  background-image: linear-gradient(oklch(var(--pop)), oklch(var(--pop)));
   background-repeat: no-repeat;
   background-position: 0 100%;
   background-size: 100% 0.14em;
