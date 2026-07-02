@@ -98,27 +98,39 @@ async function instagram() {
 async function tiktok() {
   const html = await getText(`https://www.tiktok.com/@${TT_USER}`);
   if (!html) return {};
-  // followerCount lives in the embedded rehydration JSON
-  const m = html.match(/"followerCount":\s*(\d+)/);
-  if (m) {
-    const n = parseInt(m[1], 10);
-    if (n > 0) return { followers: n };
-  }
-  return {};
+  const out = {};
+  // followerCount + heartCount (lifetime likes) live in the rehydration JSON
+  const f = html.match(/"followerCount":\s*(\d+)/);
+  if (f && parseInt(f[1], 10) > 0) out.followers = parseInt(f[1], 10);
+  const h = html.match(/"heartCount":\s*(\d+)/);
+  if (h && parseInt(h[1], 10) > 0) out.likes = parseInt(h[1], 10);
+  return out;
 }
 
 async function youtube() {
+  const out = {};
   const html = await getText(`https://www.youtube.com/@${YT_HANDLE}?hl=en`);
-  if (!html) return {};
-  // e.g. "subscriberCountText" ... "20.2K subscribers", or plain "20.2K subscribers"
-  const m =
-    html.match(/"([\d.,]+[KMB]?)\s+subscribers"/i) ||
-    html.match(/([\d.,]+[KMB]?)\s+subscribers/i);
-  if (m) {
-    const n = parseAbbrev(m[1]);
-    if (n && n > 0) return { followers: n };
+  if (html) {
+    // e.g. "subscriberCountText" ... "20.2K subscribers", or plain "20.2K subscribers"
+    const m =
+      html.match(/"([\d.,]+[KMB]?)\s+subscribers"/i) ||
+      html.match(/([\d.,]+[KMB]?)\s+subscribers/i);
+    if (m) {
+      const n = parseAbbrev(m[1]);
+      if (n && n > 0) out.followers = n;
+    }
   }
-  return {};
+  // Lifetime channel views are public on the About page:
+  // "viewCountText":"28,850,595 views"
+  const about = await getText(`https://www.youtube.com/@${YT_HANDLE}/about?hl=en`);
+  if (about) {
+    const m = about.match(/"viewCountText":"([\d,]+)\s+views"/i);
+    if (m) {
+      const n = parseInt(m[1].replace(/,/g, ''), 10);
+      if (n > 0) out.views = n;
+    }
+  }
+  return out;
 }
 
 async function facebook() {
@@ -168,6 +180,12 @@ async function main() {
     ok.facebook = true;
   }
 
+  // Lifetime totals (same keep-last-good rule as followers).
+  next.views = next.views || {};
+  next.likes = next.likes || {};
+  if (yt.views) next.views.youtube = yt.views;
+  if (tt.likes) next.likes.tiktok = tt.likes;
+
   next.totalFollowers =
     (next.followers.instagram || 0) +
     (next.followers.tiktok || 0) +
@@ -181,6 +199,19 @@ async function main() {
     facebook: !!ok.facebook,
   };
   next.updated = new Date().toISOString().slice(0, 10);
+
+  // Daily history so the site can show real growth ("+N/day" tickers,
+  // sparklines later). One compact entry per day, re-run replaces today's,
+  // capped at ~400 days.
+  const entry = {
+    d: next.updated,
+    f: next.totalFollowers,
+    yv: next.views.youtube || 0,
+    tl: next.likes.tiktok || 0,
+  };
+  next.history = (next.history || []).filter((h) => h.d !== entry.d);
+  next.history.push(entry);
+  next.history = next.history.slice(-400);
 
   writeFileSync(STATS_PATH, JSON.stringify(next, null, 2) + '\n');
   console.log('Refreshed stats:', JSON.stringify({ total: next.totalFollowers, ok }));

@@ -1,16 +1,30 @@
 {
   "followers": {
-    "instagram": 29876,
+    "instagram": 30000,
     "tiktok": 13800,
     "youtube": 20200,
     "facebook": 378
   },
-  "totalFollowers": 64254,
-  "updated": "2026-07-01",
+  "totalFollowers": 64378,
+  "updated": "2026-07-02",
   "sources": {
     "instagram": true,
     "tiktok": true,
     "youtube": true,
     "facebook": true
-  }
+  },
+  "views": {
+    "youtube": 28850595
+  },
+  "likes": {
+    "tiktok": 2100000
+  },
+  "history": [
+    {
+      "d": "2026-07-02",
+      "f": 64378,
+      "yv": 28850595,
+      "tl": 2100000
+    }
+  ]
 }
