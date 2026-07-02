@@ -37,8 +37,16 @@ jobs:
         run: npx @tinacms/cli build --skip-cloud-checks
       # TinaCloud indexes the schema from the COMMITTED tina-lock.json. If a
       # schema change lands without a regenerated lock, the /admin editor
-      # breaks (happened 2026-07-01). The build above regenerates it; this
-      # commits it back so the two can never drift.
+      # breaks (happened 2026-07-01). `tinacms build` refreshes the files in
+      # tina/__generated__ but only `tinacms dev` writes the lock itself, so
+      # assemble it here exactly the way the CLI does (schema+lookup+graphql).
+      - name: Regenerate tina-lock.json from the built schema
+        run: |
+          node -e "
+            const fs = require('fs');
+            const rd = (f) => JSON.parse(fs.readFileSync('tina/__generated__/_' + f + '.json'));
+            fs.writeFileSync('tina/tina-lock.json', JSON.stringify({ schema: rd('schema'), lookup: rd('lookup'), graphql: rd('graphql') }));
+          "
       - name: Commit regenerated tina-lock.json if it changed
         continue-on-error: true
         run: |
