@@ -54,6 +54,7 @@ type Deep = {
   ytTopViews?: number;
   ytOver1M?: number;
   ytVideoCount?: number;
+  igCountries?: number;
 };
 const deep: Deep = (statsData as { deep?: Deep }).deep || {};
 
@@ -123,6 +124,9 @@ export const stats = {
     parseInt(String(data.statVideosOver1M ?? '0'), 10) || 0,
     (deep.igReels1M || 0) + (deep.ttOver1M || 0) + (deep.ytOver1M || 0)
   ),
+  // Countries her Instagram followers live in (media kit only — the band's
+  // tile budget is spent).
+  countries: deep.igCountries || 0,
 };
 
 export const site = {

@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import Media from '../components/Media.astro';
 import RecipeCard from '../components/RecipeCard.astro';
 import { site, emails, socials, about, recipes, workWithMe, shop, stats, reels } from '../data/site';
+import { fmtM, fmtCount } from '../data/format';
 import { isVisible, orderIndex } from '../data/sections';
 
 const activeSocials = socials.filter((s) => s.href);
@@ -20,18 +21,7 @@ const helloMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
 // set, and a hidden section simply isn't rendered.
 const ord = (id: string) => `order:${orderIndex(id)}`;
 
-// Millions formatter for the stats band ("28.8M+") — floored, never rounded
-// up, because the views figure is stated as an honest floor. Mirrored
-// client-side in the count-up script, so the two must stay in step.
-const fmtM = (n: number) => `${(Math.floor(n / 1e5) / 10).toFixed(1).replace(/\.0$/, '')}M+`;
-// Scoreboard formatter: exact scale for any magnitude ("29.9K", "52.1M") —
-// per-platform numbers are stated plain, without the floor "+".
-const fmtCount = (n: number) =>
-  n >= 1e6
-    ? `${(Math.floor(n / 1e5) / 10).toFixed(1).replace(/\.0$/, '')}M`
-    : n >= 1e3
-      ? `${(Math.floor(n / 100) / 10).toFixed(1).replace(/\.0$/, '')}K`
-      : String(n);
+
 
 // Camera-roll strip: every photo already on the site, drifting slowly under
 // the recipe grid. Purely decorative (aria-hidden) and self-maintaining —
@@ -390,6 +380,9 @@ const jsonLd = [
                     <path d="M16 10a4 4 0 0 1-8 0" />
                   </svg>
                   Shop my kitchen
+                </a>
+                <a href="/media-kit" class="mt-4 ml-1 block text-sm font-semibold text-bg/75 underline decoration-pop decoration-2 underline-offset-4 transition-colors hover:text-bg sm:ml-4 sm:mt-0 sm:inline-block">
+                  Media kit
                 </a>
               )
             )
