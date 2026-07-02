@@ -106,14 +106,16 @@ export const recipes: Recipe[] = (data.recipes as RawRecipe[]).map((r) => {
   const external = r.href && /^https?:\/\//i.test(r.href) ? r.href : '';
   const slug = external ? undefined : r.slug || slugify(r.title);
   return {
-    title: r.title,
-    blurb: r.blurb,
-    tag: r.tag || undefined,
+    // Tina doesn't trim inputs; stray trailing spaces otherwise leak into
+    // <title>, og:title and JSON-LD ("Burgers  · Wickie's Kitchen").
+    title: r.title.trim(),
+    blurb: r.blurb.trim(),
+    tag: r.tag?.trim() || undefined,
     image: r.image || undefined,
     ingredients: parseParts(r.ingredientsText),
     steps: parseParts(r.methodText),
-    serves: r.serves || undefined,
-    time: r.time || undefined,
+    serves: r.serves?.trim() || undefined,
+    time: r.time?.trim() || undefined,
     slug,
     href: external || `/recipes/${slug}`,
   };
