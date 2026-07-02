@@ -45,6 +45,11 @@ export const about = {
   paragraphs: data.aboutParagraphs.map((p) => p.text),
 };
 
+// Ingredients and the method are each ONE textarea in /admin: one entry per
+// line, and a line ending with ":" is a section heading ("Prep your burger:").
+// Parsed here into typed parts so the pages can render headings differently.
+export type RecipePart = { kind: 'heading' | 'item'; text: string };
+
 export type Recipe = {
   title: string;
   blurb: string;
@@ -52,15 +57,15 @@ export type Recipe = {
   image?: string;
   href?: string; // where the card links: its on-site recipe page, or an external URL override
   slug?: string; // on-site detail-page slug (absent only when the card links out externally)
-  ingredients: string[];
-  steps: string[];
+  ingredients: RecipePart[];
+  steps: RecipePart[];
   serves?: string;
   time?: string;
 };
 
-// The full-recipe fields (ingredients/steps/serves/time) are filled in later
-// through the /admin editor — a recipe starts as a title + blurb and gains its
-// method when Wickie writes it up.
+// The full-recipe fields (ingredientsText/methodText/serves/time) are filled in
+// later through the /admin editor — a recipe starts as a title + blurb and
+// gains its method when Wickie writes it up.
 type RawRecipe = {
   title: string;
   blurb: string;
@@ -70,9 +75,23 @@ type RawRecipe = {
   slug?: string;
   serves?: string;
   time?: string;
-  ingredients?: { text: string }[];
-  steps?: { text: string }[];
+  ingredientsText?: string;
+  methodText?: string;
 };
+
+// One line = one entry. "Heading:" lines become section titles. Leading
+// "1." / "2)" / "-" / "•" markers she types or pastes are stripped, because
+// the page numbers and bullets everything itself.
+const parseParts = (raw?: string): RecipePart[] =>
+  (raw || '')
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .map((l) =>
+      l.endsWith(':')
+      ? { kind: 'heading' as const, text: l.slice(0, -1).trim() }
+      : { kind: 'item' as const, text: l.replace(/^(\d+[.)]|[-•*])\s+/, '') }
+    );
 
 const slugify = (s: string) =>
   s
@@ -91,8 +110,8 @@ export const recipes: Recipe[] = (data.recipes as RawRecipe[]).map((r) => {
     blurb: r.blurb,
     tag: r.tag || undefined,
     image: r.image || undefined,
-    ingredients: (r.ingredients || []).map((i) => i.text).filter(Boolean),
-    steps: (r.steps || []).map((s) => s.text).filter(Boolean),
+    ingredients: parseParts(r.ingredientsText),
+    steps: parseParts(r.methodText),
     serves: r.serves || undefined,
     time: r.time || undefined,
     slug,
