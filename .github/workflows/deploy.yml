@@ -93,6 +93,12 @@ jobs:
           done
           echo "::error::Could not push the regenerated tina-lock.json after 3 attempts — TinaCloud will serve a stale schema until this lands. Re-run this workflow."
           exit 1
+      # Her /admin tab lives for days and goes stale after every deploy.
+      # Stamp the deploy SHA into the page + a deploy-version.json next to it
+      # so an open tab can spot a newer deploy and refresh itself when safe
+      # (details in the script).
+      - name: Inject admin auto-refresh
+        run: node scripts/inject-admin-autorefresh.mjs
       - name: Build site
         run: npx astro build
       - name: Upload artifact
