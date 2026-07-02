@@ -33,11 +33,17 @@ jobs:
           IG_TOKEN: ${{ secrets.IG_TOKEN }}
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
         run: node scripts/fetch-stats.mjs
+      # Latest-posts wall for the homepage. Never fails the run — on any
+      # problem it leaves the existing wall in place (see the script).
+      - name: Refresh Instagram wall
+        env:
+          IG_TOKEN: ${{ secrets.IG_TOKEN }}
+        run: node scripts/fetch-reels.mjs
       - name: Commit and deploy (if changed)
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          git add src/data/stats.json
+          git add src/data/stats.json src/data/reels.json public/images/reels
           if git diff --staged --quiet; then
             echo "No stat changes."
             exit 0

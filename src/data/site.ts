@@ -7,6 +7,7 @@
 /* ==================================================================== */
 import data from './site.json';
 import statsData from './stats.json';
+import reelsData from './reels.json';
 
 /* Media-kit numbers for the "By the numbers" band.
    - Follower counts auto-refresh daily (src/data/stats.json, refresh-stats Action).
@@ -182,6 +183,15 @@ export const shop = {
   embedSrc: embedMatch ? embedMatch[1] : '',
   url: data.socials.find((s) => /shopmy/i.test(s.label))?.href || '',
 };
+
+// Latest Instagram posts for the homepage wall — refreshed daily by
+// scripts/fetch-reels.mjs (thumbnails live in public/images/reels/ so the
+// wall never rots when IG's CDN links expire). Empty until the first
+// successful pull; the section hides itself below 3 posts.
+export type Reel = { id: string; permalink: string; caption: string; image: string; isVideo: boolean };
+export const reels: Reel[] = ((reelsData as { reels?: Reel[] }).reels || []).filter(
+  (r) => r.permalink && r.image
+);
 
 /* Navigation anchors — structural, kept in code (not editable in the CMS
    so the on-page links can't break). */
