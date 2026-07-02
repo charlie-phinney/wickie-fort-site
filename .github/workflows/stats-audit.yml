@@ -1,0 +1,20 @@
+# TEMPORARY — one-off raw-data dump for auditing the "By the numbers" band.
+# Delete after the audit.
+name: stats-audit
+on: workflow_dispatch
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/audit-deep-stats.mjs
+        env:
+          IG_TOKEN: ${{ secrets.IG_TOKEN }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: audit-out
+          path: audit-out.json
