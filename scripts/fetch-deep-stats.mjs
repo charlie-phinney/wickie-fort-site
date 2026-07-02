@@ -19,36 +19,16 @@
 
   Derived in src/data/site.ts, not here — this script only records raw facts.
 */
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const STATS_PATH = join(__dirname, '..', 'src', 'data', 'stats.json');
-const HITS_DIR = join(__dirname, '..', 'public', 'images', 'hits');
 const token = process.env.IG_TOKEN;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-// "Receipts" for the band: each platform's top video, with a locally saved
-// thumbnail so the row never rots when a CDN link expires. A failed download
-// keeps the previous hit (keep-last-good per platform).
-const hits = {};
-async function saveThumb(url, name) {
-  if (!url) return null;
-  try {
-    const res = await fetch(url);
-    if (!res.ok) return null;
-    const buf = Buffer.from(await res.arrayBuffer());
-    if (buf.length < 2000) return null; // error page, not an image
-    mkdirSync(HITS_DIR, { recursive: true });
-    writeFileSync(join(HITS_DIR, name), buf);
-    return `/images/hits/${name}`;
-  } catch {
-    return null;
-  }
-}
 
 async function ig(path, params = '') {
   const res = await fetch(`https://graph.instagram.com/${path}?${params}`, {
@@ -71,7 +51,7 @@ async function instagramDeep() {
   // Paginate every post: likes + comments come with basic scope.
   const media = [];
   let url = 'me/media';
-  let params = 'fields=id,media_type,like_count,comments_count,timestamp,permalink,thumbnail_url&limit=50';
+  let params = 'fields=id,media_type,like_count,comments_count,timestamp&limit=50';
   for (let page = 0; page < 12; page++) {
     const r = await ig(url, params);
     if (!r.ok || !Array.isArray(r.body?.data)) {
@@ -119,7 +99,6 @@ async function instagramDeep() {
       );
     } else {
       let sum = 0, counted = 0, maxViews = 0, over1M = 0, reachSum = 0, maxReach = 0, engagement = 0;
-      let topReel = null;
       for (let i = 0; i < videos.length; i++) {
         let vals;
         if (i === 0) {
@@ -132,18 +111,11 @@ async function instagramDeep() {
         }
         counted++;
         sum += vals.views || 0;
-        if ((vals.views || 0) > maxViews) {
-          maxViews = vals.views;
-          topReel = videos[i];
-        }
+        if ((vals.views || 0) > maxViews) maxViews = vals.views;
         if ((vals.views || 0) >= 1e6) over1M++;
         reachSum += vals.reach || 0;
         if ((vals.reach || 0) > maxReach) maxReach = vals.reach;
         engagement += (videos[i].like_count || 0) + (videos[i].comments_count || 0);
-      }
-      if (topReel?.permalink) {
-        const image = await saveThumb(topReel.thumbnail_url, 'instagram.jpg');
-        if (image) hits.instagram = { views: maxViews, url: topReel.permalink, image };
       }
       if (sum > 0) {
         out.igViews = sum;
@@ -241,8 +213,6 @@ async function tiktokDeep() {
     };
     const exact = parseInt(ytDlpVideo(top.url, 'view_count'), 10);
     if (Number.isFinite(exact) && exact > out.ttTopViews) out.ttTopViews = exact;
-    const image = await saveThumb(ytDlpVideo(top.url, 'thumbnail'), 'tiktok.jpg');
-    if (image) hits.tiktok = { views: out.ttTopViews, url: top.url, image };
     console.log(
       `deep: TikTok ${out.ttViews} plays across ${pairs.length} videos (top ${out.ttTopViews}, ${out.ttOver1M} over 1M).`
     );
@@ -290,15 +260,6 @@ async function youtubeDeep() {
     ytTopViews: topExact,
     ytOver1M: pairs.filter((p) => p.views >= 1e6).length,
   };
-  // Shorts thumbnails have a vertical variant (oar2); fall back to the
-  // classic landscape one if it doesn't exist for this video.
-  const id = top.url.match(/(?:shorts\/|v=|youtu\.be\/)([\w-]{6,})/)?.[1];
-  if (id) {
-    const image =
-      (await saveThumb(`https://i.ytimg.com/vi/${id}/oar2.jpg`, 'youtube.jpg')) ||
-      (await saveThumb(`https://i.ytimg.com/vi/${id}/hqdefault.jpg`, 'youtube.jpg'));
-    if (image) hits.youtube = { views: topExact, url: top.url, image };
-  }
   console.log(`deep: YouTube top video ${out.ytTopViews}, ${out.ytOver1M} over 1M (${pairs.length} videos).`);
   return out;
 }
@@ -325,8 +286,6 @@ async function main() {
   const [igd, tt, yt, ytc] = [await instagramDeep(), await tiktokDeep(), await youtubeDeep(), await youtubeCount()];
   // keep-last-good per key: only fetched keys overwrite.
   stats.deep = { ...prev, ...igd, ...tt, ...yt, ...ytc, updated: new Date().toISOString().slice(0, 10) };
-  // Top-video receipts, keep-last-good per platform.
-  stats.hits = { ...(stats.hits || {}), ...hits };
   // Fold IG + TikTok views into today's history entry (fetch-stats wrote it
   // just before this step) so the homepage views ticker measures real growth.
   if (Array.isArray(stats.history) && stats.history.length) {
