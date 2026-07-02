@@ -20,16 +20,39 @@ const esc = (s: string) =>
 // Build the readable HTML body for a feed item: the blurb, plus the full
 // ingredients + method when they exist. Wrapped in CDATA at the call site.
 const itemHtml = (r: (typeof recipes)[number]) => {
+  // Section headings ("Prep your burger:") render as bold list rows so the
+  // feed keeps one continuous numbered method without nested markup.
   const parts = [`<p>${esc(r.blurb)}</p>`];
   if (r.ingredients.length) {
     parts.push('<h2>Ingredients</h2><ul>');
-    parts.push(...r.ingredients.map((i) => `<li>${esc(i)}</li>`));
+    parts.push(
+      ...r.ingredients.map((p) =>
+        p.kind === 'heading' ? `<li><strong>${esc(p.text)}</strong></li>` : `<li>${esc(p.text)}</li>`
+      )
+    );
     parts.push('</ul>');
   }
   if (r.steps.length) {
-    parts.push('<h2>Method</h2><ol>');
-    parts.push(...r.steps.map((s) => `<li>${esc(s)}</li>`));
-    parts.push('</ol>');
+    // Same shape as the recipe page: each heading starts a new <ol> whose
+    // `start` continues the numbering, so steps stay numbered across sections.
+    parts.push('<h2>Method</h2>');
+    let open = false;
+    let n = 0;
+    for (const p of r.steps) {
+      if (p.kind === 'heading') {
+        if (open) parts.push('</ol>');
+        parts.push(`<h3>${esc(p.text)}</h3>`, `<ol start="${n + 1}">`);
+        open = true;
+      } else {
+        if (!open) {
+          parts.push('<ol>');
+          open = true;
+        }
+        parts.push(`<li>${esc(p.text)}</li>`);
+        n++;
+      }
+    }
+    if (open) parts.push('</ol>');
   }
   return parts.join('');
 };

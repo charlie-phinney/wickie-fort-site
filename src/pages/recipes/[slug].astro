@@ -19,6 +19,25 @@ export function getStaticPaths() {
 const { recipe } = Astro.props;
 const hasMethod = recipe.ingredients.length > 0 || recipe.steps.length > 0;
 
+// Group the method into sections: an optional "Prep your burger" heading plus
+// its steps. Step numbering runs continuously across sections (the <ol start>
+// below), which is what makes the numbers keep counting under each heading.
+type StepSection = { heading?: string; start: number; steps: string[] };
+const stepSections: StepSection[] = [];
+let stepCount = 0;
+for (const part of recipe.steps) {
+  if (part.kind === 'heading') {
+    stepSections.push({ heading: part.text, start: stepCount + 1, steps: [] });
+  } else {
+    if (!stepSections.length) stepSections.push({ start: 1, steps: [] });
+    stepSections[stepSections.length - 1].steps.push(part.text);
+    stepCount++;
+  }
+}
+
+const ingredientItems = recipe.ingredients.filter((p) => p.kind === 'item').map((p) => p.text);
+const stepItems = recipe.steps.filter((p) => p.kind === 'item').map((p) => p.text);
+
 const instagram = 'https://www.instagram.com/wickieskitchen';
 const askMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
   `Recipe request: ${recipe.title}`
@@ -40,12 +59,16 @@ const recipeLd: Record<string, unknown> = {
 };
 if (recipe.image) recipeLd.image = new URL(recipe.image, Astro.site).href;
 if (recipe.serves) recipeLd.recipeYield = recipe.serves;
-if (recipe.ingredients.length) recipeLd.recipeIngredient = recipe.ingredients;
-if (recipe.steps.length) {
-  recipeLd.recipeInstructions = recipe.steps.map((text) => ({
-    '@type': 'HowToStep',
-    text,
-  }));
+if (ingredientItems.length) recipeLd.recipeIngredient = ingredientItems;
+if (stepItems.length) {
+  // With section headings, emit HowToSection groups; otherwise a flat step list.
+  recipeLd.recipeInstructions = stepSections.some((s) => s.heading)
+    ? stepSections.map((s) => ({
+        '@type': 'HowToSection',
+        ...(s.heading ? { name: s.heading } : {}),
+        itemListElement: s.steps.map((text) => ({ '@type': 'HowToStep', text })),
+      }))
+    : stepItems.map((text) => ({ '@type': 'HowToStep', text }));
 }
 
 // Breadcrumb trail so search results can show Home › Recipes › <this recipe>.
@@ -180,12 +203,18 @@ const breadcrumbLd = {
                   <span class="mark-underline">Ingredients</span>
                 </h2>
                 <ul class="mt-5 space-y-3">
-                  {recipe.ingredients.map((item) => (
-                    <li class="flex items-start gap-3 text-[1.02rem] leading-snug text-ink">
-                      <span class="mt-2 h-1.5 w-1.5 flex-none rounded-full bg-primary" aria-hidden="true" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
+                  {recipe.ingredients.map((part) =>
+                    part.kind === 'heading' ? (
+                      <li class="list-none pt-3 first:pt-0 text-sm font-semibold uppercase tracking-wide text-primary-deep">
+                        {part.text}
+                      </li>
+                    ) : (
+                      <li class="flex items-start gap-3 text-[1.02rem] leading-snug text-ink">
+                        <span class="mt-2 h-1.5 w-1.5 flex-none rounded-full bg-primary" aria-hidden="true" />
+                        <span>{part.text}</span>
+                      </li>
+                    )
+                  )}
                 </ul>
               </section>
             )}
@@ -195,16 +224,25 @@ const breadcrumbLd = {
                 <h2 id="method-heading" class="font-serif text-2xl font-semibold text-ink">
                   <span class="mark-underline">Method</span>
                 </h2>
-                <ol class="mt-6 space-y-6">
-                  {recipe.steps.map((step, i) => (
-                    <li class="flex gap-4">
-                      <span class="step-num flex h-8 w-8 flex-none items-center justify-center rounded-full bg-primary-deep font-serif text-sm font-semibold text-bg">
-                        {i + 1}
-                      </span>
-                      <p class="pt-0.5 text-lg leading-relaxed text-ink/90">{step}</p>
-                    </li>
-                  ))}
-                </ol>
+                {stepSections.map((sec) => (
+                  <div class="mt-6 first-of-type:mt-6">
+                    {sec.heading && (
+                      <h3 class="mb-4 mt-8 font-serif text-xl font-semibold text-primary-deep">
+                        {sec.heading}
+                      </h3>
+                    )}
+                    <ol start={sec.start} class="space-y-6">
+                      {sec.steps.map((step, i) => (
+                        <li class="flex gap-4">
+                          <span class="step-num flex h-8 w-8 flex-none items-center justify-center rounded-full bg-primary-deep font-serif text-sm font-semibold text-bg">
+                            {sec.start + i}
+                          </span>
+                          <p class="pt-0.5 text-lg leading-relaxed text-ink/90">{step}</p>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                ))}
               </section>
             )}
           </div>

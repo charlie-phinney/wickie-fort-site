@@ -53,7 +53,7 @@ export default defineConfig({
             name: 'changeRequest',
             label: '✨ Want a change you can\'t make below? Ask here',
             description:
-              "Describe anything you'd like changed that these controls don't let you do (a new kind of section, a custom layout, anything at all), then hit Save. It goes straight to Charlie and he'll take care of it. Clear this box once it's done.",
+              "Describe anything you'd like changed that these controls don't let you do (a new kind of section, a custom layout, anything at all), then hit Save. It goes straight to Charlie and he'll take care of it. Clear this box once it's done. (Tip: after any Save, your live site updates in about 3 minutes.)",
             ui: { component: 'textarea' },
           },
 
@@ -252,22 +252,20 @@ export default defineConfig({
                 description: 'For example: “30 min”.',
               },
               {
-                type: 'object',
-                name: 'ingredients',
+                type: 'string',
+                name: 'ingredientsText',
                 label: 'Ingredients (optional)',
-                description: 'Add one ingredient per box.',
-                list: true,
-                ui: { itemProps: (i) => ({ label: i?.text || 'New ingredient' }) },
-                fields: [{ type: 'string', name: 'text', label: 'Ingredient' }],
+                description:
+                  'Type or paste them all in this one box — one ingredient per line. For a group title like “For the sauce”, put it on its own line ending with a colon (:).',
+                ui: { component: 'textarea' },
               },
               {
-                type: 'object',
-                name: 'steps',
+                type: 'string',
+                name: 'methodText',
                 label: 'Method / steps (optional)',
-                description: 'Add one step per box, in order. They’ll be numbered automatically.',
-                list: true,
-                ui: { itemProps: (i) => ({ label: i?.text?.slice(0, 40) || 'New step' }) },
-                fields: [{ type: 'string', name: 'text', label: 'Step', ui: { component: 'textarea' } }],
+                description:
+                  'Type or paste the whole method in this one box — one step per line. Steps are numbered automatically. For a section title like “Prep your burger”, put it on its own line ending with a colon (:). After you Save, your live site updates in about 3 minutes.',
+                ui: { component: 'textarea' },
               },
               {
                 type: 'string',
