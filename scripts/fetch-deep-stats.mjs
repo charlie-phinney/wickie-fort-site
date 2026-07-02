@@ -159,6 +159,12 @@ async function main() {
   const [igd, tt, yt] = [await instagramDeep(), await tiktokTop(), await youtubeCount()];
   // keep-last-good per key: only fetched keys overwrite.
   stats.deep = { ...prev, ...igd, ...tt, ...yt, updated: new Date().toISOString().slice(0, 10) };
+  // Fold IG views into today's history entry (fetch-stats wrote it just
+  // before this step) so the homepage views ticker can measure real growth.
+  if (stats.deep.igViews && Array.isArray(stats.history) && stats.history.length) {
+    const today = stats.history[stats.history.length - 1];
+    if (today.d === stats.deep.updated) today.iv = stats.deep.igViews;
+  }
   writeFileSync(STATS_PATH, JSON.stringify(stats, null, 2) + '\n');
   console.log('deep: wrote', JSON.stringify(Object.keys(stats.deep)));
 }
