@@ -39,6 +39,12 @@ jobs:
         env:
           IG_TOKEN: ${{ secrets.IG_TOKEN }}
         run: node scripts/fetch-reels.mjs
+      # Deep engagement metrics (per-reel views, likes, engagement). Same
+      # never-fail contract; denied API scopes just leave keys unpopulated.
+      - name: Refresh deep stats
+        env:
+          IG_TOKEN: ${{ secrets.IG_TOKEN }}
+        run: node scripts/fetch-deep-stats.mjs
       - name: Commit and deploy (if changed)
         env:
           GH_TOKEN: ${{ github.token }}
