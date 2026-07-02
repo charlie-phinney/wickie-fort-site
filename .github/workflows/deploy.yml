@@ -57,15 +57,23 @@ jobs:
         run: |
           # ubuntu-24.04 runners no longer preinstall ImageMagick
           command -v mogrify >/dev/null || sudo apt-get install -y -q imagemagick
-          shopt -s nullglob nocaseglob
-          for f in public/images/*.jpg public/images/*.jpeg public/images/*.png; do
+          command -v pngquant >/dev/null || sudo apt-get install -y -q pngquant
+          # ** recurses into reels/ and profiles/ — the daily refresh writes
+          # tall (1080x1920) files there that a width-only pass never touched.
+          shopt -s nullglob nocaseglob globstar
+          for f in public/images/**/*.jpg public/images/**/*.jpeg public/images/**/*.png; do
             before=$(stat -c%s "$f")
             if [ "$before" -gt 614400 ]; then
               cp "$f" /tmp/orig-img
               mogrify -auto-orient -strip -resize '1600x1600>' -quality 82 "$f"
+              # Photographic PNGs barely shrink under ImageMagick (a macOS
+              # screenshot once GREW 1.8MB -> 2.7MB); pngquant's palette pass
+              # takes them down 60-75% with no visible loss at these sizes.
+              case "$f" in
+                *.png|*.PNG) pngquant --force --skip-if-larger --quality 55-90 --strip --output "$f" -- "$f" || true ;;
+              esac
               after=$(stat -c%s "$f")
-              # PNG recompression can come out BIGGER (screenshots already
-              # optimized by macOS grew 1.8MB -> 2.7MB) — keep the smaller one.
+              # keep the smaller file, whatever the encoders did
               if [ "$after" -ge "$before" ]; then
                 cp /tmp/orig-img "$f"
                 echo "kept original (recompression grew it): $f"

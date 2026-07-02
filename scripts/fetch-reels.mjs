@@ -65,13 +65,20 @@ async function main() {
       console.log(`Thumbnail fetch failed (${r.status}) for ${m.id} — keeping existing wall.`);
       return;
     }
+    const bytes = Buffer.from(await r.arrayBuffer());
+    if (bytes.length < 2000) {
+      // A 200 that isn't an image (CDN error body) must never be committed
+      // as a .jpg — same guard fetch-deep-stats uses for profile assets.
+      console.log(`Thumbnail for ${m.id} too small (${bytes.length}B) — keeping existing wall.`);
+      return;
+    }
     out.push({
       id: String(m.id),
       permalink: m.permalink,
       caption: (m.caption || '').split('\n')[0].slice(0, 90),
       image: `/images/reels/${m.id}.jpg`,
       isVideo: m.media_type === 'VIDEO',
-      bytes: Buffer.from(await r.arrayBuffer()),
+      bytes,
     });
   }
   if (out.length < 3) {
@@ -79,14 +86,12 @@ async function main() {
     return;
   }
 
+  // Order matters: new thumbs land, then reels.json switches over, and only
+  // THEN stale thumbs are removed — a crash at any point leaves a wall whose
+  // JSON only references files that exist.
   mkdirSync(THUMB_DIR, { recursive: true });
   const keep = new Set(out.map((m) => `${m.id}.jpg`));
   for (const m of out) writeFileSync(join(THUMB_DIR, `${m.id}.jpg`), m.bytes);
-  if (existsSync(THUMB_DIR)) {
-    for (const f of readdirSync(THUMB_DIR)) {
-      if (!keep.has(f)) unlinkSync(join(THUMB_DIR, f));
-    }
-  }
   writeFileSync(
     REELS_JSON,
     JSON.stringify(
@@ -98,6 +103,11 @@ async function main() {
       2
     ) + '\n'
   );
+  if (existsSync(THUMB_DIR)) {
+    for (const f of readdirSync(THUMB_DIR)) {
+      if (!keep.has(f)) unlinkSync(join(THUMB_DIR, f));
+    }
+  }
   console.log(`Reel wall refreshed: ${out.length} posts (${out.filter((m) => m.isVideo).length} videos).`);
 }
 

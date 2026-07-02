@@ -1,6 +1,4 @@
 {
-  "emailPartnerships": "wickie@wickiefort.com",
-  "emailContact": "wickie@wickiefort.com",
   "changeRequest": "",
   "colorTheme": "tomato",
   "fontPairing": "fraunces",
@@ -92,7 +90,6 @@
   "workIntro": "I team up with brands I actually use and genuinely want to share with others. If you have a product you think would be a good fit, please reach out! ",
   "workCta": "Let's work together",
   "statVideosOver1M": 11,
-  "statTopViews": "24M",
   "shopHeading": "Shop my kitchen",
   "shopIntro": "The cookbooks I actually cook from and keep coming back to.",
   "shopEmbed": "<iframe title=\"Favorite Cookbooks\" src=\"https://shopmy.us/collections/embed/6101199?\" style=\"width: 100%; min-height: 340px; border: none;\"></iframe>",

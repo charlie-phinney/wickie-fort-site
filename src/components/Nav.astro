@@ -58,12 +58,14 @@ import { navItems, isVisible } from '../data/sections';
       }
     </div>
 
-    <!-- Mobile toggle (CSS-only via hidden checkbox) -->
-    <input type="checkbox" id="nav-toggle" class="peer hidden" />
+    <!-- Mobile toggle (CSS-only via checkbox). sr-only, not `hidden`: a
+         display:none checkbox can't take keyboard focus, which made the
+         menu unopenable without a mouse. -->
+    <input type="checkbox" id="nav-toggle" class="peer sr-only md:hidden" aria-label="Toggle menu" />
     <label
       for="nav-toggle"
-      class="flex cursor-pointer items-center justify-center rounded-lg p-2 text-ink md:hidden"
-      aria-label="Toggle menu"
+      class="flex cursor-pointer items-center justify-center rounded-lg p-2 text-ink peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-primary md:hidden"
+      aria-hidden="true"
     >
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
         <line x1="3" y1="6" x2="21" y2="6"></line>

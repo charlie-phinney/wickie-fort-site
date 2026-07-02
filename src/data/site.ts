@@ -10,9 +10,9 @@ import statsData from './stats.json';
 import reelsData from './reels.json';
 
 /* Media-kit numbers for the "By the numbers" band. Everything auto-refreshes
-   daily (refresh-stats Action -> stats.json); the two hand-kept /admin fields
-   (statVideosOver1M / statTopViews) act as FLOORS under the live-computed
-   composites, never as the display value itself. */
+   daily (refresh-stats Action -> stats.json); the one hand-kept /admin field
+   (statVideosOver1M) acts as a FLOOR under the live-computed composite,
+   never as the display value itself. */
 // Real growth per day, measured from the daily history (fetch-stats appends
 // one entry per run). Compared against the newest entry that's at least a
 // day old — up to a week back — so the homepage tickers extrapolate from
@@ -74,12 +74,10 @@ const profileFor = (label: string) => {
   return { href: social.href, handle: social.handle, avatar: media.avatar, recent };
 };
 
-export const stats = {
-  updated: statsData.updated,
-  // Scoreboard: one row per platform, every number explicitly scoped to its
-  // home. A platform whose numbers all go unfetchable simply drops its row
-  // rather than showing broken zeros.
-  platforms: [
+// Scoreboard: one row per platform, every number explicitly scoped to its
+// home. A platform whose numbers all go unfetchable simply drops its row
+// rather than showing broken zeros.
+const platforms = [
     {
       name: 'Instagram',
       followers: statsData.followers.instagram || 0,
@@ -101,7 +99,11 @@ export const stats = {
       over1M: deep.ytOver1M || 0,
       profile: profileFor('YouTube'),
     },
-  ].filter((p) => p.followers > 0 && p.views > 0),
+].filter((p) => p.followers > 0 && p.views > 0);
+
+export const stats = {
+  updated: statsData.updated,
+  platforms,
   // Combined line under the columns. `views` = the three platforms' measured
   // totals, an honest FLOOR of her true total (Facebook isn't measurable
   // without auth; the "+" carries it), ticking with real measured growth.
@@ -111,13 +113,10 @@ export const stats = {
       perDay: perDay('yv') + perDay('iv') + perDay('tv'),
     },
   },
-  // Sum of the platforms actually shown (Facebook stays out of the band
-  // entirely — 378 followers, nothing to show — so the headline always
-  // matches what the columns add up to).
-  followersShown:
-    (statsData.followers.instagram || 0) +
-    (statsData.followers.tiktok || 0) +
-    (statsData.followers.youtube || 0),
+  // Sum of the rows actually shown (Facebook never has a row — 378
+  // followers, nothing to show — and a dropped platform drops out of the
+  // headline too, so it always matches what the table adds up to).
+  followersShown: platforms.reduce((s, p) => s + p.followers, 0),
   // Floored at Wickie's hand-kept /admin number so it never undercounts what
   // she knows to be true.
   videos1M: Math.max(
@@ -209,10 +208,20 @@ const slugify = (s: string) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 
+// Two recipes with the same title would slugify identically and collide in
+// getStaticPaths — suffix repeats so Wickie can never break the build from
+// the editor ("Pasta", "Pasta" -> pasta, pasta-2).
+const seenSlugs = new Map<string, number>();
+const uniqueSlug = (s: string) => {
+  const n = (seenSlugs.get(s) || 0) + 1;
+  seenSlugs.set(s, n);
+  return n === 1 ? s : `${s}-${n}`;
+};
+
 export const recipes: Recipe[] = (data.recipes as RawRecipe[]).map((r) => {
   // An explicit http(s) link means the card opens that instead of an on-site page.
   const external = r.href && /^https?:\/\//i.test(r.href) ? r.href : '';
-  const slug = external ? undefined : r.slug || slugify(r.title);
+  const slug = external ? undefined : uniqueSlug(r.slug || slugify(r.title));
   return {
     // Tina doesn't trim inputs; stray trailing spaces otherwise leak into
     // <title>, og:title and JSON-LD ("Burgers  · Wickie's Kitchen").
