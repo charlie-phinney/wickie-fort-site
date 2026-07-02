@@ -42,7 +42,11 @@ export const socials = data.socials.filter((s) => s.href);
 export const about = {
   heading: data.aboutHeading,
   image: data.aboutImage || undefined,
-  paragraphs: data.aboutParagraphs.map((p) => p.text),
+  // One textarea in /admin; blank lines separate paragraphs.
+  paragraphs: (data.aboutText || '')
+    .split(/\r?\n\s*\r?\n/)
+    .map((p) => p.replace(/\s*\r?\n\s*/g, ' ').trim())
+    .filter(Boolean),
 };
 
 // Ingredients and the method are each ONE textarea in /admin: one entry per
@@ -125,7 +129,11 @@ export const workWithMe = {
   heading: data.workHeading,
   intro: data.workIntro,
   cta: data.workCta,
-  offerings: data.workOfferings.map((o) => o.text),
+  // One textarea in /admin; one offering per line.
+  offerings: (data.workOfferingsText || '')
+    .split(/\r?\n/)
+    .map((l) => l.replace(/^[-•*]\s+/, '').trim())
+    .filter(Boolean),
 };
 
 // Shop section. `embed` is the iframe HTML Wickie pastes from ShopMy
