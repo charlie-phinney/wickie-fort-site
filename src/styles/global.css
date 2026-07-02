@@ -79,8 +79,22 @@
   padding-bottom: 0.12em;
 }
 
+/* Cross-document view transitions (pure CSS, no router): the recipe photo
+   morphs from its card into the recipe page's hero. Browsers without support
+   (or with reduced motion) just navigate normally. */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.25s;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  @view-transition {
+    navigation: none;
+  }
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;

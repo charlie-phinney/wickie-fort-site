@@ -24,6 +24,13 @@ const ord = (id: string) => `order:${orderIndex(id)}`;
 // the count-up script, so the two must stay in step.
 const fmtM = (n: number) => `${(n / 1e6).toFixed(1).replace(/\.0$/, '')}M+`;
 
+// Camera-roll strip: every photo already on the site, drifting slowly under
+// the recipe grid. Purely decorative (aria-hidden) and self-maintaining —
+// new photos Wickie uploads join the roll on the next deploy.
+const cameraRoll = [
+  ...new Set([site.heroImage, about.image, ...recipes.map((r) => r.image)].filter(Boolean)),
+] as string[];
+
 // Structured data: tells Google who Wickie is (a food creator) and links her
 // verified profiles, so the site can surface as a proper knowledge entity.
 const jsonLd = [
@@ -368,6 +375,28 @@ const jsonLd = [
           <div data-reveal class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {recipes.map((recipe) => <RecipeCard recipe={recipe} />)}
           </div>
+
+          {cameraRoll.length >= 4 && (
+            <div class="mt-14 overflow-hidden rounded-2xl py-3" aria-hidden="true">
+              <div class="camera-roll flex w-max">
+                {[0, 1].map(() => (
+                  <div class="flex gap-4 pr-4">
+                    {cameraRoll.map((src, i) => (
+                      <img
+                        src={src}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        class={`h-36 w-52 flex-none rounded-xl object-cover shadow-soft md:h-44 md:w-64 ${
+                          i % 2 ? 'rotate-[1.2deg]' : '-rotate-[1.2deg]'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </section>
       )
     }
@@ -452,6 +481,39 @@ const jsonLd = [
       transition:
         opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
         transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* The brand's motion signature, riding the same reveal opt-in (so no-JS
+       and reduced-motion always see the finished state):
+       - the marigold underline draws itself in like a marker stroke
+       - handwritten accents wipe on left-to-right, like being written */
+    :global([data-reveal].reveal-init .mark-underline) {
+      background-size: 0% 0.14em;
+    }
+    :global([data-reveal].reveal-in .mark-underline) {
+      background-size: 100% 0.14em;
+      transition: background-size 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.35s;
+    }
+    :global([data-reveal].reveal-init .font-hand),
+    :global([data-reveal].reveal-init.font-hand) {
+      clip-path: inset(-20% 100% -20% 0);
+    }
+    :global([data-reveal].reveal-in .font-hand),
+    :global([data-reveal].reveal-in.font-hand) {
+      clip-path: inset(-20% -5% -20% 0);
+      transition: clip-path 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+    }
+  }
+
+  /* Camera roll: two identical halves slide by exactly one half for a
+     seamless loop. The global reduced-motion rules freeze it into a static
+     (identical-looking) strip. */
+  :global(.camera-roll) {
+    animation: camera-roll 50s linear infinite;
+  }
+  @keyframes camera-roll {
+    to {
+      transform: translateX(-50%);
     }
   }
 </style>

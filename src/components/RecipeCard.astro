@@ -13,7 +13,10 @@ const Wrapper = recipe.href ? 'a' : 'div';
   href={recipe.href}
   class={`group relative flex flex-col overflow-hidden rounded-3xl border border-line bg-bg shadow-soft transition-all duration-500 ease-out-expo hover:-translate-y-1.5 hover:shadow-lift ${featured ? 'sm:col-span-2 sm:flex-row' : ''}`}
 >
-  <div class={`overflow-hidden ${featured ? 'sm:w-1/2' : ''}`}>
+  <div
+    class={`overflow-hidden ${featured ? 'sm:w-1/2' : ''}`}
+    style={recipe.slug ? `view-transition-name: r-${recipe.slug}` : undefined}
+  >
     <Media
       src={recipe.image}
       alt={recipe.title}
