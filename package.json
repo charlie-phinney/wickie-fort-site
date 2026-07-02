@@ -19,5 +19,11 @@
     "astro": "^4.16.7",
     "tailwindcss": "^3.4.14",
     "tinacms": "^3.9.4"
+  },
+  "devDependencies": {
+    "@fontsource/fraunces": "^5.2.9",
+    "@fontsource/inter": "^5.2.8",
+    "@resvg/resvg-js": "^2.6.2",
+    "satori": "^0.26.0"
   }
 }
