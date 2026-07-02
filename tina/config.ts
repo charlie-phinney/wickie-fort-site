@@ -19,11 +19,15 @@ export default defineConfig({
     publicFolder: 'public',
   },
   // Photos Wickie uploads are stored in the repo under public/images.
+  // accept: iPhones default to HEIC, which Chrome/Firefox can't display —
+  // restricting the picker forces an export to JPEG/PNG instead of letting
+  // her publish a photo that looks fine to her (Safari) and broken to others.
   media: {
     tina: {
       mediaRoot: 'images',
       publicFolder: 'public',
     },
+    accept: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
   },
 
   schema: {
@@ -196,13 +200,12 @@ export default defineConfig({
             description: 'Click to upload a photo of you for the About section.',
           },
           {
-            type: 'object',
-            name: 'aboutParagraphs',
-            label: 'Your story (paragraphs)',
-            description: 'Tell people about you. Add one box per paragraph.',
-            list: true,
-            ui: { itemProps: (i) => ({ label: i?.text?.slice(0, 40) || 'New paragraph' }) },
-            fields: [{ type: 'string', name: 'text', label: 'Paragraph', ui: { component: 'textarea' } }],
+            type: 'string',
+            name: 'aboutText',
+            label: 'Your story',
+            description:
+              'Tell people about you, all in this one box. Leave an empty line between paragraphs.',
+            ui: { component: 'textarea' },
           },
 
           // ===== 3. Your recipes =====
@@ -298,13 +301,11 @@ export default defineConfig({
             description: 'What the button says, like “Let’s work together”.',
           },
           {
-            type: 'object',
-            name: 'workOfferings',
+            type: 'string',
+            name: 'workOfferingsText',
             label: 'Ways people can work with you',
-            description: 'The list of things you offer. One per box.',
-            list: true,
-            ui: { itemProps: (i) => ({ label: i?.text || 'New item' }) },
-            fields: [{ type: 'string', name: 'text', label: 'Offering' }],
+            description: 'The list of things you offer — one per line in this box.',
+            ui: { component: 'textarea' },
           },
 
           // ===== Your numbers (the "By the numbers" band) =====
