@@ -53,5 +53,22 @@
     "ttVideoCount": 186,
     "ytTopViews": 24445834,
     "ytOver1M": 2
+  },
+  "hits": {
+    "instagram": {
+      "views": 19749640,
+      "url": "https://www.instagram.com/reel/DXHVCqsDSzx/",
+      "image": "/images/hits/instagram.jpg"
+    },
+    "tiktok": {
+      "views": 18000000,
+      "url": "https://www.tiktok.com/@wickieskitchen/video/7628613864669646111",
+      "image": "/images/hits/tiktok.jpg"
+    },
+    "youtube": {
+      "views": 24445834,
+      "url": "https://www.youtube.com/shorts/2vR7LvHR6kI",
+      "image": "/images/hits/youtube.jpg"
+    }
   }
 }

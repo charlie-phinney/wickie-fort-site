@@ -54,7 +54,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          git add src/data/stats.json src/data/reels.json public/images/reels
+          git add src/data/stats.json src/data/reels.json public/images/reels public/images/hits
           if git diff --staged --quiet; then
             echo "No stat changes."
             exit 0

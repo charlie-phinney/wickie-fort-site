@@ -19,16 +19,36 @@
 
   Derived in src/data/site.ts, not here — this script only records raw facts.
 */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const STATS_PATH = join(__dirname, '..', 'src', 'data', 'stats.json');
+const HITS_DIR = join(__dirname, '..', 'public', 'images', 'hits');
 const token = process.env.IG_TOKEN;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// "Receipts" for the band: each platform's top video, with a locally saved
+// thumbnail so the row never rots when a CDN link expires. A failed download
+// keeps the previous hit (keep-last-good per platform).
+const hits = {};
+async function saveThumb(url, name) {
+  if (!url) return null;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const buf = Buffer.from(await res.arrayBuffer());
+    if (buf.length < 2000) return null; // error page, not an image
+    mkdirSync(HITS_DIR, { recursive: true });
+    writeFileSync(join(HITS_DIR, name), buf);
+    return `/images/hits/${name}`;
+  } catch {
+    return null;
+  }
+}
 
 async function ig(path, params = '') {
   const res = await fetch(`https://graph.instagram.com/${path}?${params}`, {
@@ -51,7 +71,7 @@ async function instagramDeep() {
   // Paginate every post: likes + comments come with basic scope.
   const media = [];
   let url = 'me/media';
-  let params = 'fields=id,media_type,like_count,comments_count,timestamp&limit=50';
+  let params = 'fields=id,media_type,like_count,comments_count,timestamp,permalink,thumbnail_url&limit=50';
   for (let page = 0; page < 12; page++) {
     const r = await ig(url, params);
     if (!r.ok || !Array.isArray(r.body?.data)) {
@@ -99,6 +119,7 @@ async function instagramDeep() {
       );
     } else {
       let sum = 0, counted = 0, maxViews = 0, over1M = 0, reachSum = 0, maxReach = 0, engagement = 0;
+      let topReel = null;
       for (let i = 0; i < videos.length; i++) {
         let vals;
         if (i === 0) {
@@ -111,11 +132,18 @@ async function instagramDeep() {
         }
         counted++;
         sum += vals.views || 0;
-        if ((vals.views || 0) > maxViews) maxViews = vals.views;
+        if ((vals.views || 0) > maxViews) {
+          maxViews = vals.views;
+          topReel = videos[i];
+        }
         if ((vals.views || 0) >= 1e6) over1M++;
         reachSum += vals.reach || 0;
         if ((vals.reach || 0) > maxReach) maxReach = vals.reach;
         engagement += (videos[i].like_count || 0) + (videos[i].comments_count || 0);
+      }
+      if (topReel?.permalink) {
+        const image = await saveThumb(topReel.thumbnail_url, 'instagram.jpg');
+        if (image) hits.instagram = { views: maxViews, url: topReel.permalink, image };
       }
       if (sum > 0) {
         out.igViews = sum;
@@ -161,39 +189,62 @@ async function instagramDeep() {
   return out;
 }
 
-// Per-video view counts via yt-dlp's flat playlist (no download, one call
-// per channel/tab). Returns a number array; [] on any failure so every
-// consumer keeps its last good value.
-function ytDlpViews(url) {
+// Per-video url + view-count pairs via yt-dlp's flat playlist (no download,
+// one call per channel/tab). Returns []; on any failure every consumer keeps
+// its last good value.
+function ytDlpPairs(url) {
   try {
-    const stdout = execFileSync('yt-dlp', ['--flat-playlist', '--print', '%(view_count)s', url], {
+    const stdout = execFileSync('yt-dlp', ['--flat-playlist', '--print', '%(url)s %(view_count)s', url], {
       encoding: 'utf8',
       timeout: 240000,
       stdio: ['ignore', 'pipe', 'ignore'],
     });
     return stdout
       .split('\n')
-      .map((l) => parseInt(l, 10))
-      .filter((n) => Number.isFinite(n) && n >= 0);
+      .map((line) => {
+        const [u, v] = line.trim().split(/\s+/);
+        return { url: u, views: parseInt(v, 10) };
+      })
+      .filter((p) => p.url && Number.isFinite(p.views) && p.views >= 0);
   } catch (e) {
     console.log(`deep: yt-dlp failed for ${url} — ${e.message.slice(0, 120)}`);
     return [];
   }
 }
 
+// One extra yt-dlp call for a single video's exact stats/thumbnail (flat
+// playlists round counts: 24,445,834 arrives as 24000000).
+function ytDlpVideo(url, field) {
+  try {
+    return execFileSync('yt-dlp', ['--print', field, url], {
+      encoding: 'utf8',
+      timeout: 60000,
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+  } catch {
+    return '';
+  }
+}
+
 async function tiktokDeep() {
   // Preferred: every video's play count. TikTok sometimes blocks datacenter
   // IPs — keep-last-good covers the misses.
-  const plays = ytDlpViews('https://www.tiktok.com/@wickieskitchen');
-  if (plays.length) {
+  const pairs = ytDlpPairs('https://www.tiktok.com/@wickieskitchen');
+  if (pairs.length) {
+    const plays = pairs.map((p) => p.views);
+    const top = pairs.reduce((a, b) => (b.views > a.views ? b : a));
     const out = {
       ttViews: plays.reduce((s, p) => s + p, 0),
-      ttTopViews: Math.max(...plays),
+      ttTopViews: top.views,
       ttOver1M: plays.filter((p) => p >= 1e6).length,
       ttVideoCount: plays.length,
     };
+    const exact = parseInt(ytDlpVideo(top.url, 'view_count'), 10);
+    if (Number.isFinite(exact) && exact > out.ttTopViews) out.ttTopViews = exact;
+    const image = await saveThumb(ytDlpVideo(top.url, 'thumbnail'), 'tiktok.jpg');
+    if (image) hits.tiktok = { views: out.ttTopViews, url: top.url, image };
     console.log(
-      `deep: TikTok ${out.ttViews} plays across ${plays.length} videos (top ${out.ttTopViews}, ${out.ttOver1M} over 1M).`
+      `deep: TikTok ${out.ttViews} plays across ${pairs.length} videos (top ${out.ttTopViews}, ${out.ttOver1M} over 1M).`
     );
     return out;
   }
@@ -225,44 +276,29 @@ async function tiktokDeep() {
 // Per-video YouTube view counts (longform + Shorts tabs) for the top-video
 // and 1M+ composites. The lifetime channel total still comes from the About
 // page in fetch-stats.mjs — this is per-video only.
-function youtubeDeep() {
-  // url+views pairs so the top video can be re-fetched for its exact count
-  // (the flat playlist rounds: 24445740 arrives as 24000000).
-  const pairs = [];
-  for (const tab of ['videos', 'shorts']) {
-    try {
-      const stdout = execFileSync(
-        'yt-dlp',
-        ['--flat-playlist', '--print', '%(url)s %(view_count)s', `https://www.youtube.com/@wickieskitchen/${tab}`],
-        { encoding: 'utf8', timeout: 240000, stdio: ['ignore', 'pipe', 'ignore'] }
-      );
-      for (const line of stdout.split('\n')) {
-        const [url, v] = line.trim().split(/\s+/);
-        const n = parseInt(v, 10);
-        if (url && Number.isFinite(n) && n >= 0) pairs.push({ url, views: n });
-      }
-    } catch (e) {
-      console.log(`deep: yt-dlp failed for YouTube /${tab} — ${e.message.slice(0, 120)}`);
-    }
-  }
+async function youtubeDeep() {
+  const pairs = [
+    ...ytDlpPairs('https://www.youtube.com/@wickieskitchen/videos'),
+    ...ytDlpPairs('https://www.youtube.com/@wickieskitchen/shorts'),
+  ];
   if (!pairs.length) return {};
   const top = pairs.reduce((a, b) => (b.views > a.views ? b : a));
   let topExact = top.views;
-  try {
-    const exact = parseInt(
-      execFileSync('yt-dlp', ['--print', 'view_count', top.url], {
-        encoding: 'utf8',
-        timeout: 60000,
-        stdio: ['ignore', 'pipe', 'ignore'],
-      }),
-      10
-    );
-    if (Number.isFinite(exact) && exact > topExact) topExact = exact;
-  } catch {}
+  const exact = parseInt(ytDlpVideo(top.url, 'view_count'), 10);
+  if (Number.isFinite(exact) && exact > topExact) topExact = exact;
   const out = {
     ytTopViews: topExact,
     ytOver1M: pairs.filter((p) => p.views >= 1e6).length,
   };
+  // Shorts thumbnails have a vertical variant (oar2); fall back to the
+  // classic landscape one if it doesn't exist for this video.
+  const id = top.url.match(/(?:shorts\/|v=|youtu\.be\/)([\w-]{6,})/)?.[1];
+  if (id) {
+    const image =
+      (await saveThumb(`https://i.ytimg.com/vi/${id}/oar2.jpg`, 'youtube.jpg')) ||
+      (await saveThumb(`https://i.ytimg.com/vi/${id}/hqdefault.jpg`, 'youtube.jpg'));
+    if (image) hits.youtube = { views: topExact, url: top.url, image };
+  }
   console.log(`deep: YouTube top video ${out.ytTopViews}, ${out.ytOver1M} over 1M (${pairs.length} videos).`);
   return out;
 }
@@ -286,9 +322,11 @@ async function youtubeCount() {
 async function main() {
   const stats = JSON.parse(readFileSync(STATS_PATH, 'utf8'));
   const prev = stats.deep || {};
-  const [igd, tt, yt, ytc] = [await instagramDeep(), await tiktokDeep(), youtubeDeep(), await youtubeCount()];
+  const [igd, tt, yt, ytc] = [await instagramDeep(), await tiktokDeep(), await youtubeDeep(), await youtubeCount()];
   // keep-last-good per key: only fetched keys overwrite.
   stats.deep = { ...prev, ...igd, ...tt, ...yt, ...ytc, updated: new Date().toISOString().slice(0, 10) };
+  // Top-video receipts, keep-last-good per platform.
+  stats.hits = { ...(stats.hits || {}), ...hits };
   // Fold IG + TikTok views into today's history entry (fetch-stats wrote it
   // just before this step) so the homepage views ticker measures real growth.
   if (Array.isArray(stats.history) && stats.history.length) {

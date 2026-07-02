@@ -24,6 +24,14 @@ const ord = (id: string) => `order:${orderIndex(id)}`;
 // up, because the views figure is stated as an honest floor. Mirrored
 // client-side in the count-up script, so the two must stay in step.
 const fmtM = (n: number) => `${(Math.floor(n / 1e5) / 10).toFixed(1).replace(/\.0$/, '')}M+`;
+// Scoreboard formatter: exact scale for any magnitude ("29.9K", "52.1M") —
+// per-platform numbers are stated plain, without the floor "+".
+const fmtCount = (n: number) =>
+  n >= 1e6
+    ? `${(Math.floor(n / 1e5) / 10).toFixed(1).replace(/\.0$/, '')}M`
+    : n >= 1e3
+      ? `${(Math.floor(n / 100) / 10).toFixed(1).replace(/\.0$/, '')}K`
+      : String(n);
 
 // Camera-roll strip: every photo already on the site, drifting slowly under
 // the recipe grid. Purely decorative (aria-hidden) and self-maintaining —
@@ -147,72 +155,100 @@ const jsonLd = [
     </section>
 
     <!-- ===================== BY THE NUMBERS (social proof) ===================== -->
-    <!-- Every tile is measured daily from the platforms themselves (IG Graph
-         API per-reel; TikTok + YouTube per-video via yt-dlp) — the /admin
-         numbers are floors, never the display value. The big numbers count up
-         on reveal, then keep ticking with Wickie's real measured growth (see
-         the stats script below) — a zero/unfetched value hides its tile. -->
+    <!-- Per-platform scoreboard + top-video receipts. Every number is measured
+         daily from its own platform (IG Graph API per-reel; TikTok + YouTube
+         per-video via yt-dlp) and sits under an explicit platform heading, so
+         nothing is blended or ambiguous. The combined views line counts up on
+         reveal, then keeps ticking with real measured growth. A platform that
+         goes unfetchable drops its column (keep-last-good makes that rare);
+         the receipts are the actual top videos, tappable, thumbnails saved
+         locally so the row never rots. -->
     {
-      isVisible('stats') && (
+      isVisible('stats') && stats.platforms.length > 0 && (
         <section class="bg-primary-deep text-bg" style={ord('stats')}>
           <div class="mx-auto max-w-6xl px-5 py-14 sm:px-8 md:py-20">
             <p data-reveal class="font-hand text-2xl text-pop">By the numbers</p>
-            <dl data-reveal class="mt-6 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-              {stats.live.views.value > 0 && (
-                <div>
-                  <dt
-                    class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none tabular-nums"
-                    data-stat
-                    data-value={stats.live.views.value}
-                    data-perday={stats.live.views.perDay}
-                    data-fmt="m"
-                  >
-                    {fmtM(stats.live.views.value)}
-                  </dt>
-                  <dd class="mt-2 text-sm leading-snug text-bg/75">video views</dd>
+
+            <div data-reveal class="mt-8 grid gap-y-8 sm:grid-cols-3 sm:gap-x-8">
+              {stats.platforms.map((p) => (
+                <dl class="border-t-2 border-bg/25 pt-4">
+                  <dt class="font-serif text-lg font-semibold tracking-wide">{p.name}</dt>
+                  <dd class="mt-4 font-serif text-[clamp(2rem,4.5vw,2.75rem)] font-semibold leading-none tabular-nums">
+                    {fmtCount(p.views)}
+                    <span class="ml-2 font-sans text-sm font-normal text-bg/75">{p.viewsLabel}</span>
+                  </dd>
+                  <dd class="mt-3 font-serif text-2xl font-semibold leading-none tabular-nums">
+                    {fmtCount(p.followers)}
+                    <span class="ml-2 font-sans text-sm font-normal text-bg/75">{p.followersLabel}</span>
+                  </dd>
+                  {p.over1M > 0 && (
+                    <dd class="mt-3 font-serif text-2xl font-semibold leading-none tabular-nums">
+                      {p.over1M}
+                      <span class="ml-2 font-sans text-sm font-normal text-bg/75">
+                        {p.over1M === 1 ? 'video over 1M views' : 'videos over 1M views'}
+                      </span>
+                    </dd>
+                  )}
+                </dl>
+              ))}
+            </div>
+
+            {stats.live.views.value > 0 && (
+              <p data-reveal class="mt-10 border-t-2 border-bg/25 pt-6 font-serif text-[clamp(1.4rem,3.5vw,2rem)] font-semibold leading-snug">
+                <span
+                  class="tabular-nums"
+                  data-stat
+                  data-value={stats.live.views.value}
+                  data-perday={stats.live.views.perDay}
+                  data-fmt="m"
+                >
+                  {fmtM(stats.live.views.value)}
+                </span>{' '}
+                views all together
+                {stats.totalFollowers > 0 && (
+                  <span class="text-bg/75"> · {fmtCount(stats.totalFollowers)} followers</span>
+                )}
+                {stats.videos1M > 0 && (
+                  <span class="text-bg/75"> · {stats.videos1M} videos over 1 million</span>
+                )}
+              </p>
+            )}
+
+            {stats.platforms.some((p) => p.hit) && (
+              <div data-reveal class="mt-12">
+                <p class="font-hand text-2xl text-pop">The big ones — tap to watch</p>
+                <div class="mt-5 grid grid-cols-3 gap-3 sm:gap-5">
+                  {stats.platforms
+                    .filter((p) => p.hit)
+                    .map((p) => (
+                      <a
+                        href={p.hit!.url}
+                        target="_blank"
+                        rel="noopener"
+                        class="group relative block overflow-hidden rounded-2xl shadow-soft transition-all duration-300 ease-out-expo hover:-translate-y-1 hover:shadow-lift"
+                        aria-label={`Wickie's most-viewed ${p.name} video — ${fmtCount(p.hit!.views)} ${p.viewsLabel}, opens on ${p.name}`}
+                      >
+                        <img
+                          src={p.hit!.image}
+                          alt=""
+                          loading="lazy"
+                          width="540"
+                          height="960"
+                          class="aspect-[9/16] w-full object-cover transition-transform duration-500 ease-out-expo group-hover:scale-[1.03]"
+                        />
+                        <span class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-3 pb-3 pt-10 sm:px-4 sm:pb-4">
+                          <span class="block font-serif text-xl font-semibold leading-none tabular-nums text-white sm:text-3xl">
+                            {fmtCount(p.hit!.views)}
+                          </span>
+                          <span class="mt-1 block text-xs text-white/85 sm:text-sm">
+                            {p.viewsLabel} on {p.name}
+                          </span>
+                        </span>
+                      </a>
+                    ))}
                 </div>
-              )}
-              {stats.totalLikes > 0 && (
-                <div>
-                  <dt class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none tabular-nums">
-                    {fmtM(stats.totalLikes)}
-                  </dt>
-                  <dd class="mt-2 text-sm leading-snug text-bg/75">likes</dd>
-                </div>
-              )}
-              {stats.engagementRate && (
-                <div>
-                  <dt class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none tabular-nums">
-                    {stats.engagementRate}%
-                  </dt>
-                  <dd class="mt-2 text-sm leading-snug text-bg/75">average engagement rate on Instagram</dd>
-                </div>
-              )}
-              {stats.topReelReach > 0 && (
-                <div>
-                  <dt class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none tabular-nums">
-                    {fmtM(stats.topReelReach)}
-                  </dt>
-                  <dd class="mt-2 text-sm leading-snug text-bg/75">people reached by a single Instagram reel</dd>
-                </div>
-              )}
-              {stats.videos1M > 0 && (
-                <div>
-                  <dt class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none tabular-nums">
-                    {stats.videos1M}
-                  </dt>
-                  <dd class="mt-2 text-sm leading-snug text-bg/75">videos with over 1 million views</dd>
-                </div>
-              )}
-              {stats.topVideoViews > 0 && (
-                <div>
-                  <dt class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none tabular-nums">
-                    {fmtM(stats.topVideoViews)}
-                  </dt>
-                  <dd class="mt-2 text-sm leading-snug text-bg/75">views on my most-viewed video</dd>
-                </div>
-              )}
-            </dl>
+              </div>
+            )}
           </div>
         </section>
       )
