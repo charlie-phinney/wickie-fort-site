@@ -216,7 +216,12 @@ const breadcrumbLd = {
       </div>
 
       <!-- ------------------------------- photo ------------------------------ -->
-      <div class="recipe-photo mt-9 overflow-hidden rounded-[2rem] border-4 border-bg shadow-lift">
+      <!-- view-transition-name pairs with this recipe's card on the homepage,
+           so the photo morphs between the two pages (CSS-only, global.css). -->
+      <div
+        class="recipe-photo mt-9 overflow-hidden rounded-[2rem] border-4 border-bg shadow-lift"
+        style={`view-transition-name: r-${recipe.slug}`}
+      >
         <Media src={recipe.image} alt={recipe.title} label="Photo coming soon" ratio="16/9" />
       </div>
 
