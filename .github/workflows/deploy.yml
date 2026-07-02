@@ -55,6 +55,8 @@ jobs:
       # carry GPS coordinates.
       - name: Optimize oversized images
         run: |
+          # ubuntu-24.04 runners no longer preinstall ImageMagick
+          command -v mogrify >/dev/null || sudo apt-get install -y -q imagemagick
           shopt -s nullglob nocaseglob
           for f in public/images/*.jpg public/images/*.jpeg public/images/*.png; do
             if [ "$(stat -c%s "$f")" -gt 614400 ]; then
