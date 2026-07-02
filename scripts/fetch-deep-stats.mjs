@@ -19,16 +19,37 @@
 
   Derived in src/data/site.ts, not here — this script only records raw facts.
 */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const STATS_PATH = join(__dirname, '..', 'src', 'data', 'stats.json');
+const PROFILES_DIR = join(__dirname, '..', 'public', 'images', 'profiles');
 const token = process.env.IG_TOKEN;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Profile-card assets (avatars + each platform's three latest video
+// thumbnails), saved locally so the cards never rot when a CDN link
+// expires. A failed download keeps the previous file on disk and the
+// previous metadata in stats.json (keep-last-good per platform).
+const profiles = {};
+async function saveImage(url, name) {
+  if (!url) return null;
+  try {
+    const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
+    if (!res.ok) return null;
+    const buf = Buffer.from(await res.arrayBuffer());
+    if (buf.length < 2000) return null; // error page, not an image
+    mkdirSync(PROFILES_DIR, { recursive: true });
+    writeFileSync(join(PROFILES_DIR, name), buf);
+    return `/images/profiles/${name}`;
+  } catch {
+    return null;
+  }
+}
 
 async function ig(path, params = '') {
   const res = await fetch(`https://graph.instagram.com/${path}?${params}`, {
@@ -45,8 +66,10 @@ async function instagramDeep() {
   }
   const out = {};
 
-  const me = await ig('me', 'fields=media_count,followers_count');
+  const me = await ig('me', 'fields=media_count,followers_count,profile_picture_url');
   if (me.ok && me.body?.media_count > 0) out.igMediaCount = me.body.media_count;
+  const igAvatar = await saveImage(me.body?.profile_picture_url, 'instagram-avatar.jpg');
+  if (igAvatar) profiles.instagram = { avatar: igAvatar };
 
   // Paginate every post: likes + comments come with basic scope.
   const media = [];
@@ -213,6 +236,19 @@ async function tiktokDeep() {
     };
     const exact = parseInt(ytDlpVideo(top.url, 'view_count'), 10);
     if (Number.isFinite(exact) && exact > out.ttTopViews) out.ttTopViews = exact;
+    // Profile-card strip: the first three videos as her profile shows them
+    // (pinned first), plus her avatar from the profile page.
+    const recent = [];
+    for (const [i, p] of pairs.slice(0, 3).entries()) {
+      const image = await saveImage(ytDlpVideo(p.url, 'thumbnail'), `tiktok-${i + 1}.jpg`);
+      if (image) recent.push({ url: p.url, image });
+    }
+    const avatar = await tiktokAvatar();
+    if (avatar || recent.length === 3)
+      profiles.tiktok = {
+        ...(avatar ? { avatar } : {}),
+        ...(recent.length === 3 ? { recent } : {}),
+      };
     console.log(
       `deep: TikTok ${out.ttViews} plays across ${pairs.length} videos (top ${out.ttTopViews}, ${out.ttOver1M} over 1M).`
     );
@@ -243,14 +279,29 @@ async function tiktokDeep() {
   return {};
 }
 
+// Her TikTok avatar lives in the profile page's rehydration JSON.
+async function tiktokAvatar() {
+  try {
+    const res = await fetch('https://www.tiktok.com/@wickieskitchen', {
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36',
+      },
+    });
+    if (!res.ok) return null;
+    const m = (await res.text()).match(/"avatarLarger":\s*"([^"]+)"/);
+    return m ? saveImage(JSON.parse(`"${m[1]}"`), 'tiktok-avatar.jpg') : null;
+  } catch {
+    return null;
+  }
+}
+
 // Per-video YouTube view counts (longform + Shorts tabs) for the top-video
 // and 1M+ composites. The lifetime channel total still comes from the About
 // page in fetch-stats.mjs — this is per-video only.
 async function youtubeDeep() {
-  const pairs = [
-    ...ytDlpPairs('https://www.youtube.com/@wickieskitchen/videos'),
-    ...ytDlpPairs('https://www.youtube.com/@wickieskitchen/shorts'),
-  ];
+  const shorts = ytDlpPairs('https://www.youtube.com/@wickieskitchen/shorts');
+  const pairs = [...ytDlpPairs('https://www.youtube.com/@wickieskitchen/videos'), ...shorts];
   if (!pairs.length) return {};
   const top = pairs.reduce((a, b) => (b.views > a.views ? b : a));
   let topExact = top.views;
@@ -260,6 +311,18 @@ async function youtubeDeep() {
     ytTopViews: topExact,
     ytOver1M: pairs.filter((p) => p.views >= 1e6).length,
   };
+  // Profile-card strip: the three newest Shorts. i.ytimg's oar2 variant is
+  // the vertical Shorts thumbnail; hqdefault covers videos that lack it.
+  const recent = [];
+  for (const [i, p] of shorts.slice(0, 3).entries()) {
+    const id = p.url.match(/(?:shorts\/|v=|youtu\.be\/)([\w-]{6,})/)?.[1];
+    if (!id) continue;
+    const image =
+      (await saveImage(`https://i.ytimg.com/vi/${id}/oar2.jpg`, `youtube-${i + 1}.jpg`)) ||
+      (await saveImage(`https://i.ytimg.com/vi/${id}/hqdefault.jpg`, `youtube-${i + 1}.jpg`));
+    if (image) recent.push({ url: p.url, image });
+  }
+  if (recent.length === 3) profiles.youtube = { recent };
   console.log(`deep: YouTube top video ${out.ytTopViews}, ${out.ytOver1M} over 1M (${pairs.length} videos).`);
   return out;
 }
@@ -274,6 +337,12 @@ async function youtubeCount() {
     });
     if (!res.ok) return {};
     const html = await res.text();
+    // Channel avatar for the profile card (bump the size hint the page uses).
+    const av = html.match(/"avatar":\{"thumbnails":\[\{"url":"([^"]+)"/);
+    if (av) {
+      const avatar = await saveImage(av[1].replace(/=s\d+-/, '=s176-'), 'youtube-avatar.jpg');
+      if (avatar) profiles.youtube = { ...(profiles.youtube || {}), avatar };
+    }
     const m = html.match(/"videoCountText":"([\d,]+)\s+videos?"/i);
     if (m) return { ytVideoCount: parseInt(m[1].replace(/,/g, ''), 10) };
   } catch {}
@@ -286,6 +355,13 @@ async function main() {
   const [igd, tt, yt, ytc] = [await instagramDeep(), await tiktokDeep(), await youtubeDeep(), await youtubeCount()];
   // keep-last-good per key: only fetched keys overwrite.
   stats.deep = { ...prev, ...igd, ...tt, ...yt, ...ytc, updated: new Date().toISOString().slice(0, 10) };
+  // Profile-card assets, keep-last-good per platform (and per key within a
+  // platform, so a fetched avatar never erases yesterday's recent strip).
+  const prevProfiles = stats.profiles || {};
+  stats.profiles = { ...prevProfiles };
+  for (const [k, v] of Object.entries(profiles)) {
+    stats.profiles[k] = { ...(prevProfiles[k] || {}), ...v };
+  }
   // Fold IG + TikTok views into today's history entry (fetch-stats wrote it
   // just before this step) so the homepage views ticker measures real growth.
   if (Array.isArray(stats.history) && stats.history.length) {

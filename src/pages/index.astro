@@ -235,7 +235,7 @@ const jsonLd = [
             </table>
 
             {stats.platforms.some((p) => p.profile) && (
-              <div data-reveal class="mt-12 flex flex-wrap gap-3">
+              <div data-reveal class="mt-12 grid gap-4 sm:grid-cols-3 sm:gap-5">
                 {stats.platforms
                   .filter((p) => p.profile)
                   .map((p) => (
@@ -243,10 +243,43 @@ const jsonLd = [
                       href={p.profile!.href}
                       target="_blank"
                       rel="noopener"
-                      class="inline-flex items-baseline gap-2 rounded-full border-2 border-bg/30 px-5 py-2.5 text-base font-semibold transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-bg hover:bg-bg hover:text-primary-deep"
+                      class="group block rounded-3xl bg-bg p-4 text-ink shadow-soft transition-all duration-300 ease-out-expo hover:-translate-y-1 hover:shadow-lift sm:p-5"
+                      aria-label={`Open Wickie's ${p.name} profile, ${p.profile!.handle}`}
                     >
-                      {p.name}
-                      <span class="text-sm font-normal opacity-75">{p.profile!.handle}</span>
+                      <span class="flex items-center gap-3">
+                        {p.profile!.avatar && (
+                          <img
+                            src={p.profile!.avatar}
+                            alt=""
+                            loading="lazy"
+                            width="88"
+                            height="88"
+                            class="h-11 w-11 rounded-full object-cover"
+                          />
+                        )}
+                        <span class="min-w-0">
+                          <span class="block truncate font-serif text-lg font-semibold leading-tight">
+                            {p.name}
+                          </span>
+                          <span class="block truncate text-sm text-muted">
+                            {p.profile!.handle} · {fmtCount(p.followers)} followers
+                          </span>
+                        </span>
+                      </span>
+                      {p.profile!.recent && p.profile!.recent.length > 0 && (
+                        <span class="mt-4 grid grid-cols-3 gap-1.5">
+                          {p.profile!.recent.map((r) => (
+                            <img
+                              src={r.image}
+                              alt=""
+                              loading="lazy"
+                              width="270"
+                              height="480"
+                              class="aspect-[9/16] w-full rounded-xl object-cover transition-transform duration-500 ease-out-expo group-hover:scale-[1.02]"
+                            />
+                          ))}
+                        </span>
+                      )}
                     </a>
                   ))}
               </div>

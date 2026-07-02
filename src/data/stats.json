@@ -26,7 +26,7 @@
       "yv": 28860041,
       "tl": 2100000,
       "iv": 52139176,
-      "tv": 31131436
+      "tv": 31131448
     }
   ],
   "deep": {
@@ -47,11 +47,50 @@
     "igReelEngagement": 2427192,
     "igReelReach": 34096393,
     "igTopReelReach": 12540869,
-    "ttViews": 31131436,
+    "ttViews": 31131448,
     "ttTopViews": 18000000,
     "ttOver1M": 4,
     "ttVideoCount": 186,
-    "ytTopViews": 24000000,
+    "ytTopViews": 24446252,
     "ytOver1M": 2
+  },
+  "profiles": {
+    "instagram": {
+      "avatar": "/images/profiles/instagram-avatar.jpg"
+    },
+    "tiktok": {
+      "avatar": "/images/profiles/tiktok-avatar.jpg",
+      "recent": [
+        {
+          "url": "https://www.tiktok.com/@wickieskitchen/video/7657729836386962718",
+          "image": "/images/profiles/tiktok-1.jpg"
+        },
+        {
+          "url": "https://www.tiktok.com/@wickieskitchen/video/7657604031119936781",
+          "image": "/images/profiles/tiktok-2.jpg"
+        },
+        {
+          "url": "https://www.tiktok.com/@wickieskitchen/video/7657257689780718878",
+          "image": "/images/profiles/tiktok-3.jpg"
+        }
+      ]
+    },
+    "youtube": {
+      "avatar": "/images/profiles/youtube-avatar.jpg",
+      "recent": [
+        {
+          "url": "https://www.youtube.com/shorts/rF9u4dVxEFw",
+          "image": "/images/profiles/youtube-1.jpg"
+        },
+        {
+          "url": "https://www.youtube.com/shorts/00GwGEIqd6g",
+          "image": "/images/profiles/youtube-2.jpg"
+        },
+        {
+          "url": "https://www.youtube.com/shorts/MDmBlX3BIlk",
+          "image": "/images/profiles/youtube-3.jpg"
+        }
+      ]
+    }
   }
 }
