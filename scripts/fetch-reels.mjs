@@ -27,11 +27,13 @@ if (!token) {
 }
 
 async function main() {
+  // Token goes in the Authorization header, never the URL — query strings
+  // leak into logs and error messages (same pattern as fetch-stats.mjs).
   const url =
     'https://graph.instagram.com/me/media' +
     '?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp' +
-    `&limit=24&access_token=${token}`;
-  const res = await fetch(url);
+    '&limit=24';
+  const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) {
     console.log(`IG media request failed (${res.status}) — keeping existing wall.`);
     return;
