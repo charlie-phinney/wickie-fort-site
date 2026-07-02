@@ -170,55 +170,74 @@ const jsonLd = [
             <p data-reveal class="font-hand text-2xl text-pop">By the numbers</p>
 
             {stats.live.views.value > 0 && (
-              <div data-reveal class="mt-6">
-                <p class="font-serif text-[clamp(3rem,9vw,5.5rem)] font-semibold leading-none tabular-nums">
-                  <span
+              <div data-reveal class="mt-8 flex flex-wrap items-end gap-x-14 gap-y-8">
+                <div>
+                  <p
+                    class="font-serif text-[clamp(3.5rem,10vw,6rem)] font-semibold leading-none tabular-nums"
                     data-stat
                     data-value={stats.live.views.value}
                     data-perday={stats.live.views.perDay}
                     data-fmt="m"
                   >
                     {fmtM(stats.live.views.value)}
-                  </span>
-                  <span class="ml-3 font-sans text-[0.24em] font-normal text-bg/75">views all together</span>
-                </p>
-                <p class="mt-4 font-serif text-[clamp(1.25rem,3vw,1.75rem)] font-semibold leading-snug">
-                  {stats.followersShown > 0 && <span>{fmtCount(stats.followersShown)} followers</span>}
-                  {stats.videos1M > 0 && (
-                    <span class="text-bg/85"> · {stats.videos1M} videos over 1 million views</span>
-                  )}
-                </p>
+                  </p>
+                  <p class="mt-3 text-base text-bg/75">total views</p>
+                </div>
+                {stats.followersShown > 0 && (
+                  <div>
+                    <p class="font-serif text-[clamp(2rem,5vw,3rem)] font-semibold leading-none tabular-nums">
+                      {fmtCount(stats.followersShown)}
+                    </p>
+                    <p class="mt-3 text-base text-bg/75">followers</p>
+                  </div>
+                )}
+                {stats.videos1M > 0 && (
+                  <div>
+                    <p class="font-serif text-[clamp(2rem,5vw,3rem)] font-semibold leading-none tabular-nums">
+                      {stats.videos1M}
+                    </p>
+                    <p class="mt-3 text-base text-bg/75">videos past a million views</p>
+                  </div>
+                )}
               </div>
             )}
 
-            <div data-reveal class="mt-12 grid gap-y-8 sm:grid-cols-3 sm:gap-x-8">
-              {stats.platforms.map((p) => (
-                <dl class="border-t-2 border-bg/25 pt-4">
-                  <dt class="font-serif text-lg font-semibold tracking-wide">{p.name}</dt>
-                  <dd class="mt-4 font-serif text-[clamp(2rem,4.5vw,2.75rem)] font-semibold leading-none tabular-nums">
-                    {fmtCount(p.views)}
-                    <span class="ml-2 font-sans text-sm font-normal text-bg/75">{p.viewsLabel}</span>
-                  </dd>
-                  <dd class="mt-3 font-serif text-2xl font-semibold leading-none tabular-nums">
-                    {fmtCount(p.followers)}
-                    <span class="ml-2 font-sans text-sm font-normal text-bg/75">{p.followersLabel}</span>
-                  </dd>
-                  {p.over1M > 0 && (
-                    <dd class="mt-3 font-serif text-2xl font-semibold leading-none tabular-nums">
-                      {p.over1M}
-                      <span class="ml-2 font-sans text-sm font-normal text-bg/75">
-                        {p.over1M === 1 ? 'video over 1M views' : 'videos over 1M views'}
-                      </span>
-                    </dd>
-                  )}
-                </dl>
-              ))}
-            </div>
+            <table data-reveal class="mt-14 w-full max-w-4xl border-collapse text-left">
+              <thead>
+                <tr class="text-sm text-bg/70">
+                  <th scope="col" class="pb-3 font-normal" />
+                  <th scope="col" class="pb-3 text-right font-normal">Views</th>
+                  <th scope="col" class="pb-3 text-right font-normal">Followers</th>
+                  <th scope="col" class="pb-3 text-right font-normal">
+                    <span class="sm:hidden">1M+</span>
+                    <span class="hidden sm:inline">Videos past 1M</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {stats.platforms.map((p) => (
+                  <tr class="border-t border-bg/25">
+                    <th scope="row" class="py-4 pr-4 font-serif text-lg font-semibold sm:text-xl">
+                      {p.name}
+                    </th>
+                    <td class="py-4 text-right font-serif text-2xl font-semibold tabular-nums sm:text-3xl">
+                      {fmtCount(p.views)}
+                    </td>
+                    <td class="py-4 text-right font-serif text-2xl font-semibold tabular-nums sm:text-3xl">
+                      {fmtCount(p.followers)}
+                    </td>
+                    <td class="py-4 text-right font-serif text-2xl font-semibold tabular-nums sm:text-3xl">
+                      {p.over1M > 0 ? p.over1M : ''}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
 
             {stats.platforms.some((p) => p.hit) && (
-              <div data-reveal class="mt-12">
-                <p class="font-hand text-2xl text-pop">The big ones · tap to watch</p>
-                <div class="mt-5 grid grid-cols-3 gap-3 sm:gap-5">
+              <div data-reveal class="mt-14">
+                <p class="font-hand text-2xl text-pop">My most-watched videos</p>
+                <div class="mt-5 grid max-w-3xl grid-cols-3 gap-3 sm:gap-5">
                   {stats.platforms
                     .filter((p) => p.hit)
                     .map((p) => (
@@ -227,7 +246,7 @@ const jsonLd = [
                         target="_blank"
                         rel="noopener"
                         class="group relative block overflow-hidden rounded-2xl shadow-soft transition-all duration-300 ease-out-expo hover:-translate-y-1 hover:shadow-lift"
-                        aria-label={`Wickie's most-viewed ${p.name} video: ${fmtCount(p.hit!.views)} ${p.viewsLabel}, opens on ${p.name}`}
+                        aria-label={`Watch Wickie's most-viewed ${p.name} video (${fmtCount(p.hit!.views)} views)`}
                       >
                         <img
                           src={p.hit!.image}
@@ -238,12 +257,10 @@ const jsonLd = [
                           class="aspect-[9/16] w-full object-cover transition-transform duration-500 ease-out-expo group-hover:scale-[1.03]"
                         />
                         <span class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-3 pb-3 pt-10 sm:px-4 sm:pb-4">
-                          <span class="block font-serif text-xl font-semibold leading-none tabular-nums text-white sm:text-3xl">
+                          <span class="block font-serif text-xl font-semibold leading-none tabular-nums text-white sm:text-2xl">
                             {fmtCount(p.hit!.views)}
                           </span>
-                          <span class="mt-1 block text-xs text-white/85 sm:text-sm">
-                            {p.viewsLabel} on {p.name}
-                          </span>
+                          <span class="mt-1 block text-xs text-white/85 sm:text-sm">{p.name}</span>
                         </span>
                       </a>
                     ))}
