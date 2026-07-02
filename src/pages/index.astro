@@ -20,6 +20,10 @@ const helloMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
 // set, and a hidden section simply isn't rendered.
 const ord = (id: string) => `order:${orderIndex(id)}`;
 
+// Millions formatter for the stats band ("28.8M+"); mirrored client-side in
+// the count-up script, so the two must stay in step.
+const fmtM = (n: number) => `${(n / 1e6).toFixed(1).replace(/\.0$/, '')}M+`;
+
 // Structured data: tells Google who Wickie is (a food creator) and links her
 // verified profiles, so the site can surface as a proper knowledge entity.
 const jsonLd = [
@@ -135,27 +139,77 @@ const jsonLd = [
     </section>
 
     <!-- ===================== BY THE NUMBERS (social proof) ===================== -->
-    <!-- Follower totals auto-refresh daily (src/data/stats.json); the two video
-         numbers are kept by hand in /admin (site.json). -->
+    <!-- Followers, YouTube lifetime views and TikTok likes auto-refresh daily
+         (src/data/stats.json); the two video numbers are kept by hand in /admin.
+         The big numbers count up on reveal, then keep ticking with Wickie's
+         real measured growth (see the stats script below) — a zero/unfetched
+         value simply hides its tile. -->
     {
       isVisible('stats') && (
         <section class="bg-primary-deep text-bg" style={ord('stats')}>
           <div class="mx-auto max-w-6xl px-5 py-14 sm:px-8 md:py-20">
             <p data-reveal class="font-hand text-2xl text-pop">By the numbers</p>
-            <dl data-reveal class="mt-6 grid gap-8 sm:grid-cols-3">
+            <dl data-reveal class="mt-6 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
               <div>
-                <dt class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none">{stats.totalFollowers}</dt>
+                <dt
+                  class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none tabular-nums"
+                  data-stat
+                  data-value={stats.live.followers.value}
+                  data-perday={stats.live.followers.perDay}
+                  data-fmt="k"
+                >
+                  {stats.totalFollowers}
+                </dt>
                 <dd class="mt-2 text-sm leading-snug text-bg/75">followers across all platforms</dd>
               </div>
-              <div>
-                <dt class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none">{stats.videosOver1M}</dt>
-                <dd class="mt-2 text-sm leading-snug text-bg/75">videos with over 1 million views</dd>
-              </div>
-              <div>
-                <dt class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none">{stats.topViews}</dt>
-                <dd class="mt-2 text-sm leading-snug text-bg/75">views on my most-viewed video</dd>
-              </div>
+              {stats.live.ytViews.value > 0 && (
+                <div>
+                  <dt
+                    class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none tabular-nums"
+                    data-stat
+                    data-value={stats.live.ytViews.value}
+                    data-perday={stats.live.ytViews.perDay}
+                    data-fmt="m"
+                  >
+                    {fmtM(stats.live.ytViews.value)}
+                  </dt>
+                  <dd class="mt-2 text-sm leading-snug text-bg/75">views on YouTube alone</dd>
+                </div>
+              )}
+              {stats.live.ttLikes.value > 0 && (
+                <div>
+                  <dt
+                    class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none tabular-nums"
+                    data-stat
+                    data-value={stats.live.ttLikes.value}
+                    data-perday={stats.live.ttLikes.perDay}
+                    data-fmt="m"
+                  >
+                    {fmtM(stats.live.ttLikes.value)}
+                  </dt>
+                  <dd class="mt-2 text-sm leading-snug text-bg/75">likes on TikTok</dd>
+                </div>
+              )}
+              {stats.videosOver1M && (
+                <div>
+                  <dt class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none tabular-nums">
+                    {stats.videosOver1M}
+                  </dt>
+                  <dd class="mt-2 text-sm leading-snug text-bg/75">videos with over 1 million views</dd>
+                </div>
+              )}
+              {stats.topViews && (
+                <div>
+                  <dt class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none tabular-nums">
+                    {stats.topViews}
+                  </dt>
+                  <dd class="mt-2 text-sm leading-snug text-bg/75">views on my most-viewed video</dd>
+                </div>
+              )}
             </dl>
+            <p data-reveal class="mt-9 text-sm text-bg/60">
+              Pulled straight from the platforms, refreshed every day.
+            </p>
           </div>
         </section>
       )
@@ -403,6 +457,52 @@ const jsonLd = [
 </style>
 
 <script>
+  // ---- Stats band: count up on reveal, then keep ticking with real growth ----
+  // data-perday is Wickie's measured daily growth (computed in site.ts from the
+  // stats history — zero until two days of history exist), extrapolated live so
+  // the numbers visibly climb while you watch. Never a made-up rate.
+  const fmtStat = (n: number, kind?: string) =>
+    kind === 'm'
+      ? `${(n / 1e6).toFixed(1).replace(/\.0$/, '')}M+`
+      : kind === 'k'
+        ? `${Math.floor(n / 1000)}K+`
+        : String(Math.round(n));
+  const reduceStats = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('[data-stat]').forEach((el) => {
+    const target = Number(el.dataset.value || 0);
+    const perDay = Number(el.dataset.perday || 0);
+    const kind = el.dataset.fmt;
+    const t0 = Date.now();
+    const now = () => target + (perDay * (Date.now() - t0)) / 86400e3;
+    const render = (n: number) => {
+      el.textContent = fmtStat(n, kind);
+    };
+    const startTicker = () => {
+      if (perDay > 0) setInterval(() => render(now()), 4000);
+    };
+    if (reduceStats || !('IntersectionObserver' in window)) {
+      startTicker();
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        const start = performance.now();
+        const dur = 1200;
+        const frame = (t: number) => {
+          const p = Math.min(1, (t - start) / dur);
+          render(target * (1 - Math.pow(1 - p, 4))); // ease-out-quart
+          if (p < 1) requestAnimationFrame(frame);
+          else startTicker();
+        };
+        requestAnimationFrame(frame);
+      },
+      { threshold: 0.4 }
+    );
+    io.observe(el);
+  });
+
   // Progressive enhancement: only hide-then-reveal if JS runs and motion is OK.
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const els = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));

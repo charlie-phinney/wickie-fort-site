@@ -15,11 +15,41 @@ import statsData from './stats.json';
      they live in site.json where Wickie keeps them accurate. */
 const kFollowers = (n: number) => `${Math.floor(n / 1000)}K+`;
 
+// Real growth per day, measured from the daily history (fetch-stats appends
+// one entry per run). Compared against the newest entry that's at least a
+// day old — up to a week back — so the homepage tickers extrapolate from
+// actual momentum, never a made-up rate. 0 until two days of history exist.
+type Hist = { d: string; f: number; yv: number; tl: number };
+const history: Hist[] = (statsData as { history?: Hist[] }).history || [];
+const perDay = (key: keyof Omit<Hist, 'd'>): number => {
+  if (history.length < 2) return 0;
+  const last = history[history.length - 1];
+  const days = (a: Hist, b: Hist) =>
+    (new Date(b.d).getTime() - new Date(a.d).getTime()) / 86400e3;
+  const base = history
+    .slice(0, -1)
+    .reverse()
+    .find((h) => days(h, last) >= 1 && days(h, last) <= 7)
+    ?? history[history.length - 2];
+  const span = days(base, last);
+  return span >= 1 ? Math.max(0, (last[key] - base[key]) / span) : 0;
+};
+
+const views = (statsData as { views?: { youtube?: number } }).views || {};
+const likes = (statsData as { likes?: { tiktok?: number } }).likes || {};
+
 export const stats = {
   totalFollowers: kFollowers(statsData.totalFollowers),
   videosOver1M: String(data.statVideosOver1M ?? ''),
   topViews: data.statTopViews || '',
   updated: statsData.updated,
+  // Raw values + measured growth for the animated band. A zero value hides
+  // its tile, so a platform going unfetchable can never show a broken 0.
+  live: {
+    followers: { value: statsData.totalFollowers, perDay: perDay('f') },
+    ytViews: { value: views.youtube || 0, perDay: perDay('yv') },
+    ttLikes: { value: likes.tiktok || 0, perDay: perDay('tl') },
+  },
 };
 
 export const site = {
