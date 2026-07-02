@@ -83,7 +83,12 @@ const breadcrumbLd = {
 };
 ---
 
-<Base title={title} description={recipe.blurb} jsonLd={[recipeLd, breadcrumbLd]}>
+<Base
+  title={title}
+  description={recipe.blurb}
+  image={`/og/${recipe.slug}.png`}
+  jsonLd={[recipeLd, breadcrumbLd]}
+>
   <!-- Slim on-brand header (the homepage nav's in-page anchors don't apply on a
        sub-page, so this gives a clean way home + back to the recipe grid). -->
   <header class="no-print sticky top-0 z-[30] border-b border-line/70 bg-bg/80 backdrop-blur-md">
@@ -185,6 +190,28 @@ const breadcrumbLd = {
           )
         }
 
+        {
+          hasMethod && (
+            /* Cook Mode: keeps the phone screen awake on the counter and bumps
+               the method type up a size. Hidden by the script on browsers
+               without the Wake Lock API, so it never shows a dead button. */
+            <button
+              type="button"
+              data-cook
+              aria-pressed="false"
+              hidden
+              class="inline-flex items-center gap-2 rounded-full border border-line bg-bg px-4 py-2 text-sm font-semibold text-ink transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-primary hover:text-primary aria-pressed:border-primary-deep aria-pressed:bg-primary-deep aria-pressed:text-bg"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 2c1.8 2.2 3 3.9 3 5.7A3 3 0 0 1 9 8c0-1.9 1.2-3.8 3-6Z" />
+                <path d="M4 12h16v3a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6v-3Z" />
+                <path d="M20 13.5c1.4 0 2.5.9 2.5 2s-1.1 2-2.5 2" />
+              </svg>
+              <span data-cook-label>Cook Mode</span>
+            </button>
+          )
+        }
+
         <span data-share-status role="status" aria-live="polite" class="sr-only" />
       </div>
 
@@ -203,15 +230,26 @@ const breadcrumbLd = {
                   <span class="mark-underline">Ingredients</span>
                 </h2>
                 <ul class="mt-5 space-y-3">
-                  {recipe.ingredients.map((part) =>
+                  {recipe.ingredients.map((part, i) =>
                     part.kind === 'heading' ? (
                       <li class="list-none pt-3 first:pt-0 text-sm font-semibold uppercase tracking-wide text-primary-deep">
                         {part.text}
                       </li>
                     ) : (
-                      <li class="flex items-start gap-3 text-[1.02rem] leading-snug text-ink">
-                        <span class="mt-2 h-1.5 w-1.5 flex-none rounded-full bg-primary" aria-hidden="true" />
-                        <span>{part.text}</span>
+                      /* Each ingredient is a real checkbox so shoppers/cooks can
+                         tick things off. Checked state persists per recipe
+                         (localStorage) so a page reload mid-cook loses nothing. */
+                      <li class="text-[1.02rem] leading-snug text-ink">
+                        <label class="group/ing flex cursor-pointer items-start gap-3">
+                          <input
+                            type="checkbox"
+                            data-check={`ing-${i}`}
+                            class="mt-1 h-4 w-4 flex-none cursor-pointer appearance-none rounded-full border-2 border-primary/60 transition-colors checked:border-primary checked:bg-primary"
+                          />
+                          <span class="transition-opacity group-has-[:checked]/ing:opacity-45 group-has-[:checked]/ing:line-through">
+                            {part.text}
+                          </span>
+                        </label>
                       </li>
                     )
                   )}
@@ -233,11 +271,22 @@ const breadcrumbLd = {
                     )}
                     <ol start={sec.start} class="space-y-6">
                       {sec.steps.map((step, i) => (
-                        <li class="flex gap-4">
-                          <span class="step-num flex h-8 w-8 flex-none items-center justify-center rounded-full bg-primary-deep font-serif text-sm font-semibold text-bg">
+                        /* The number badge doubles as a done-toggle: tap it to
+                           dim the step you've finished. aria-pressed carries
+                           the state; persisted like the ingredient checks. */
+                        <li class="group/step flex gap-4">
+                          <button
+                            type="button"
+                            data-check={`step-${sec.start + i - 1}`}
+                            aria-pressed="false"
+                            aria-label={`Mark step ${sec.start + i} done`}
+                            class="step-num flex h-8 w-8 flex-none cursor-pointer items-center justify-center rounded-full bg-primary-deep font-serif text-sm font-semibold text-bg transition-colors aria-pressed:bg-line aria-pressed:text-muted"
+                          >
                             {sec.start + i}
-                          </span>
-                          <p class="pt-0.5 text-lg leading-relaxed text-ink/90">{step}</p>
+                          </button>
+                          <p class="step-text pt-0.5 text-lg leading-relaxed text-ink/90 transition-opacity group-has-[[aria-pressed='true']]/step:opacity-40">
+                            {step}
+                          </p>
                         </li>
                       ))}
                     </ol>
@@ -351,6 +400,13 @@ const breadcrumbLd = {
       box-shadow: none !important;
     }
   }
+
+  /* Cook Mode: method type steps up a size for a phone propped on the
+     counter. Everything else about the mode lives in the script below. */
+  html.cook-mode .step-text {
+    font-size: 1.3rem;
+    line-height: 1.65;
+  }
 </style>
 
 <script>
@@ -397,6 +453,86 @@ const breadcrumbLd = {
       } catch {
         flash('Press and hold to copy');
       }
+    });
+  }
+
+  // ---- Tick-off state: ingredients + steps, persisted per recipe ----
+  // Survives a mid-cook reload; expires after 12h so an old cook doesn't
+  // greet the next visit pre-checked.
+  const storeKey = `cook:${location.pathname}`;
+  const loadDone = (): Set<string> => {
+    try {
+      const raw = localStorage.getItem(storeKey);
+      if (!raw) return new Set();
+      const saved = JSON.parse(raw) as { t: number; done: string[] };
+      if (Date.now() - saved.t > 12 * 3600e3) {
+        localStorage.removeItem(storeKey);
+        return new Set();
+      }
+      return new Set(saved.done);
+    } catch {
+      return new Set();
+    }
+  };
+  const doneSet = loadDone();
+  const saveDone = () => {
+    try {
+      localStorage.setItem(storeKey, JSON.stringify({ t: Date.now(), done: [...doneSet] }));
+    } catch {
+      /* storage full/blocked — checks still work for the session */
+    }
+  };
+  document.querySelectorAll<HTMLElement>('[data-check]').forEach((el) => {
+    const id = el.dataset.check as string;
+    const isBox = el instanceof HTMLInputElement;
+    const apply = (on: boolean) => {
+      if (isBox) (el as HTMLInputElement).checked = on;
+      else el.setAttribute('aria-pressed', String(on));
+    };
+    if (doneSet.has(id)) apply(true);
+    el.addEventListener(isBox ? 'change' : 'click', () => {
+      const on = isBox
+        ? (el as HTMLInputElement).checked
+        : el.getAttribute('aria-pressed') !== 'true';
+      apply(on);
+      if (on) doneSet.add(id);
+      else doneSet.delete(id);
+      saveDone();
+    });
+  });
+
+  // ---- Cook Mode: keep the screen awake while she cooks ----
+  // The button stays hidden unless the Wake Lock API exists, so no browser
+  // ever shows a button that does nothing.
+  const cookBtn = document.querySelector<HTMLButtonElement>('[data-cook]');
+  if (cookBtn && 'wakeLock' in navigator) {
+    cookBtn.hidden = false;
+    const cookLabel = cookBtn.querySelector<HTMLElement>('[data-cook-label]');
+    let lock: { release(): Promise<void> } | null = null;
+    let cooking = false;
+    const acquire = async () => {
+      try {
+        lock = await (navigator as Navigator & {
+          wakeLock: { request(type: 'screen'): Promise<{ release(): Promise<void> }> };
+        }).wakeLock.request('screen');
+      } catch {
+        /* denied (e.g. low battery) — mode still zooms the type */
+      }
+    };
+    cookBtn.addEventListener('click', async () => {
+      cooking = !cooking;
+      if (cooking) await acquire();
+      else {
+        await lock?.release().catch(() => {});
+        lock = null;
+      }
+      cookBtn.setAttribute('aria-pressed', String(cooking));
+      document.documentElement.classList.toggle('cook-mode', cooking);
+      if (cookLabel) cookLabel.textContent = cooking ? 'Screen stays on' : 'Cook Mode';
+    });
+    // Browsers drop the lock when the tab hides; take it back on return.
+    document.addEventListener('visibilitychange', () => {
+      if (cooking && document.visibilityState === 'visible') acquire();
     });
   }
 </script>
