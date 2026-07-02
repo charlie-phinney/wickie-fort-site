@@ -88,14 +88,15 @@ export const stats = {
   totalLikes: (deep.igLikes || 0) + (likes.tiktok || 0),
   // e.g. "15.6" — null hides the tile.
   engagementRate: erValue >= 1.5 && erValue < 1000 ? erValue.toFixed(1) : null,
-  // Composite: measured views over the videos they came from (IG reels
-  // counted + YouTube uploads). Hidden until both sides have data.
+  // Average views per Instagram reel — single-platform on purpose. A blended
+  // IG+YT average silently excluded TikTok/Facebook (the platforms that would
+  // drag it down), which overclaimed under a bare label. Scope rule for the
+  // band: FLOOR stats (views, likes, 1M+ count, top video) can stay
+  // unqualified because more platforms only raise them; non-floor stats like
+  // this one must name their platform.
   avgViews:
-    deep.igViews && deep.igViewsCounted && deep.ytVideoCount && views.youtube
-      ? Math.floor(
-          ((deep.igViews || 0) + (views.youtube || 0)) /
-            ((deep.igViewsCounted || 0) + (deep.ytVideoCount || 0))
-        )
+    deep.igViews && deep.igViewsCounted
+      ? Math.floor(deep.igViews / deep.igViewsCounted)
       : 0,
   // Live composites floored at Wickie's hand-kept /admin numbers, so they
   // only ever grow and are never below what she knows to be true.
