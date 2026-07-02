@@ -1,4 +1,47 @@
 {
-  "updated": null,
-  "reels": []
+  "updated": "2026-07-02",
+  "reels": [
+    {
+      "id": "18108025534955496",
+      "permalink": "https://www.instagram.com/reel/DaRX18DOBpM/",
+      "caption": "So today I had an insane craving for a rotisserie chicken. I didn’t want to waste the carc",
+      "image": "/images/reels/18108025534955496.jpg",
+      "isVideo": true
+    },
+    {
+      "id": "17907237153439547",
+      "permalink": "https://www.instagram.com/reel/DaOFHNAOB53/",
+      "caption": "I can’t believe!!!!!!! Excited about how this turned out and even more excited to apply th",
+      "image": "/images/reels/17907237153439547.jpg",
+      "isVideo": true
+    },
+    {
+      "id": "18217239229334928",
+      "permalink": "https://www.instagram.com/reel/DaLd4CTu3LJ/",
+      "caption": "As my culinary school journey comes to an end, I’m looking forward to exploring different ",
+      "image": "/images/reels/18217239229334928.jpg",
+      "isVideo": true
+    },
+    {
+      "id": "18066362783450386",
+      "permalink": "https://www.instagram.com/reel/DZ75815uujf/",
+      "caption": "It’s hard to believe that today is DAY 100 (!!!) of culinary school! We only have about 8 ",
+      "image": "/images/reels/18066362783450386.jpg",
+      "isVideo": true
+    },
+    {
+      "id": "17894015373524019",
+      "permalink": "https://www.instagram.com/reel/DZp9t0uurc3/",
+      "caption": "Let us know what we should cook next!!!!",
+      "image": "/images/reels/17894015373524019.jpg",
+      "isVideo": true
+    },
+    {
+      "id": "18406573252148409",
+      "permalink": "https://www.instagram.com/reel/DZjFZSFuMDN/",
+      "caption": "Part two of my Knicks series: fan edition!!!!! #goknicks",
+      "image": "/images/reels/18406573252148409.jpg",
+      "isVideo": true
+    }
+  ]
 }
