@@ -72,10 +72,14 @@
       "href": ""
     },
     {
-      "title": "Summer Veg Plate",
-      "blurb": "Light, fresh, and vegetable forward. Proof that simple ingredients at their peak beat fussy every single time.",
-      "tag": "Light",
-      "image": "",
+      "title": "Classic Chicken Salad",
+      "blurb": "Healthy chicken salad made with Greek yogurt instead of mayonnaise. Simple and refreshing! ",
+      "tag": "Light Bites",
+      "image": "/images/Screenshot-2026-07-02-at-3.28.50-PM.png",
+      "serves": "2-3",
+      "time": "15 minutes",
+      "ingredientsText": "2 shredded chicken breasts\n1 cup of Greek yogurt - can add more or less based on how thick you like it\n1 tbsp Dijon mustard \n1 honey crisp apple, small dice\n1 small red onion, minced\n2 stalks celery, minced\nHandful of fresh dill, minced\nSalt & pepper",
+      "methodText": "simply add everything to a bowl and mix! I like to eat mine with crackers, a spoon, or in lettuce cups if I am feeling fancy! ",
       "href": ""
     },
     {
