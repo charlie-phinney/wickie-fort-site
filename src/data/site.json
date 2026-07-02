@@ -40,7 +40,7 @@
   "heroSub": "I recently graduated from the Institute of Culinary Education in New York City. I believe that food connects us, and I am passionate about sharing the simple, real food I make at home so you can make it too. Come cook with me!",
   "heroImage": "/images/IMG_1261.JPG",
   "aboutHeading": "Hi, I'm Wickie!",
-  "aboutImage": "",
+  "aboutImage": "/images/IMG_2316.jpg",
   "aboutParagraphs": [
     {
       "text": "About a year ago, I was sitting at a corporate desk job, wondering what I was doing with my life. After many long days of questioning everything and a few tears shed, I made what felt like a crazy decision to quit my job and go to culinary school in New York City. "
@@ -81,7 +81,9 @@
         {
           "text": "Pickles"
         },
-        {}
+        {
+          "text": "Mayonaise "
+        }
       ],
       "href": ""
     },
@@ -122,7 +124,7 @@
     }
   ],
   "workHeading": "Work with me",
-  "workIntro": "I team up with brands I actually use and love, and make warm, honest content that feels like it belongs in my kitchen instead of in an ad. If your product would earn a real spot on my counter, let's talk.",
+  "workIntro": "I team up with brands I actually use and genuinely want to share with others. If you have a product you think would be a good fit, please reach out! ",
   "workCta": "Let's work together",
   "workOfferings": [
     {
