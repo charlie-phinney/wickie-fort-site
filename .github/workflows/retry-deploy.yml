@@ -1,0 +1,34 @@
+# TEMP self-heal for the 2026-07-02 GitHub Pages outage: while the live site
+# lags main, re-fire the deploy every 20 min. No-ops once caught up.
+# Remove this file after the outage clears and the site matches main.
+name: Retry deploy until live matches main
+
+on:
+  schedule:
+    - cron: "*/20 * * * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  retry:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fire deploy if live site is behind main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          live=$(curl -sf "https://wickiefort.com/admin/deploy-version.json?cb=$(date +%s)" | python3 -c "import sys,json;print(json.load(sys.stdin)['sha'])" || echo unknown)
+          echo "live=$live main=$GITHUB_SHA"
+          if [ "$live" = "$GITHUB_SHA" ]; then
+            echo "Live site matches main — nothing to do."
+            exit 0
+          fi
+          if gh api repos/${{ github.repository }}/actions/workflows/deploy.yml/runs --jq '.workflow_runs[0].status' | grep -qE 'queued|in_progress'; then
+            echo "A deploy is already running — letting it finish."
+            exit 0
+          fi
+          gh workflow run deploy.yml --ref main
+          echo "Deploy dispatched."
