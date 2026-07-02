@@ -121,6 +121,7 @@ const jsonLd = [
               label="Add your hero photo"
               alt="Wickie in the kitchen"
               ratio="4/5"
+              loading="eager"
             />
           </div>
           <div
@@ -238,9 +239,14 @@ const jsonLd = [
           </div>
 
           {
-            shop.embed ? (
-              /* Wickie's ShopMy shop, embedded right on the page. */
-              <div data-reveal class="mt-10 overflow-hidden rounded-2xl" set:html={shop.embed} />
+            shop.embedSrc ? (
+              /* Wickie's ShopMy shop, embedded right on the page. The iframe
+                 is built HERE from the extracted URL (never her raw paste —
+                 see src/data/site.ts) and lazy-loaded: ShopMy pulls in a
+                 whole React app, which shouldn't tax first paint. */
+              <div data-reveal class="mt-10 overflow-hidden rounded-2xl">
+                <iframe title="Shop my kitchen" src={shop.embedSrc} loading="lazy" />
+              </div>
             ) : (
               shop.url && (
                 <a
