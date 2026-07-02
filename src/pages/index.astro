@@ -157,19 +157,7 @@ const jsonLd = [
         <section class="bg-primary-deep text-bg" style={ord('stats')}>
           <div class="mx-auto max-w-6xl px-5 py-14 sm:px-8 md:py-20">
             <p data-reveal class="font-hand text-2xl text-pop">By the numbers</p>
-            <dl data-reveal class="mt-6 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-              <div>
-                <dt
-                  class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none tabular-nums"
-                  data-stat
-                  data-value={stats.live.followers.value}
-                  data-perday={stats.live.followers.perDay}
-                  data-fmt="k"
-                >
-                  {stats.totalFollowers}
-                </dt>
-                <dd class="mt-2 text-sm leading-snug text-bg/75">followers</dd>
-              </div>
+            <dl data-reveal class="mt-6 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
               {stats.live.views.value > 0 && (
                 <div>
                   <dt
@@ -182,6 +170,34 @@ const jsonLd = [
                     {fmtM(stats.live.views.value)}
                   </dt>
                   <dd class="mt-2 text-sm leading-snug text-bg/75">video views</dd>
+                </div>
+              )}
+              <div>
+                <dt
+                  class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none tabular-nums"
+                  data-stat
+                  data-value={stats.live.followers.value}
+                  data-perday={stats.live.followers.perDay}
+                  data-fmt="k"
+                >
+                  {stats.totalFollowers}
+                </dt>
+                <dd class="mt-2 text-sm leading-snug text-bg/75">followers</dd>
+              </div>
+              {stats.totalLikes > 0 && (
+                <div>
+                  <dt class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none tabular-nums">
+                    {fmtM(stats.totalLikes)}
+                  </dt>
+                  <dd class="mt-2 text-sm leading-snug text-bg/75">likes</dd>
+                </div>
+              )}
+              {stats.engagementRate && (
+                <div>
+                  <dt class="font-serif text-[clamp(2.6rem,7vw,4rem)] font-semibold leading-none tabular-nums">
+                    {stats.engagementRate}%
+                  </dt>
+                  <dd class="mt-2 text-sm leading-snug text-bg/75">average engagement rate</dd>
                 </div>
               )}
               {stats.videosOver1M && (

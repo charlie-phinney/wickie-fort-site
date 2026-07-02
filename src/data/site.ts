@@ -20,9 +20,9 @@ const kFollowers = (n: number) => `${Math.floor(n / 1000)}K+`;
 // one entry per run). Compared against the newest entry that's at least a
 // day old — up to a week back — so the homepage tickers extrapolate from
 // actual momentum, never a made-up rate. 0 until two days of history exist.
-type Hist = { d: string; f: number; yv: number; tl: number };
+type Hist = { d: string; f: number; yv: number; tl: number; iv?: number };
 const history: Hist[] = (statsData as { history?: Hist[] }).history || [];
-const perDay = (key: keyof Omit<Hist, 'd'>): number => {
+const perDay = (key: 'f' | 'yv' | 'tl' | 'iv'): number => {
   if (history.length < 2) return 0;
   const last = history[history.length - 1];
   const days = (a: Hist, b: Hist) =>
@@ -32,11 +32,31 @@ const perDay = (key: keyof Omit<Hist, 'd'>): number => {
     .reverse()
     .find((h) => days(h, last) >= 1 && days(h, last) <= 7)
     ?? history[history.length - 2];
+  if (typeof last[key] !== 'number' || typeof base[key] !== 'number') return 0;
   const span = days(base, last);
-  return span >= 1 ? Math.max(0, (last[key] - base[key]) / span) : 0;
+  return span >= 1 ? Math.max(0, ((last[key] as number) - (base[key] as number)) / span) : 0;
 };
 
 const views = (statsData as { views?: { youtube?: number } }).views || {};
+const likes = (statsData as { likes?: { tiktok?: number } }).likes || {};
+
+// Deep engagement metrics recorded daily by scripts/fetch-deep-stats.mjs.
+type Deep = {
+  igLikes?: number;
+  igViews?: number;
+  igRecentEngagement?: number;
+  igRecentCount?: number;
+};
+const deep: Deep = (statsData as { deep?: Deep }).deep || {};
+
+// Average engagement rate: likes+comments per recent post vs Instagram
+// followers — the number brands ask for. Shown only when it's computed from
+// enough posts and is genuinely strong; otherwise the tile hides.
+const igFollowers = statsData.followers.instagram || 0;
+const erValue =
+  deep.igRecentEngagement && deep.igRecentCount && deep.igRecentCount >= 6 && igFollowers > 0
+    ? (deep.igRecentEngagement / deep.igRecentCount / igFollowers) * 100
+    : 0;
 
 export const stats = {
   totalFollowers: kFollowers(statsData.totalFollowers),
@@ -45,13 +65,20 @@ export const stats = {
   updated: statsData.updated,
   // Raw values + measured growth for the animated band. A zero value hides
   // its tile, so a platform going unfetchable can never show a broken 0.
-  // `views` is her all-platform total stated as an honest FLOOR: YouTube's
-  // lifetime count alone proves total views are at least that (IG/TikTok
-  // don't expose lifetime views), and the "+" carries the undercount.
+  // `views` = measured Instagram views (per-reel insights) + YouTube's
+  // lifetime count, stated as an honest FLOOR of her true all-platform
+  // total (TikTok doesn't expose lifetime views; the "+" carries it).
   live: {
     followers: { value: statsData.totalFollowers, perDay: perDay('f') },
-    views: { value: views.youtube || 0, perDay: perDay('yv') },
+    views: {
+      value: (views.youtube || 0) + (deep.igViews || 0),
+      perDay: perDay('yv') + perDay('iv'),
+    },
   },
+  // Lifetime likes: every IG post + TikTok hearts. Static tile.
+  totalLikes: (deep.igLikes || 0) + (likes.tiktok || 0),
+  // e.g. "15.6" — null hides the tile.
+  engagementRate: erValue >= 1.5 && erValue < 1000 ? erValue.toFixed(1) : null,
 };
 
 export const site = {
