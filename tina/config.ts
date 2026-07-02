@@ -314,13 +314,7 @@ export default defineConfig({
             name: 'statVideosOver1M',
             label: 'How many videos have over 1 million views',
             description:
-              'Add up Instagram + TikTok + YouTube. Follower counts update on their own; this one you keep current here.',
-          },
-          {
-            type: 'string',
-            name: 'statTopViews',
-            label: 'Views on your most-viewed video',
-            description: 'Type it how you want it shown, e.g. “24M”.',
+              'Counted automatically every day — this is a safety minimum. The site shows whichever is higher.',
           },
 
           // ===== Shop section =====

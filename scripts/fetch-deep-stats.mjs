@@ -73,17 +73,21 @@ async function instagramDeep() {
 
   // Paginate every post: likes + comments come with basic scope.
   const media = [];
+  let complete = false;
   let url = 'me/media';
   let params = 'fields=id,media_type,like_count,comments_count,timestamp&limit=50';
   for (let page = 0; page < 12; page++) {
     const r = await ig(url, params);
     if (!r.ok || !Array.isArray(r.body?.data)) {
-      console.log(`deep: media page ${page} failed (${r.status}) — using what we have.`);
+      console.log(`deep: media page ${page} failed (${r.status}) — keeping yesterday's totals.`);
       break;
     }
     media.push(...r.body.data);
     const next = r.body.paging?.next;
-    if (!next) break;
+    if (!next) {
+      complete = true;
+      break;
+    }
     const u = new URL(next);
     url = u.pathname.replace(/^\/(v[\d.]+\/)?/, '');
     // The API echoes the token into paging URLs — drop it; auth already
@@ -91,7 +95,9 @@ async function instagramDeep() {
     u.searchParams.delete('access_token');
     params = u.searchParams.toString();
   }
-  if (media.length) {
+  // A partial pagination would write UNDERCOUNTS (wrong, not just stale) —
+  // sums only overwrite when every page arrived. Keep-last-good otherwise.
+  if (media.length && complete) {
     out.igPosts = media.length;
     out.igLikes = media.reduce((s, m) => s + (m.like_count || 0), 0);
     out.igComments = media.reduce((s, m) => s + (m.comments_count || 0), 0);
@@ -140,7 +146,11 @@ async function instagramDeep() {
         if ((vals.reach || 0) > maxReach) maxReach = vals.reach;
         engagement += (videos[i].like_count || 0) + (videos[i].comments_count || 0);
       }
-      if (sum > 0) {
+      // Same wrong-vs-stale rule as the pagination above: reels that failed
+      // their insights call contribute nothing, so a flaky day would write
+      // the views headline tens of millions LOW. Only overwrite on a full
+      // sweep (media list complete + every reel answered).
+      if (sum > 0 && complete && counted === videos.length) {
         out.igViews = sum;
         out.igViewsCounted = counted;
         out.igMaxReelViews = maxViews;
@@ -153,6 +163,10 @@ async function instagramDeep() {
         out.igTopReelReach = maxReach;
         console.log(
           `deep: IG views ${sum} across ${counted} reels (top ${maxViews}, ${over1M} over 1M, reach ${reachSum}).`
+        );
+      } else if (sum > 0) {
+        console.log(
+          `deep: per-reel sweep incomplete (${counted}/${videos.length}) — keeping yesterday's view totals.`
         );
       }
     }

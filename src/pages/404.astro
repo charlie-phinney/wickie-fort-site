@@ -9,7 +9,7 @@ import Footer from '../components/Footer.astro';
 import { site } from '../data/site';
 ---
 
-<Base title={`Page not found · ${site.brand}`} description="That page went off the menu.">
+<Base title={`Page not found · ${site.brand}`} description="That page went off the menu." noindex>
   <!-- Slim header, just a way home. -->
   <header class="sticky top-0 z-[30] border-b border-line/70 bg-bg/80 backdrop-blur-md">
     <div class="mx-auto flex max-w-4xl items-center justify-between px-5 py-3.5 sm:px-8">

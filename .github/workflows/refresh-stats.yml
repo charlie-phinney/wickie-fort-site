@@ -18,6 +18,12 @@ permissions:
   contents: write
   actions: write
 
+# A manual dispatch during the scheduled run would race it to push
+# stats.json (guaranteed rebase conflict) — queue them instead.
+concurrency:
+  group: refresh-stats
+  cancel-in-progress: false
+
 jobs:
   refresh:
     runs-on: ubuntu-latest

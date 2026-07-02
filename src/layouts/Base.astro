@@ -8,6 +8,7 @@ interface Props {
   description?: string;
   image?: string; // social-share image path, relative to the site root
   jsonLd?: Record<string, unknown> | Record<string, unknown>[]; // schema.org structured data
+  noindex?: boolean; // error pages: keep them out of search results
 }
 
 const {
@@ -15,6 +16,7 @@ const {
   description = site.heroSub,
   image = '/og.png',
   jsonLd,
+  noindex = false,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -30,7 +32,10 @@ const themeVars = [
   ...Object.entries(theme.colors).map(([role, value]) => `--${role}:${value}`),
   `--font-serif:${theme.fonts.serif}`,
   `--font-sans:${theme.fonts.sans}`,
-  `--font-hand:${theme.fonts.hand}`,
+  // --font-hand is NOT overridden here: Caveat is the site's constant
+  // signature (loaded below), and pairings don't define a `hand` stack —
+  // emitting one printed the literal string "undefined", which knocked every
+  // handwritten accent back to the browser's default font.
   `font-size:${theme.rootPercent}%`,
 ].join(';');
 const fontsHref = `https://fonts.googleapis.com/css2?${theme.fonts.googleFamilies
@@ -48,6 +53,7 @@ const fontsHref = `https://fonts.googleapis.com/css2?${theme.fonts.googleFamilie
     <link rel="manifest" href={`${base}/site.webmanifest`} />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
     <link
       rel="alternate"
@@ -85,10 +91,14 @@ const fontsHref = `https://fonts.googleapis.com/css2?${theme.fonts.googleFamilie
     />
 
     {
+      /* JSON.stringify alone does NOT escape "</script>" — a CMS string
+         containing it would break out of this tag and run as HTML (the same
+         threat the shop-embed extractor guards). < keeps the JSON valid
+         while making breakout impossible. */
       jsonLd && (
         <script
           type="application/ld+json"
-          set:html={JSON.stringify(jsonLd)}
+          set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')}
         />
       )
     }
