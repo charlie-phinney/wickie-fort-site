@@ -78,7 +78,7 @@ export const GET: APIRoute = ({ site: astroSite }) => {
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>${esc(site.brand)} — Recipes</title>
+    <title>${esc(site.brand)} · Recipes</title>
     <link>${base}/</link>
     <atom:link href="${feedUrl}" rel="self" type="application/rss+xml" />
     <description>${esc(site.heroSub)}</description>

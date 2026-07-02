@@ -52,7 +52,7 @@ const fontsHref = `https://fonts.googleapis.com/css2?${theme.fonts.googleFamilie
     <link
       rel="alternate"
       type="application/rss+xml"
-      title={`${site.brand} — Recipes`}
+      title={`${site.brand} · Recipes`}
       href={`${base}/rss.xml`}
     />
     <meta name="theme-color" content="#c05a3c" />
@@ -102,7 +102,7 @@ const fontsHref = `https://fonts.googleapis.com/css2?${theme.fonts.googleFamilie
     </a>
     <slot />
     <script is:inline>
-      // Smooth scrolling arms on the first interaction only — reload
+      // Smooth scrolling arms on the first interaction only; reload
       // scroll-restoration happens before any interaction, so it snaps
       // instantly instead of visibly gliding (the "creep" on hard reload).
       (function () {
