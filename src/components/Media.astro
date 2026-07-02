@@ -11,8 +11,9 @@ interface Props {
   label?: string;
   class?: string;
   ratio?: string; // e.g. '4/3', '1/1', '4/5'
+  loading?: 'lazy' | 'eager'; // eager = above the fold (hero): load first, everything else waits
 }
-const { src, alt = '', label = 'Photo coming soon', class: klass = '', ratio = '4/3' } =
+const { src, alt = '', label = 'Photo coming soon', class: klass = '', ratio = '4/3', loading = 'lazy' } =
   Astro.props;
 ---
 
@@ -21,7 +22,8 @@ const { src, alt = '', label = 'Photo coming soon', class: klass = '', ratio = '
     <img
       src={src}
       alt={alt}
-      loading="lazy"
+      loading={loading}
+      fetchpriority={loading === 'eager' ? 'high' : undefined}
       decoding="async"
       class={`h-full w-full object-cover ${klass}`}
       style={`aspect-ratio:${ratio}`}

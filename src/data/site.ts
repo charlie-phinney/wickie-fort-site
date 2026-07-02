@@ -136,13 +136,20 @@ export const workWithMe = {
     .filter(Boolean),
 };
 
-// Shop section. `embed` is the iframe HTML Wickie pastes from ShopMy
-// (collection → Settings & Sharing → Embeddable Components). Until it's set,
-// the section shows a button linking out to her ShopMy shop instead.
+// Shop section. Wickie pastes ShopMy's embed HTML in /admin (collection →
+// Settings & Sharing → Embeddable Components). SECURITY: that paste is raw
+// HTML from a CMS textarea — never render it as-is. Only the ShopMy iframe
+// URL is extracted here and the page rebuilds the tag itself, so nothing
+// else in the paste (e.g. a script, if her editor login were ever
+// compromised) can reach visitors. Until a valid embed is set, the section
+// shows a button linking out to her ShopMy shop instead.
+const embedPaste = (data as { shopEmbed?: string }).shopEmbed || '';
+const embedMatch = embedPaste.match(/src\s*=\s*["']?(https:\/\/(?:www\.)?shopmy\.us\/[^"'\s>]+)/i);
+
 export const shop = {
   heading: (data as { shopHeading?: string }).shopHeading || 'Shop my kitchen',
   intro: (data as { shopIntro?: string }).shopIntro || '',
-  embed: (data as { shopEmbed?: string }).shopEmbed || '',
+  embedSrc: embedMatch ? embedMatch[1] : '',
   url: data.socials.find((s) => /shopmy/i.test(s.label))?.href || '',
 };
 
