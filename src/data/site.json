@@ -52,20 +52,6 @@
       "href": ""
     },
     {
-      "title": "Simple Seared Steak",
-      "blurb": "Good steak really doesn't need much. A hot pan, real salt, and a quick pan sauce you'll want to drink. School approved.",
-      "tag": "Dinner",
-      "image": "",
-      "href": ""
-    },
-    {
-      "title": "Summer Veg Plate",
-      "blurb": "Light, fresh, and vegetable forward. Proof that simple ingredients at their peak beat fussy every single time.",
-      "tag": "Light",
-      "image": "",
-      "href": ""
-    },
-    {
       "title": "Spicy Calabrian Chilli Vodka Sauce ",
       "blurb": "Classic vodka sauce -- but better. Spicy, creamy, and satiating. ",
       "tag": "Pasta Dishes",
@@ -73,6 +59,23 @@
       "time": "20 minutes",
       "ingredientsText": "1 lb pasta of your choice\n2 tbsp olive oil\n1 medium shallot, finely minced\n2 cloves garlic, minced\n2 tbsp tomato paste\n1–2 tbsp Calabrian chili oil (adjust to your spice preference)\n¼ cup vodka (optional)\n1 cup heavy cream\n½–¾ cup reserved pasta water, as needed\n2 tbsp cold unsalted butter\nSalt, to taste\nBlack pepper, to taste\nMozzarella balls for garnish (optional)\nFresh basil for garnish (optional)",
       "methodText": "Heat the olive oil in a large sauté pan over medium heat until it ripples.\nAdd the shallot and cook for 3–4 minutes, until softened and translucent. Stir in the garlic and cook for 30–60 seconds, just until fragrant. Be careful not to let the garlic brown.\nAdd the tomato paste and cook for 2–3 minutes, stirring frequently, until it deepens in color and becomes slightly caramelized.\nStir in the Calabrian chili oil until well combined.\nIf using, pour in the vodka and cook for 2–3 minutes, allowing it to reduce and the alcohol to cook off.\nLower the heat and stir in the heavy cream until the sauce is smooth. Add 1/4 cup reserved pasta water, then add more as needed until the sauce reaches your desired consistency.\nTurn off the heat and whisk in the cold butter until melted and emulsified.\nAdd the cooked pasta and toss until evenly coated. If needed, add another splash of pasta water to help the sauce cling to the pasta.\nTaste and adjust with kosher salt and freshly ground black pepper before serving.",
+      "href": ""
+    },
+    {
+      "title": "Steak & Potatoes",
+      "blurb": "Good steak really doesn't need much. A hot pan, salt, and a simple pan sauce bursting with flavor. School approved.",
+      "tag": "Culinary School ",
+      "image": "/images/Screenshot-2026-07-02-at-1.13.30-PM.png",
+      "serves": "1",
+      "ingredientsText": "For the Steak\n1 strip steak (10–12 oz)\nCanola oil\n2 tbsp butter\n2 garlic cloves, smashed\n2–3 sprigs thyme or rosemary (optional)\nSalt\nBlack pepper\nFor the Potatoes\n2 russet potatoes, medium dice\nCanola oil\n2 garlic cloves, minced\nSalt\nBlack pepper\nParsley for garnish \nFor the Glazed Carrots\n1 bunch baby carrots with tops attached, peeled\n2 tbsp butter\n1 tsp sugar\nSalt\nFor the Red Wine Pan Sauce\n1 shallot, finely minced\n½ cup red wine\n1 cup chicken stock\n2 tbsp cold butter, cubed\nParsley, for garnish\n",
+      "methodText": "Steak:\nSeason steak generously with salt and pepper. Let sit at room temperature while you prep everything else.\nPotatoes:\nMedium-dice potatoes. If not cooking immediately, keep in cold water to prevent browning. Drain and dry well before cooking.\nHeat canola oil in a medium pan (enough to coat the bottom generously). Use a pan large enough so potatoes aren’t crowded. Once oil is hot, add potatoes in a single layer. Let them sit initially, then toss occasionally so all sides crisp evenly. Cook until golden and crispy on all sides. Remove and set aside on a paper towel or rack.\nCarrots:\nBlanch carrots in salted water for ~4 minutes. Transfer immediately to an ice bath to stop cooking.\nWhen ready to serve, heat butter in a small pan. Add carrots and sugar. Toss until evenly glazed and glossy. \nSteak Part 2:\nHeat a small amount of canola oil in a cast iron or heavy pan until shimmering. Sear steak fat-side down first until rendered and browned. Lay steak flat and sear until deep color develops.\nFlip steak and lower heat. Add butter, garlic, and thyme or rosemary if using. Baste continuously.\nCook to desired doneness, then remove steak and let rest DO NOT cut immediately. NOTE: steak will continue to cook once removed from pan due to carry over heat, so pull steak off pan a couple degrees lower than your desired temperature. \nPan Sauce:\nKeep pan as-is (do not clean). Add shallots to residual fat and cook ~1 minute. Turn off heat and pour in red wine. Note: this may cause a flambe reaction, so remove pan from heat before adding wine. Return to heat and reduce wine by ~70%.\nAdd chicken stock and reduce by ~50–60% until lightly nappé consistency.\nTurn off heat. Whisk in cold butter until glossy. Finish with parsley.\nPlating:\nRewarm carrots if needed. Slice steak against the grain. Plate steak with sauce, potatoes, and carrots arranged cleanly.",
+      "href": ""
+    },
+    {
+      "title": "Summer Veg Plate",
+      "blurb": "Light, fresh, and vegetable forward. Proof that simple ingredients at their peak beat fussy every single time.",
+      "tag": "Light",
+      "image": "",
       "href": ""
     },
     {
