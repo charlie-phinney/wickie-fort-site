@@ -1,11 +1,11 @@
 {
   "followers": {
-    "instagram": 29886,
+    "instagram": 29885,
     "tiktok": 13800,
     "youtube": 20200,
     "facebook": 378
   },
-  "totalFollowers": 64264,
+  "totalFollowers": 64263,
   "updated": "2026-07-02",
   "sources": {
     "instagram": true,
@@ -22,21 +22,22 @@
   "history": [
     {
       "d": "2026-07-02",
-      "f": 64264,
+      "f": 64263,
       "yv": 28850595,
-      "tl": 2100000
+      "tl": 2100000,
+      "iv": 52136470
     }
   ],
   "deep": {
     "igMediaCount": 101,
     "igPosts": 105,
-    "igLikes": 2420620,
+    "igLikes": 2420638,
     "igComments": 7527,
-    "igRecentEngagement": 56035,
+    "igRecentEngagement": 56038,
     "igRecentCount": 12,
-    "igViews": 52136191,
+    "igViews": 52136470,
     "igViewsCounted": 99,
-    "igViews28": 82884,
+    "igViews28": 83175,
     "ytVideoCount": 79,
     "updated": "2026-07-02"
   }
