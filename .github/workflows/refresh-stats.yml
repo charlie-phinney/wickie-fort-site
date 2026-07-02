@@ -1,8 +1,13 @@
 name: Refresh stats + deploy
 
-# Free daily refresh of Wickie's cross-platform numbers, then rebuild the
-# site. Also runnable on demand from the Actions tab. The fetch never fails
-# the build — if a platform is unreachable, its last good value is kept.
+# Free daily refresh of Wickie's cross-platform numbers. Also runnable on
+# demand from the Actions tab. If a platform is unreachable its last good
+# value is kept, so the site never shows a broken number.
+#
+# This workflow only updates src/data/stats.json. It then DISPATCHES the
+# main deploy workflow rather than duplicating the build pipeline here —
+# pushes made with GITHUB_TOKEN don't trigger `on: push` workflows, which is
+# why the old version had its own copy of the build (and drifted from it).
 
 on:
   schedule:
@@ -11,15 +16,10 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: false
+  actions: write
 
 jobs:
-  build:
+  refresh:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -28,45 +28,32 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
       - name: Refresh stats
         env:
           IG_TOKEN: ${{ secrets.IG_TOKEN }}
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
         run: node scripts/fetch-stats.mjs
-      - name: Commit refreshed stats (if changed)
+      - name: Commit and deploy (if changed)
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          git config user.name "wickie-stats-bot"
-          git config user.email "charlie-phinney@users.noreply.github.com"
           git add src/data/stats.json
           if git diff --staged --quiet; then
             echo "No stat changes."
-          else
-            git commit -m "chore: refresh cross-platform stats [skip ci]"
-            git push
+            exit 0
           fi
-      - name: Install dependencies
-        run: npm ci
-      - name: Build CMS admin
-        continue-on-error: true
-        env:
-          TINA_PUBLIC_CLIENT_ID: ${{ secrets.TINA_PUBLIC_CLIENT_ID }}
-          TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
-        run: npx @tinacms/cli build --skip-cloud-checks
-      - name: Build site
-        run: npx astro build
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          git config user.name "wickie-stats-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: refresh cross-platform stats [skip ci]"
+          # Wickie saves to main at any hour — retry around her commits.
+          ok=""
+          for i in 1 2 3; do
+            if git pull --rebase origin main && git push; then ok=1; break; fi
+            git rebase --abort 2>/dev/null || true
+            sleep 5
+          done
+          if [ -z "$ok" ]; then
+            echo "::error::Could not push refreshed stats after 3 attempts."
+            exit 1
+          fi
+          gh workflow run deploy.yml --ref main

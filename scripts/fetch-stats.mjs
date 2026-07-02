@@ -187,6 +187,10 @@ async function main() {
 }
 
 main().catch((e) => {
-  console.error('fetch-stats failed (keeping previous values):', e.message);
-  process.exit(0); // never fail the build; last-good stays
+  // Platform fetch failures are already absorbed inside main() (each source
+  // just keeps its last good value). Reaching here means something real —
+  // e.g. a corrupted stats.json — so fail the run visibly instead of
+  // freezing the numbers forever behind a green check.
+  console.error('fetch-stats failed:', e.message);
+  process.exit(1);
 });

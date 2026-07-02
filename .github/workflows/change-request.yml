@@ -21,13 +21,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
       - name: File an issue if there's a new change request
         env:
           GH_TOKEN: ${{ github.token }}
+          BEFORE: ${{ github.event.before }}
         run: |
           cur=$(jq -r '.changeRequest // ""' src/data/site.json)
-          prev=$(git show HEAD~1:src/data/site.json 2>/dev/null | jq -r '.changeRequest // ""' || echo "")
+          # Compare against the push's true "before" commit, not HEAD~1 — a
+          # multi-commit push (Tina batch, CI rebase) hides the change at
+          # HEAD~1 and the request silently never reaches Charlie.
+          if [[ "$BEFORE" =~ ^[0-9a-f]{40}$ ]] && git cat-file -e "$BEFORE" 2>/dev/null; then
+            base="$BEFORE"
+          else
+            base="HEAD~1"
+          fi
+          prev=$(git show "$base":src/data/site.json 2>/dev/null | jq -r '.changeRequest // ""' || echo "")
           if [ -z "$cur" ] || [ "$cur" = "$prev" ]; then
             echo "No new change request — nothing to file."
             exit 0

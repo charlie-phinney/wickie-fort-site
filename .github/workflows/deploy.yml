@@ -29,17 +29,19 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
+      # If TinaCloud is unreachable or the schema is broken, FAIL the deploy.
+      # A red run + email beats silently shipping a site with no /admin
+      # (which is what continue-on-error used to do — Wickie would hit a 404
+      # and nobody was told).
       - name: Build CMS admin
-        continue-on-error: true
         env:
           TINA_PUBLIC_CLIENT_ID: ${{ secrets.TINA_PUBLIC_CLIENT_ID }}
           TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
         run: npx @tinacms/cli build --skip-cloud-checks
-      # TinaCloud indexes the schema from the COMMITTED tina-lock.json. If a
-      # schema change lands without a regenerated lock, the /admin editor
-      # breaks (happened 2026-07-01). `tinacms build` refreshes the files in
-      # tina/__generated__ but only `tinacms dev` writes the lock itself, so
-      # assemble it here exactly the way the CLI does (schema+lookup+graphql).
+      # TinaCloud indexes the schema from the COMMITTED tina-lock.json, but
+      # only `tinacms dev` writes that file — `tinacms build` refreshes
+      # tina/__generated__ and stops there. Assemble the lock exactly the way
+      # the CLI does so a schema change can never land without its lock.
       - name: Regenerate tina-lock.json from the built schema
         run: |
           node -e "
@@ -47,17 +49,38 @@ jobs:
             const rd = (f) => JSON.parse(fs.readFileSync('tina/__generated__/_' + f + '.json'));
             fs.writeFileSync('tina/tina-lock.json', JSON.stringify({ schema: rd('schema'), lookup: rd('lookup'), graphql: rd('graphql') }));
           "
-      - name: Commit regenerated tina-lock.json if it changed
-        continue-on-error: true
+      # Wickie uploads photos straight from her phone/camera; nothing else
+      # limits their size. Downsize anything big in place (same filename, so
+      # content references never break) and strip EXIF — her camera photos
+      # carry GPS coordinates.
+      - name: Optimize oversized images
         run: |
-          if ! git diff --quiet tina/tina-lock.json; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add tina/tina-lock.json
-            git commit -m "chore: sync tina-lock.json with the schema [skip ci]"
-            git pull --rebase origin main
-            git push
+          shopt -s nullglob nocaseglob
+          for f in public/images/*.jpg public/images/*.jpeg public/images/*.png; do
+            if [ "$(stat -c%s "$f")" -gt 614400 ]; then
+              mogrify -auto-orient -strip -resize '1600x1600>' -quality 82 "$f"
+              echo "optimized: $f"
+            fi
+          done
+      - name: Commit housekeeping changes (lock + optimized images)
+        run: |
+          git add tina/tina-lock.json public/images
+          if git diff --staged --quiet; then
+            echo "Nothing to commit."
+            exit 0
           fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: sync tina-lock.json + optimize images [skip ci]"
+          # Wickie saves to main constantly; retry around her commits instead
+          # of silently dropping ours (a dropped lock = the stale-index bug).
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push && exit 0
+            git rebase --abort 2>/dev/null || true
+            sleep 5
+          done
+          echo "::error::Could not push the regenerated tina-lock.json after 3 attempts — TinaCloud will serve a stale schema until this lands. Re-run this workflow."
+          exit 1
       - name: Build site
         run: npx astro build
       - name: Upload artifact
@@ -75,3 +98,34 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  # The failure class that broke Wickie's saves twice (2026-06-30 and
+  # 2026-07-01): the repo's schema and TinaCloud's *served* index drift apart,
+  # every save errors with "$params got invalid value", and nothing goes red.
+  # This job makes that drift loud: it asks TinaCloud's content API for the
+  # schema it is actually serving and fails if any field from the committed
+  # schema is missing. Fix when red: app.tina.io → Wickie's Kitchen →
+  # Configuration → Branches → main → ⋮ → Reindex.
+  verify-tinacloud-index:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Rebuild schema for comparison
+        env:
+          TINA_PUBLIC_CLIENT_ID: ${{ secrets.TINA_PUBLIC_CLIENT_ID }}
+          TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
+        run: npx @tinacms/cli build --skip-cloud-checks
+      - name: Check served schema matches the repo
+        env:
+          TINA_PUBLIC_CLIENT_ID: ${{ secrets.TINA_PUBLIC_CLIENT_ID }}
+          TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
+        run: node scripts/check-tina-index.mjs
