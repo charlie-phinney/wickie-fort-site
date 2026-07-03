@@ -1,6 +1,13 @@
 {
-  "updated": "2026-07-02",
+  "updated": "2026-07-03",
   "reels": [
+    {
+      "id": "18103502918027583",
+      "permalink": "https://www.instagram.com/reel/DaS78p6uxJV/",
+      "caption": "Final exam part one! Fish final!!!",
+      "image": "/images/reels/18103502918027583.jpg",
+      "isVideo": true
+    },
     {
       "id": "18108025534955496",
       "permalink": "https://www.instagram.com/reel/DaRX18DOBpM/",
@@ -34,13 +41,6 @@
       "permalink": "https://www.instagram.com/reel/DZp9t0uurc3/",
       "caption": "Let us know what we should cook next!!!!",
       "image": "/images/reels/17894015373524019.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "18406573252148409",
-      "permalink": "https://www.instagram.com/reel/DZjFZSFuMDN/",
-      "caption": "Part two of my Knicks series: fan edition!!!!! #goknicks",
-      "image": "/images/reels/18406573252148409.jpg",
       "isVideo": true
     }
   ]
