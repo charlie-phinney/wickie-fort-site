@@ -113,6 +113,17 @@ const fontsHref = googleCssUrl(theme.fonts);
       crossorigin="anonymous"
     />
 
+    <!-- GoatCounter: privacy-friendly page counts (no cookies, no consent
+         banner needed). count.js is self-hosted (public/js/count.js, vendored
+         from gc.zgo.at) and ignores localhost by itself, so dev stays clean.
+         Dashboard: https://wickieskitchen.goatcounter.com -->
+    <script
+      is:inline
+      data-goatcounter="https://wickieskitchen.goatcounter.com/count"
+      async
+      src="/js/count.js"
+    />
+
     {
       /* JSON.stringify alone does NOT escape "</script>" — a CMS string
          containing it would break out of this tag and run as HTML (the same

@@ -401,6 +401,14 @@ export default defineConfig({
           // ===== 5. Your contact + social links =====
           {
             type: 'string',
+            name: 'newsletterUrl',
+            label: 'Newsletter signup link (optional)',
+            description:
+              'When you start an email newsletter (Substack, Kit, Beehiiv…), paste your signup link or embed code here — a “get my recipes by email” card appears in your contact section. Leave blank until then.',
+            ui: { component: 'textarea' },
+          },
+          {
+            type: 'string',
             name: 'emailGeneral',
             label: 'Your email address',
             description: 'Where people reach you. Used on the contact button and in the footer.',
