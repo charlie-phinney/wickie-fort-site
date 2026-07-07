@@ -56,11 +56,17 @@ jobs:
         env:
           IG_TOKEN: ${{ secrets.IG_TOKEN }}
         run: node scripts/fetch-deep-stats.mjs
+      # Website-visitor numbers for the stats card in /admin (GoatCounter,
+      # read-statistics token). Same never-fail contract.
+      - name: Refresh site-visitor stats
+        env:
+          GOATCOUNTER_API_TOKEN: ${{ secrets.GOATCOUNTER_API_TOKEN }}
+        run: node scripts/fetch-site-stats.mjs
       - name: Commit and deploy (if changed)
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          git add src/data/stats.json src/data/reels.json public/images/reels public/images/profiles
+          git add src/data/stats.json src/data/reels.json public/site-stats.json public/images/reels public/images/profiles
           if git diff --staged --quiet; then
             echo "No stat changes."
             exit 0
