@@ -4,7 +4,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Media from '../components/Media.astro';
 import RecipeCard from '../components/RecipeCard.astro';
-import { site, emails, socials, about, recipes, workWithMe, shop, stats, reels, howtos } from '../data/site';
+import { site, emails, socials, about, recipes, workWithMe, shop, stats, reels, howtos, newsletter } from '../data/site';
 import { fmtM, fmtCount } from '../data/format';
 import { isVisible, orderIndex } from '../data/sections';
 
@@ -591,6 +591,28 @@ const jsonLd = [
               <span class="transition-transform duration-300 ease-out-expo group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
             </span>
           </a>
+
+          {
+            newsletter.url && (
+              /* Appears once Wickie pastes her signup link in /admin —
+                 vendor-agnostic (the link is wherever her list lives). */
+              <a
+                href={newsletter.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-reveal
+                class="group mt-6 flex flex-col gap-4 rounded-2xl bg-primary-tint/60 p-7 transition-all duration-300 ease-out-expo hover:-translate-y-1 hover:shadow-lift sm:flex-row sm:items-center sm:justify-between sm:p-8"
+              >
+                <div>
+                  <span class="font-hand text-2xl text-primary-deep">New recipes, straight to your inbox</span>
+                </div>
+                <span class="inline-flex w-fit shrink-0 items-center gap-2 rounded-full border-2 border-primary-deep px-5 py-3 text-base font-semibold text-primary-deep transition-all duration-300 ease-out-expo group-hover:bg-primary-deep group-hover:text-bg">
+                  Join my email list
+                  <span class="transition-transform duration-300 ease-out-expo group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
+                </span>
+              </a>
+            )
+          }
 
           {
             activeSocials.length > 0 && (

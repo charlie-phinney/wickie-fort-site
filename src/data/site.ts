@@ -417,6 +417,13 @@ export const reels: Reel[] = ((reelsData as { reels?: Reel[] }).reels || []).fil
   (r) => r.permalink && r.image
 );
 
+// Newsletter capture: shows once Wickie pastes her signup link in /admin.
+// She might paste a bare URL or a whole embed snippet — either way only the
+// first https URL is taken (same never-render-her-paste posture as the shop).
+const nlPaste = (data as { newsletterUrl?: string }).newsletterUrl || '';
+const nlUrl = (nlPaste.match(/https:\/\/[^\s"'<>]+/) || [''])[0];
+export const newsletter = { url: nlUrl };
+
 /* Navigation anchors — structural, kept in code (not editable in the CMS
    so the on-page links can't break). */
 export const nav = [
