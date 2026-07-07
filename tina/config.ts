@@ -274,6 +274,14 @@ export default defineConfig({
               },
               {
                 type: 'string',
+                name: 'notesText',
+                label: 'Your handwritten notes (optional)',
+                description:
+                  'Little notes in your own voice, shown handwritten on the recipe — one per line, like “Don’t skip resting the meat”. To pin a note to a step, start the line with the step number and a colon, like “3: keep the heat low here”.',
+                ui: { component: 'textarea' },
+              },
+              {
+                type: 'string',
                 name: 'href',
                 label: 'Link to another site (advanced — usually leave blank)',
                 description:

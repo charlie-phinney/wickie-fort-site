@@ -161,6 +161,11 @@ export const about = {
 // Parsed here into typed parts so the pages can render headings differently.
 export type RecipePart = { kind: 'heading' | 'item'; text: string };
 
+// A handwritten margin note. `step` pins it beside that method step
+// (1-based, from a "3:" prefix on the line); unpinned notes sit under the
+// ingredient card.
+export type RecipeNote = { step?: number; text: string };
+
 export type Recipe = {
   title: string;
   blurb: string;
@@ -170,6 +175,7 @@ export type Recipe = {
   slug?: string; // on-site detail-page slug (absent only when the card links out externally)
   ingredients: RecipePart[];
   steps: RecipePart[];
+  notes: RecipeNote[];
   serves?: string;
   time?: string;
 };
@@ -188,6 +194,7 @@ type RawRecipe = {
   time?: string;
   ingredientsText?: string;
   methodText?: string;
+  notesText?: string;
 };
 
 // One line = one entry. "Heading:" lines become section titles. Leading
@@ -203,6 +210,17 @@ const parseParts = (raw?: string): RecipePart[] =>
       ? { kind: 'heading' as const, text: l.slice(0, -1).trim() }
       : { kind: 'item' as const, text: l.replace(/^(\d+[.)]|[-•*])\s+/, '') }
     );
+
+// One note per line; an optional "3:" prefix pins the note to method step 3.
+const parseNotes = (raw?: string): RecipeNote[] =>
+  (raw || '')
+    .split(/\r?\n/)
+    .map((l) => l.replace(/^[-•*]\s+/, '').trim())
+    .filter(Boolean)
+    .map((l) => {
+      const m = l.match(/^(\d+)\s*[:.)-]\s*(.+)$/);
+      return m ? { step: parseInt(m[1], 10), text: m[2].trim() } : { text: l };
+    });
 
 const slugify = (s: string) =>
   s
@@ -235,6 +253,7 @@ export const recipes: Recipe[] = (data.recipes as RawRecipe[]).map((r) => {
     image: r.image || undefined,
     ingredients: parseParts(r.ingredientsText),
     steps: parseParts(r.methodText),
+    notes: parseNotes(r.notesText),
     serves: r.serves?.trim() || undefined,
     time: r.time?.trim() || undefined,
     slug,
@@ -333,7 +352,9 @@ export const linkTechniques = (
     const found: { start: number; end: number; h: HowTo }[] = [];
     for (const { term, h } of techMatchers) {
       if (used.has(h.slug)) continue;
-      const m = new RegExp(`(?<![\\w])${escapeRx(term)}(?![\\w])`, 'i').exec(part.text);
+      // spaces in a phrase also match hyphens ("medium dice" ↔ "medium-dice")
+      const pattern = escapeRx(term).replace(/ +/g, '[\\s-]+');
+      const m = new RegExp(`(?<![\\w])${pattern}(?![\\w])`, 'i').exec(part.text);
       if (!m) continue;
       const start = m.index;
       const end = start + m[0].length;
