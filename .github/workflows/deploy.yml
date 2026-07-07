@@ -143,6 +143,10 @@ jobs:
       # (details in the script).
       - name: Inject admin auto-refresh
         run: node scripts/inject-admin-autorefresh.mjs
+      # Wickie's site-visitor numbers, shown inside /admin (reads the public
+      # aggregate JSON; the API token never reaches the page).
+      - name: Inject admin stats card
+        run: node scripts/inject-admin-stats.mjs
       - name: Build site
         run: npx astro build
       # A real, linkable PDF of the media kit (dist/media-kit.pdf) rendered
