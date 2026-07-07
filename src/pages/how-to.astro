@@ -1,0 +1,310 @@
+---
+/*
+  The How-To library: Wickie's culinary-school basics series. Every technique
+  gets an anchored block here (/how-to#medium-dice-a-potato) with its video
+  embedded, and recipes auto-link technique mentions to these anchors (see
+  linkTechniques in src/data/site.ts). Until she adds videos in /admin the
+  page shows a warm coming-soon state — and nothing else on the site links
+  here until at least one exists (src/data/sections.ts).
+*/
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+import Media from '../components/Media.astro';
+import { site, howtos, emails } from '../data/site';
+
+const title = `How To · ${site.brand}`;
+const description =
+  'Short videos of the basic techniques from culinary school — the knife cuts and prep my recipes are built on.';
+
+const instagram = 'https://www.instagram.com/wickieskitchen';
+const askMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
+  'How-to video request'
+)}`;
+
+// Portrait embeds (IG / TikTok) sit beside their text; YouTube goes wide.
+const isPortrait = (h: (typeof howtos)[number]) =>
+  h.embed?.kind === 'instagram' || h.embed?.kind === 'tiktok';
+
+const jsonLd = howtos.length
+  ? [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: 'Kitchen how-to videos by Wickie Fort',
+        itemListElement: howtos.map((h, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: `How to ${h.title.toLowerCase()}`,
+          url: `https://wickiefort.com/how-to#${h.slug}`,
+        })),
+      },
+    ]
+  : [];
+---
+
+<Base title={title} description={description} jsonLd={jsonLd}>
+  <!-- Same slim sub-page header as the recipe pages: way home + back link. -->
+  <header class="sticky top-0 z-[30] border-b border-line/70 bg-bg/80 backdrop-blur-md">
+    <div class="mx-auto flex max-w-4xl items-center justify-between px-5 py-3.5 sm:px-8">
+      <a
+        href="/"
+        class="group inline-flex items-baseline gap-1.5 font-serif text-lg font-semibold tracking-tight text-ink"
+      >
+        <span class="transition-colors group-hover:text-primary">{site.brand}</span>
+        <span class="h-1.5 w-1.5 translate-y-[-1px] rounded-full bg-pop transition-transform duration-300 ease-out-expo group-hover:scale-125"></span>
+      </a>
+      <a
+        href="/#recipes"
+        class="group inline-flex items-center gap-1.5 text-sm font-semibold text-muted transition-colors hover:text-ink"
+      >
+        <span class="transition-transform duration-300 ease-out-expo group-hover:-translate-x-1" aria-hidden="true">&larr;</span>
+        Recipes
+      </a>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="mx-auto max-w-4xl px-5 pb-20 pt-10 sm:px-8 md:pb-28 md:pt-14">
+      <header class="max-w-prose" data-reveal>
+        <p class="font-hand text-2xl leading-none text-primary sm:text-[1.7rem]">
+          Straight from culinary school
+        </p>
+        <h1 class="mt-4 font-serif text-[clamp(2.5rem,7vw,4rem)] font-semibold leading-[0.98] text-ink">
+          <span class="mark-underline">How to</span>
+        </h1>
+        <p class="mt-5 text-lg leading-relaxed text-muted">
+          The basic techniques my recipes are built on, each in a short video.
+          When a recipe says <em>medium dice</em>, tap the words and land right here.
+        </p>
+      </header>
+
+      {
+        howtos.length > 0 ? (
+          <div class="mt-12 space-y-10 md:mt-16">
+            {howtos.map((h) => (
+              <section
+                id={h.slug}
+                aria-label={`How to ${h.title.toLowerCase()}`}
+                data-reveal
+                class="scroll-mt-24 overflow-hidden rounded-3xl border border-line bg-surface shadow-soft"
+              >
+                <div
+                  class={`grid gap-0 ${
+                    isPortrait(h) ? 'md:grid-cols-[minmax(0,340px)_1fr]' : ''
+                  }`}
+                >
+                  <div class={isPortrait(h) ? 'bg-ink/[0.03]' : ''}>
+                    {h.embed ? (
+                      <iframe
+                        src={h.embed.src}
+                        title={`How to ${h.title.toLowerCase()}, video`}
+                        loading="lazy"
+                        allow="autoplay; encrypted-media; picture-in-picture"
+                        allowfullscreen
+                        class={
+                          isPortrait(h)
+                            ? 'mx-auto block aspect-[9/16] w-full max-w-[340px] border-0'
+                            : 'block aspect-video w-full border-0'
+                        }
+                      />
+                    ) : (
+                      <Media
+                        src={h.image}
+                        alt={`How to ${h.title.toLowerCase()}`}
+                        label="Video coming soon"
+                        ratio={isPortrait(h) ? '9/16' : '16/9'}
+                      />
+                    )}
+                  </div>
+
+                  <div class="flex flex-col justify-center gap-3 px-6 py-6 sm:px-8 sm:py-8">
+                    <h2 class="font-serif text-2xl font-semibold text-ink sm:text-3xl">
+                      <span class="font-hand text-xl text-primary sm:text-2xl">how to</span>{' '}
+                      {h.title}
+                    </h2>
+                    {h.blurb && <p class="text-base leading-relaxed text-muted">{h.blurb}</p>}
+                    <div class="mt-1 flex flex-wrap items-center gap-3">
+                      {h.videoUrl && !h.embed && (
+                        <a
+                          href={h.videoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="inline-flex items-center gap-2 rounded-full bg-primary-deep px-5 py-2.5 text-sm font-semibold text-bg shadow-soft transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:bg-primary hover:shadow-lift"
+                        >
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M7 4.5v15l13-7.5-13-7.5Z" />
+                          </svg>
+                          Watch the video
+                        </a>
+                      )}
+                      {!h.videoUrl && (
+                        <span class="inline-flex w-fit rounded-full border border-primary/25 bg-primary-tint/60 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary-deep">
+                          Filming soon
+                        </span>
+                      )}
+                      <button
+                        type="button"
+                        data-copy-anchor={h.slug}
+                        class="inline-flex items-center gap-1.5 text-sm font-semibold text-muted transition-colors hover:text-ink"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                        </svg>
+                        <span data-copy-label>Copy link</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            ))}
+          </div>
+        ) : (
+          <section class="mt-12 md:mt-16" data-reveal>
+            <div class="relative overflow-hidden rounded-3xl border border-line bg-surface px-6 py-12 text-center shadow-soft sm:px-10 sm:py-14">
+              <div
+                class="pointer-events-none absolute inset-0 opacity-70"
+                style="background:radial-gradient(120% 80% at 82% 8%, oklch(0.86 0.09 60 / 0.6), transparent 58%), radial-gradient(120% 80% at 12% 96%, oklch(0.82 0.11 40 / 0.4), transparent 55%)"
+                aria-hidden="true"
+              />
+              <div class="relative mx-auto max-w-md">
+                <p class="font-hand text-3xl text-primary">Videos coming soon</p>
+                <p class="mt-3 text-base leading-relaxed text-muted">
+                  I'm filming this series now — starting with the knife cuts I
+                  use every day. Follow along on Instagram to catch each one as
+                  it drops.
+                </p>
+                <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
+                  <a
+                    href={instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="rounded-full bg-primary-deep px-5 py-2.5 text-sm font-semibold text-bg shadow-soft transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:bg-primary hover:shadow-lift"
+                  >
+                    Follow on Instagram
+                  </a>
+                  <a
+                    href={askMailto}
+                    class="rounded-full border border-line bg-bg px-5 py-2.5 text-sm font-semibold text-ink transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-primary hover:text-primary"
+                  >
+                    Request a technique
+                  </a>
+                </div>
+              </div>
+            </div>
+          </section>
+        )
+      }
+
+      <div class="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-8 md:mt-20">
+        <a
+          href="/#recipes"
+          class="group inline-flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-primary"
+        >
+          <span class="transition-transform duration-300 ease-out-expo group-hover:-translate-x-1" aria-hidden="true">&larr;</span>
+          Back to recipes
+        </a>
+        <a
+          href={instagram}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-deep transition-colors hover:text-primary"
+        >
+          More on Instagram
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  /* Reveal-on-scroll, same opt-in pattern as the homepage: visible by
+     default, JS + motion-preference opt in to the animation. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global([data-reveal].reveal-init) {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    :global([data-reveal].reveal-in) {
+      opacity: 1;
+      transform: none;
+      transition:
+        opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    :global([data-reveal].reveal-init .mark-underline) {
+      background-size: 0% 0.14em;
+    }
+    :global([data-reveal].reveal-in .mark-underline) {
+      background-size: 100% 0.14em;
+      transition: background-size 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.35s;
+    }
+    :global([data-reveal].reveal-init .font-hand) {
+      clip-path: inset(-20% 100% -20% 0);
+    }
+    :global([data-reveal].reveal-in .font-hand) {
+      clip-path: inset(-20% -5% -20% 0);
+      transition: clip-path 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+    }
+  }
+</style>
+
+<script>
+  // Copy-link per technique — so Wickie (or anyone) can grab a deep link to
+  // one video and drop it in a caption or DM.
+  document.querySelectorAll<HTMLButtonElement>('[data-copy-anchor]').forEach((btn) => {
+    const label = btn.querySelector<HTMLElement>('[data-copy-label]');
+    const original = label?.textContent ?? 'Copy link';
+    let timer: ReturnType<typeof setTimeout>;
+    btn.addEventListener('click', async () => {
+      const url = `${location.origin}/how-to#${btn.dataset.copyAnchor}`;
+      try {
+        await navigator.clipboard.writeText(url);
+        if (label) label.textContent = 'Copied!';
+      } catch {
+        if (label) label.textContent = url;
+      }
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        if (label) label.textContent = original;
+      }, 2000);
+    });
+  });
+
+  // Same reveal behavior as the homepage (duplicated deliberately — the
+  // homepage's script is page-scoped and this page has just two reveals).
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const els = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));
+  if (!reduce && 'IntersectionObserver' in window) {
+    els.forEach((el) => el.classList.add('reveal-init'));
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('reveal-in');
+            entry.target.classList.remove('reveal-init');
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.08 }
+    );
+    els.forEach((el) => io.observe(el));
+    // Failsafe: never leave content hidden if the observer can't fire.
+    window.addEventListener('load', () =>
+      setTimeout(() => {
+        els.forEach((el) => {
+          if (!el.classList.contains('reveal-init')) return;
+          const r = el.getBoundingClientRect();
+          if (r.top < window.innerHeight && r.bottom > 0) {
+            el.classList.add('reveal-in');
+            el.classList.remove('reveal-init');
+          }
+        });
+      }, 600)
+    );
+  }
+</script>
