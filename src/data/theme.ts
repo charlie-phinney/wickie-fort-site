@@ -148,97 +148,11 @@ export const palettes: Record<string, { label: string; colors: Palette }> = {
 };
 
 /* --------------------------- font pairings ----------------------------- */
-/* Display/serif (headings) + body sans, paired on a contrast axis so they
-   never clash. The handwritten accent (Caveat) stays constant — it's the
-   site's signature. `googleFamilies` are the family params for the Google
-   Fonts URL Base.astro builds. */
-type FontPairing = {
-  label: string;
-  serif: string; // CSS font-family stack for headings
-  sans: string; // CSS font-family stack for body
-  googleFamilies: string[]; // Google Fonts `family=` values (display swap added in Base)
-};
-
-const INTER = 'Inter:wght@400;500;600;700';
-const inter = "'Inter', system-ui, -apple-system, sans-serif";
-
-export const fontPairings: Record<string, FontPairing> = {
-  fraunces: {
-    label: 'Fraunces + Inter (warm editorial)',
-    serif: "'Fraunces', Georgia, serif", sans: inter,
-    googleFamilies: ['Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700', INTER],
-  },
-  playfair: {
-    label: 'Playfair + Inter (classic, elegant)',
-    serif: "'Playfair Display', Georgia, serif", sans: inter,
-    googleFamilies: ['Playfair+Display:wght@500;600;700;800', INTER],
-  },
-  dmserif: {
-    label: 'DM Serif + DM Sans (modern, clean)',
-    serif: "'DM Serif Display', Georgia, serif", sans: "'DM Sans', system-ui, sans-serif",
-    googleFamilies: ['DM+Serif+Display:ital@0;1', 'DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700'],
-  },
-  cormorant: {
-    label: 'Cormorant + Nunito Sans (soft, refined)',
-    serif: "'Cormorant Garamond', Georgia, serif", sans: "'Nunito Sans', system-ui, sans-serif",
-    googleFamilies: ['Cormorant+Garamond:wght@500;600;700', 'Nunito+Sans:opsz,wght@6..12,400;6..12,500;6..12,600;6..12,700'],
-  },
-  lora: {
-    label: 'Lora + Inter (readable, warm)',
-    serif: "'Lora', Georgia, serif", sans: inter,
-    googleFamilies: ['Lora:wght@500;600;700', INTER],
-  },
-  libre: {
-    label: 'Libre Baskerville + Work Sans (bookish)',
-    serif: "'Libre Baskerville', Georgia, serif", sans: "'Work Sans', system-ui, sans-serif",
-    googleFamilies: ['Libre+Baskerville:wght@400;700', 'Work+Sans:wght@400;500;600;700'],
-  },
-  eb: {
-    label: 'EB Garamond + Montserrat (timeless)',
-    serif: "'EB Garamond', Georgia, serif", sans: "'Montserrat', system-ui, sans-serif",
-    googleFamilies: ['EB+Garamond:wght@500;600;700', 'Montserrat:wght@400;500;600;700'],
-  },
-  crimson: {
-    label: 'Crimson Pro + Inter (literary)',
-    serif: "'Crimson Pro', Georgia, serif", sans: inter,
-    googleFamilies: ['Crimson+Pro:wght@500;600;700', INTER],
-  },
-  spectral: {
-    label: 'Spectral + Karla (calm, editorial)',
-    serif: "'Spectral', Georgia, serif", sans: "'Karla', system-ui, sans-serif",
-    googleFamilies: ['Spectral:wght@500;600;700', 'Karla:wght@400;500;600;700'],
-  },
-  bitter: {
-    label: 'Bitter + Source Sans (sturdy, friendly)',
-    serif: "'Bitter', Georgia, serif", sans: "'Source Sans 3', system-ui, sans-serif",
-    googleFamilies: ['Bitter:wght@500;600;700', 'Source+Sans+3:wght@400;500;600;700'],
-  },
-  marcellus: {
-    label: 'Marcellus + Nunito Sans (graceful)',
-    serif: "'Marcellus', Georgia, serif", sans: "'Nunito Sans', system-ui, sans-serif",
-    googleFamilies: ['Marcellus', 'Nunito+Sans:opsz,wght@6..12,400;6..12,500;6..12,600;6..12,700'],
-  },
-  abril: {
-    label: 'Abril Fatface + Poppins (bold, magazine)',
-    serif: "'Abril Fatface', Georgia, serif", sans: "'Poppins', system-ui, sans-serif",
-    googleFamilies: ['Abril+Fatface', 'Poppins:wght@400;500;600;700'],
-  },
-  yeseva: {
-    label: 'Yeseva One + Nunito Sans (pretty display)',
-    serif: "'Yeseva One', Georgia, serif", sans: "'Nunito Sans', system-ui, sans-serif",
-    googleFamilies: ['Yeseva+One', 'Nunito+Sans:opsz,wght@6..12,400;6..12,500;6..12,600;6..12,700'],
-  },
-  outfit: {
-    label: 'Outfit (clean, minimal)',
-    serif: "'Outfit', system-ui, sans-serif", sans: "'Outfit', system-ui, sans-serif",
-    googleFamilies: ['Outfit:wght@400;500;600;700;800'],
-  },
-  space: {
-    label: 'Space Grotesk + Inter (techy, modern)',
-    serif: "'Space Grotesk', system-ui, sans-serif", sans: inter,
-    googleFamilies: ['Space+Grotesk:wght@500;600;700', INTER],
-  },
-};
+/* Moved to font-pairings.mjs (plain JS) so the build-time font vendorer
+   (scripts/vendor-fonts.mjs) can import the same data under Node.
+   Re-exported here so nothing else changes. */
+import { fontPairings } from './font-pairings.mjs';
+export { fontPairings };
 
 /* ------------------------------ text size ------------------------------ */
 /* A single global dial. The whole site is built in rem/clamp units, so

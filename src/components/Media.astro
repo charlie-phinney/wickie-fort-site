@@ -4,7 +4,16 @@
   photo-ready frame (not a broken gray box). Wickie drops photos into
   /public/images via the /admin editor and sets the path per item; that
   swaps any frame for the real photo.
+
+  Modern formats: CI (deploy.yml) writes webp variants next to each photo
+  ("<name>-800.webp", "<name>-1600.webp", widths from the real file). When
+  they exist at build time this becomes a <picture> with a srcset; when they
+  don't (a photo uploaded moments ago), it's the plain <img> until the next
+  deploy's housekeeping commit catches up. Never breaks either way.
 */
+import fs from 'node:fs';
+import path from 'node:path';
+
 interface Props {
   src?: string;
   alt?: string;
@@ -12,22 +21,67 @@ interface Props {
   class?: string;
   ratio?: string; // e.g. '4/3', '1/1', '4/5'
   loading?: 'lazy' | 'eager'; // eager = above the fold (hero): load first, everything else waits
+  sizes?: string; // how wide this image renders, for srcset selection
 }
-const { src, alt = '', label = 'Photo coming soon', class: klass = '', ratio = '4/3', loading = 'lazy' } =
-  Astro.props;
+const {
+  src,
+  alt = '',
+  label = 'Photo coming soon',
+  class: klass = '',
+  ratio = '4/3',
+  loading = 'lazy',
+  sizes = '(min-width: 768px) 50vw, 100vw',
+} = Astro.props;
+
+// Find CI-generated webp variants for this photo: public/images/foo-<W>.webp
+let srcset = '';
+if (src && /^\/images\/[^/]+\.(jpe?g|png)$/i.test(src)) {
+  const file = path.join('public', src);
+  const dir = path.dirname(file);
+  const base = path.basename(file).replace(/\.[^.]+$/, '');
+  try {
+    srcset = fs
+      .readdirSync(dir)
+      .map((f) => {
+        const m = f.match(/^(.+)-(\d+)\.webp$/);
+        return m && m[1] === base ? { f, w: parseInt(m[2], 10) } : null;
+      })
+      .filter((v): v is { f: string; w: number } => !!v)
+      .sort((a, b) => a.w - b.w)
+      .map((v) => `/images/${v.f} ${v.w}w`)
+      .join(', ');
+  } catch {
+    /* directory missing — plain <img> below */
+  }
+}
 ---
 
 {
   src ? (
-    <img
-      src={src}
-      alt={alt}
-      loading={loading}
-      fetchpriority={loading === 'eager' ? 'high' : undefined}
-      decoding="async"
-      class={`h-full w-full object-cover ${klass}`}
-      style={`aspect-ratio:${ratio}`}
-    />
+    srcset ? (
+      <picture>
+        <source type="image/webp" srcset={srcset} sizes={sizes} />
+        <img
+          src={src}
+          alt={alt}
+          loading={loading}
+          fetchpriority={loading === 'eager' ? 'high' : undefined}
+          decoding="async"
+          class={`h-full w-full object-cover ${klass}`}
+          style={`aspect-ratio:${ratio}`}
+        />
+      </picture>
+    ) : (
+      <img
+        src={src}
+        alt={alt}
+        loading={loading}
+        fetchpriority={loading === 'eager' ? 'high' : undefined}
+        decoding="async"
+        class={`h-full w-full object-cover ${klass}`}
+        style={`aspect-ratio:${ratio}`}
+      />
+    )
   ) : (
     <div
       class={`relative flex items-center justify-center overflow-hidden bg-primary-tint ${klass}`}

@@ -82,9 +82,39 @@ jobs:
               fi
             fi
           done
-      - name: Commit housekeeping changes (lock + optimized images)
+      # Modern-format variants for the photos the pages actually render
+      # (top-level public/images — reels/ and profiles/ thumbnails are
+      # already small). Media.astro picks these up as a <picture> srcset;
+      # until they exist it just renders the original, so this can never
+      # break a page. Regenerated when the source photo is newer.
+      - name: Generate webp variants
         run: |
-          git add tina/tina-lock.json public/images
+          shopt -s nullglob nocaseglob
+          for f in public/images/*.jpg public/images/*.jpeg public/images/*.png; do
+            base="${f%.*}"
+            w=$(identify -format '%w' "$f")
+            for target in 800 1600; do
+              [ "$w" -ge "$target" ] || continue
+              v="${base}-${target}.webp"
+              if [ ! -f "$v" ] || [ "$f" -nt "$v" ]; then
+                convert "$f" -auto-orient -strip -resize "${target}x>" -quality 82 "$v"
+                echo "webp: $v ($(stat -c%s "$v") bytes)"
+              fi
+            done
+          done
+          # prune variants whose source photo is gone
+          for v in public/images/*-800.webp public/images/*-1600.webp; do
+            base="${v%-*.webp}"
+            ls "$base".jpg "$base".jpeg "$base".png "$base".JPG "$base".JPEG "$base".PNG >/dev/null 2>&1 || { rm "$v"; echo "pruned: $v"; }
+          done
+      # Self-hosted fonts for the active pairing (scripts/vendor-fonts.mjs).
+      # Keep-last-good: a fetch failure keeps the committed files and never
+      # fails the deploy.
+      - name: Vendor fonts
+        run: node scripts/vendor-fonts.mjs
+      - name: Commit housekeeping changes (lock + optimized images + fonts)
+        run: |
+          git add tina/tina-lock.json public/images public/fonts
           if git diff --staged --quiet; then
             echo "Nothing to commit."
             exit 0
