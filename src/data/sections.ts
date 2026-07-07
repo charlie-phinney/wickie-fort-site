@@ -13,15 +13,11 @@
 /* ==================================================================== */
 import data from './site.json';
 
-// The how-to section (and its menu link) only exists once Wickie has added at
-// least one technique video — before that, nothing on the site mentions it.
-const hasHowtos = (((data as { howtos?: { title?: string }[] }).howtos) || []).some((h) =>
-  h?.title?.trim()
-);
-
 // The re-orderable sections, in default order, each with its nav-menu label
 // (null = no menu link). The top menu is generated from this + what's visible,
 // so hiding a section also removes its menu link — no dead links.
+// How-To is public from day one (Charlie, 7/6): before Wickie's first video
+// it shows its "coming soon" state instead of hiding.
 export const sectionMeta: { id: string; nav: string | null; href: string | null }[] = [
   { id: 'stats', nav: null, href: null },
   { id: 'about', nav: 'About', href: '#about' },
@@ -29,7 +25,7 @@ export const sectionMeta: { id: string; nav: string | null; href: string | null 
   { id: 'shop', nav: 'Shop', href: '#shop' },
   { id: 'philosophy', nav: null, href: null },
   { id: 'recipes', nav: 'Recipes', href: '#recipes' },
-  { id: 'howto', nav: hasHowtos ? 'How To' : null, href: hasHowtos ? '/how-to' : null },
+  { id: 'howto', nav: 'How To', href: '/how-to' },
   { id: 'contact', nav: 'Contact', href: '#contact' },
 ];
 

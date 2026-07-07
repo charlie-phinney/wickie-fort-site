@@ -499,8 +499,35 @@ const jsonLd = [
 
     <!-- =========================== HOW TO =========================== -->
     <!-- Wickie's technique-video library (the culinary-school basics series).
-         Renders only once she's added at least one video in /admin — until
-         then the homepage, menu and sitemap don't mention it at all. -->
+         Before her first video it's a slim "coming soon" band (below);
+         cards + the full library take over the moment she adds one in /admin. -->
+    {
+      isVisible('howto') && howtos.length === 0 && (
+        <section id="howto" class="bg-surface" style={ord('howto')}>
+          <div class="mx-auto max-w-6xl px-5 py-16 sm:px-8 md:py-20">
+            <div data-reveal class="flex flex-wrap items-end justify-between gap-6">
+              <div class="max-w-prose">
+                <p class="font-hand text-2xl text-primary">Straight from culinary school</p>
+                <h2 class="mt-3 font-serif text-[clamp(2.1rem,5.5vw,3.2rem)] font-semibold text-ink">
+                  How to
+                </h2>
+                <p class="mt-4 text-lg leading-relaxed text-muted">
+                  The basic techniques my recipes are built on, each in a short
+                  video. Filming now — first up: knife cuts.
+                </p>
+              </div>
+              <a
+                href="/how-to"
+                class="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-line px-5 py-2.5 text-sm font-semibold text-ink transition-all duration-300 ease-out-expo hover:border-primary hover:text-primary"
+              >
+                Videos coming soon
+                <span aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+          </div>
+        </section>
+      )
+    }
     {
       isVisible('howto') && howtos.length > 0 && (
         <section id="howto" class="bg-surface" style={ord('howto')}>
