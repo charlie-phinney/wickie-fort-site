@@ -45,6 +45,11 @@ for (const part of linkedSteps) {
 const ingredientItems = recipe.ingredients.filter((p) => p.kind === 'item').map((p) => p.text);
 const stepItems = recipe.steps.filter((p) => p.kind === 'item').map((p) => p.text);
 
+// Wickie's handwritten notes: "3: keep the heat low" pins to step 3 and
+// renders under it; unpinned lines gather beneath the ingredient card.
+const generalNotes = recipe.notes.filter((n) => !n.step);
+const notesForStep = (n: number) => recipe.notes.filter((note) => note.step === n);
+
 const instagram = 'https://www.instagram.com/wickieskitchen';
 const askMailto = `mailto:${emails.general}?subject=${encodeURIComponent(
   `Recipe request: ${recipe.title}`
@@ -236,39 +241,65 @@ const breadcrumbLd = {
         hasMethod ? (
           <!-- ------------------- full recipe: ingredients + method ------------------- -->
           <div class="recipe-method mt-12 grid gap-10 md:mt-16 md:grid-cols-[0.8fr_1.2fr] md:gap-14">
-            {recipe.ingredients.length > 0 && (
-              <section aria-labelledby="ingredients-heading" class="md:sticky md:top-24 md:self-start">
-                <h2 id="ingredients-heading" class="font-serif text-2xl font-semibold text-ink">
-                  <span class="mark-underline">Ingredients</span>
-                </h2>
-                <ul class="mt-5 space-y-3">
-                  {linkedIngredients.map((part, i) =>
-                    part.kind === 'heading' ? (
-                      <li class="list-none pt-3 first:pt-0 text-sm font-semibold uppercase tracking-wide text-primary-deep">
-                        {part.text}
-                      </li>
-                    ) : (
-                      /* Each ingredient is a real checkbox so shoppers/cooks can
-                         tick things off. Checked state persists per recipe
-                         (localStorage) so a page reload mid-cook loses nothing. */
-                      <li class="text-[1.02rem] leading-snug text-ink">
-                        <label class="group/ing flex cursor-pointer items-start gap-3">
-                          <input
-                            type="checkbox"
-                            data-check={`ing-${i}`}
-                            class="mt-1 h-4 w-4 flex-none cursor-pointer appearance-none rounded-full border-2 border-primary/60 transition-colors checked:border-primary checked:bg-primary"
-                          />
-                          <span class="transition-opacity group-has-[:checked]/ing:opacity-45 group-has-[:checked]/ing:line-through">
-                            {part.segments.map((seg) =>
-                              /* prettier-ignore — one line so no whitespace lands inside the underlined link */
-                              seg.href ? <a href={seg.href} title={seg.title} class="howto-link">{seg.text}</a> : seg.text
-                            )}
-                          </span>
-                        </label>
-                      </li>
-                    )
-                  )}
-                </ul>
+            {(recipe.ingredients.length > 0 || generalNotes.length > 0) && (
+              <section
+                aria-label={recipe.ingredients.length > 0 ? undefined : "Wickie's notes"}
+                aria-labelledby={recipe.ingredients.length > 0 ? 'ingredients-heading' : undefined}
+                class="md:sticky md:top-24 md:self-start"
+              >
+                {recipe.ingredients.length > 0 && (
+                  /* The ingredient list dressed as the classic kitchen index
+                     card: cream stock, a strip of tape, the red top rule, a
+                     gentle tilt. Purely presentational — the checkboxes and
+                     their persistence are unchanged. */
+                  <div class="index-card relative rotate-[-0.6deg] rounded-lg px-6 pb-6 pt-5 shadow-soft sm:px-7">
+                    <span class="index-tape" aria-hidden="true" />
+                    <h2 id="ingredients-heading" class="font-hand text-3xl text-ink">
+                      Ingredients
+                    </h2>
+                    <div class="index-rule mt-2" aria-hidden="true" />
+                    <ul class="mt-4 space-y-3">
+                      {linkedIngredients.map((part, i) =>
+                        part.kind === 'heading' ? (
+                          <li class="list-none pt-3 first:pt-0 text-sm font-semibold uppercase tracking-wide text-primary-deep">
+                            {part.text}
+                          </li>
+                        ) : (
+                          /* Each ingredient is a real checkbox so shoppers/cooks can
+                             tick things off. Checked state persists per recipe
+                             (localStorage) so a page reload mid-cook loses nothing. */
+                          <li class="text-[1.02rem] leading-snug text-ink">
+                            <label class="group/ing flex cursor-pointer items-start gap-3">
+                              <input
+                                type="checkbox"
+                                data-check={`ing-${i}`}
+                                class="mt-1 h-4 w-4 flex-none cursor-pointer appearance-none rounded-full border-2 border-primary/60 transition-colors checked:border-primary checked:bg-primary"
+                              />
+                              <span class="transition-opacity group-has-[:checked]/ing:opacity-45 group-has-[:checked]/ing:line-through">
+                                {part.segments.map((seg) =>
+                                  /* prettier-ignore — one line so no whitespace lands inside the underlined link */
+                                  seg.href ? <a href={seg.href} title={seg.title} class="howto-link">{seg.text}</a> : seg.text
+                                )}
+                              </span>
+                            </label>
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  </div>
+                )}
+
+                {generalNotes.length > 0 && (
+                  /* Her unpinned margin notes, handwritten under the card. */
+                  <div class={`space-y-2.5 ${recipe.ingredients.length > 0 ? 'mt-7 px-1' : ''}`}>
+                    {generalNotes.map((note) => (
+                      <p class="margin-note font-hand text-xl leading-snug text-primary-deep">
+                        <span class="mr-1.5 text-pop" aria-hidden="true">✱</span>
+                        {note.text}
+                      </p>
+                    ))}
+                  </div>
+                )}
               </section>
             )}
 
@@ -299,12 +330,21 @@ const breadcrumbLd = {
                           >
                             {sec.start + i}
                           </button>
-                          <p class="step-text pt-0.5 text-lg leading-relaxed text-ink/90 transition-opacity group-has-[[aria-pressed='true']]/step:opacity-40">
-                            {step.map((seg) =>
-                              /* prettier-ignore — one line so no whitespace lands inside the underlined link */
-                              seg.href ? <a href={seg.href} title={seg.title} class="howto-link">{seg.text}</a> : seg.text
-                            )}
-                          </p>
+                          <div class="min-w-0 pt-0.5">
+                            <p class="step-text text-lg leading-relaxed text-ink/90 transition-opacity group-has-[[aria-pressed='true']]/step:opacity-40">
+                              {step.map((seg) =>
+                                /* prettier-ignore — one line so no whitespace lands inside the underlined link */
+                                seg.href ? <a href={seg.href} title={seg.title} class="howto-link">{seg.text}</a> : seg.text
+                              )}
+                            </p>
+                            {notesForStep(sec.start + i).map((note) => (
+                              /* Wickie's note pinned to this step, in her hand. */
+                              <p class="margin-note mt-1.5 font-hand text-lg leading-snug text-primary-deep">
+                                <span class="mr-1 text-pop" aria-hidden="true">↳</span>
+                                {note.text}
+                              </p>
+                            ))}
+                          </div>
                         </li>
                       ))}
                     </ol>
@@ -393,6 +433,35 @@ const breadcrumbLd = {
     text-decoration-color: currentColor;
   }
 
+  /* The kitchen index card: fixed warm paper (deliberately NOT themed — it
+     should read as a physical card on every palette), a strip of washi tape,
+     and the classic red rule under the title. */
+  .index-card {
+    background: oklch(0.99 0.012 95);
+    border: 1px solid oklch(0.9 0.02 85);
+  }
+  .index-tape {
+    position: absolute;
+    top: -0.8rem;
+    left: 50%;
+    width: 6.5rem;
+    height: 1.6rem;
+    transform: translateX(-50%) rotate(-3deg);
+    background: oklch(var(--pop) / 0.45);
+    box-shadow: 0 1px 2px oklch(0 0 0 / 0.06);
+  }
+  .index-rule {
+    height: 2px;
+    background: oklch(0.62 0.19 25 / 0.4);
+  }
+  /* Handwritten margin notes tilt gently, alternating like real scribbles. */
+  .margin-note {
+    transform: rotate(-0.8deg);
+  }
+  .margin-note:nth-child(even) {
+    transform: rotate(0.6deg);
+  }
+
   /* Print-friendly recipe: drop the chrome and decoration, keep a clean
      ingredients + method card that reads well on paper. Only recipes with a
      written method expose the Print button, so this only ever runs on a page
@@ -438,6 +507,20 @@ const breadcrumbLd = {
       text-decoration: none;
       color: inherit;
       font-weight: inherit;
+    }
+    /* the card keeps its notes but drops the dress-up */
+    .index-card {
+      background: transparent;
+      border: none;
+      padding: 0;
+      transform: none;
+      box-shadow: none;
+    }
+    .index-tape {
+      display: none;
+    }
+    .margin-note {
+      transform: none;
     }
   }
 
