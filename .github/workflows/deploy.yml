@@ -102,10 +102,16 @@ jobs:
               fi
             done
           done
-          # prune variants whose source photo is gone
+          # prune variants whose source photo is gone. NOT `ls a b c || rm`:
+          # ls exits non-zero when ANY listed name is missing, which pruned
+          # every variant the moment one extension candidate didn't exist.
           for v in public/images/*-800.webp public/images/*-1600.webp; do
             base="${v%-*.webp}"
-            ls "$base".jpg "$base".jpeg "$base".png "$base".JPG "$base".JPEG "$base".PNG >/dev/null 2>&1 || { rm "$v"; echo "pruned: $v"; }
+            found=""
+            for ext in jpg jpeg png JPG JPEG PNG; do
+              [ -f "${base}.${ext}" ] && { found=1; break; }
+            done
+            [ -n "$found" ] || { rm "$v"; echo "pruned: $v"; }
           done
       # Self-hosted fonts for the active pairing (scripts/vendor-fonts.mjs).
       # Keep-last-good: a fetch failure keeps the committed files and never
