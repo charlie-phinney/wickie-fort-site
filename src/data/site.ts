@@ -242,6 +242,123 @@ export const recipes: Recipe[] = (data.recipes as RawRecipe[]).map((r) => {
   };
 });
 
+/* ------------------------- How-to technique videos ------------------------- */
+// Wickie's culinary-school basics series. Each entry gets an anchor on the
+// /how-to page, and recipes that mention the technique link to it
+// automatically (see linkTechniques below).
+export type HowTo = {
+  title: string; // stored without a "How to" prefix; pages add their own
+  slug: string;
+  blurb?: string;
+  image?: string;
+  videoUrl?: string;
+  embed?: { kind: 'instagram' | 'youtube' | 'tiktok'; src: string };
+  terms: string[]; // phrases that auto-link from recipe text
+};
+
+type RawHowTo = {
+  title?: string;
+  videoUrl?: string;
+  blurb?: string;
+  image?: string;
+  matchText?: string;
+};
+
+// Turn whatever video link Wickie pastes into an embeddable player URL.
+// SECURITY: same posture as the shop embed — the iframe src is REBUILT from
+// the parsed video id, never her raw paste. An unrecognized link is never
+// embedded; the page falls back to a "watch" button instead.
+const videoEmbed = (url?: string): HowTo['embed'] | undefined => {
+  if (!url) return undefined;
+  let m = url.match(/instagram\.com\/(?:[\w.]+\/)?(reel|p|tv)\/([A-Za-z0-9_-]+)/i);
+  if (m) {
+    return {
+      kind: 'instagram',
+      src: `https://www.instagram.com/${m[1].toLowerCase()}/${m[2]}/embed/`,
+    };
+  }
+  m = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/i);
+  if (m) return { kind: 'youtube', src: `https://www.youtube-nocookie.com/embed/${m[1]}` };
+  m = url.match(/tiktok\.com\/@[\w.]+\/video\/(\d+)/i);
+  if (m) return { kind: 'tiktok', src: `https://www.tiktok.com/embed/v2/${m[1]}` };
+  return undefined;
+};
+
+const howtoSlugSeen = new Map<string, number>();
+export const howtos: HowTo[] = (((data as { howtos?: RawHowTo[] }).howtos || []) as RawHowTo[])
+  .filter((h) => h?.title?.trim())
+  .map((h) => {
+    // She might type "How to dice an onion" out of habit — strip it so the
+    // pages don't render "How to how to dice an onion".
+    const title = h.title!.trim().replace(/^how\s+to\s+/i, '');
+    const base = slugify(title);
+    const n = (howtoSlugSeen.get(base) || 0) + 1;
+    howtoSlugSeen.set(base, n);
+    const url = h.videoUrl?.trim() || undefined;
+    const terms = (h.matchText || '')
+      .split(/\r?\n/)
+      .map((l) => l.replace(/^[-•*]\s+/, '').trim().toLowerCase())
+      .filter(Boolean);
+    return {
+      title,
+      slug: n === 1 ? base : `${base}-${n}`,
+      blurb: h.blurb?.trim() || undefined,
+      image: h.image || undefined,
+      videoUrl: url,
+      embed: videoEmbed(url),
+      terms: terms.length ? terms : [title.toLowerCase()],
+    };
+  });
+
+/* Technique auto-linking: when a recipe's ingredients or method mention one
+   of the how-to phrases ("medium dice", "fabricate a chicken"), the words
+   become a link to that video — Wickie never links anything by hand.
+   Longest phrases win, and each technique links at most once per list, so a
+   recipe never turns into a sea of links. */
+export type TextSegment = { text: string; href?: string; title?: string };
+
+const escapeRx = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const techMatchers = howtos
+  .flatMap((h) => h.terms.map((term) => ({ term, h })))
+  .sort((a, b) => b.term.length - a.term.length);
+
+export const linkTechniques = (
+  parts: RecipePart[]
+): (RecipePart & { segments: TextSegment[] })[] => {
+  const used = new Set<string>();
+  return parts.map((part) => {
+    if (part.kind !== 'item' || techMatchers.length === 0) {
+      return { ...part, segments: [{ text: part.text }] };
+    }
+    const found: { start: number; end: number; h: HowTo }[] = [];
+    for (const { term, h } of techMatchers) {
+      if (used.has(h.slug)) continue;
+      const m = new RegExp(`(?<![\\w])${escapeRx(term)}(?![\\w])`, 'i').exec(part.text);
+      if (!m) continue;
+      const start = m.index;
+      const end = start + m[0].length;
+      if (found.some((f) => start < f.end && end > f.start)) continue; // overlap → longer phrase already won
+      found.push({ start, end, h });
+      used.add(h.slug);
+    }
+    if (!found.length) return { ...part, segments: [{ text: part.text }] };
+    found.sort((a, b) => a.start - b.start);
+    const segments: TextSegment[] = [];
+    let pos = 0;
+    for (const f of found) {
+      if (f.start > pos) segments.push({ text: part.text.slice(pos, f.start) });
+      segments.push({
+        text: part.text.slice(f.start, f.end),
+        href: `/how-to#${f.h.slug}`,
+        title: `Watch: how to ${f.h.title.toLowerCase()}`,
+      });
+      pos = f.end;
+    }
+    if (pos < part.text.length) segments.push({ text: part.text.slice(pos) });
+    return { ...part, segments };
+  });
+};
+
 export const workWithMe = {
   heading: data.workHeading,
   intro: data.workIntro,

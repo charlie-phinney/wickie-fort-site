@@ -136,6 +136,7 @@ export default defineConfig({
                     shop: 'Shop',
                     philosophy: 'Your quote',
                     recipes: 'Recipes',
+                    howto: 'How-to videos',
                     contact: 'Contact',
                   }[item?.id] || 'Section') + (item?.show === false ? ' — hidden' : ''),
               }),
@@ -152,6 +153,7 @@ export default defineConfig({
                   { value: 'shop', label: 'Shop' },
                   { value: 'philosophy', label: 'Your quote' },
                   { value: 'recipes', label: 'Recipes' },
+                  { value: 'howto', label: 'How-to videos' },
                   { value: 'contact', label: 'Contact' },
                 ],
               },
@@ -276,6 +278,54 @@ export default defineConfig({
                 label: 'Link to another site (advanced — usually leave blank)',
                 description:
                   'Only fill this in if you want this card to open another website (like an Instagram post) instead of its own recipe page.',
+              },
+            ],
+          },
+
+          // ===== 3b. How-to videos (technique library) =====
+          {
+            type: 'object',
+            name: 'howtos',
+            label: 'How-to videos (kitchen basics)',
+            description:
+              'Your technique videos — how to medium dice a potato, dice an onion, fabricate a chicken. Each one gets its own spot on your How-To page, and any recipe that mentions the technique links to your video automatically. Use “+ Add” for each new video.',
+            list: true,
+            ui: { itemProps: (i) => ({ label: i?.title || 'New how-to' }) },
+            fields: [
+              {
+                type: 'string',
+                name: 'title',
+                label: 'Technique name',
+                description:
+                  'What you’re teaching, like “Medium dice a potato”. No need to type “How to” — the site adds it.',
+              },
+              {
+                type: 'string',
+                name: 'videoUrl',
+                label: 'Video link',
+                description:
+                  'Paste the link to your video — an Instagram reel, YouTube video, or TikTok. It plays right on the page. You can add the technique now and paste the link later.',
+              },
+              {
+                type: 'string',
+                name: 'blurb',
+                label: 'Short description (optional)',
+                description: 'One or two sentences about the technique and when you use it.',
+                ui: { component: 'textarea' },
+              },
+              {
+                type: 'image',
+                name: 'image',
+                label: 'Cover photo (optional)',
+                description: 'Shown on the card until someone plays the video.',
+              },
+              {
+                type: 'string',
+                name: 'matchText',
+                label: 'Recipe words that should link here (optional)',
+                description:
+                  'When a recipe of yours mentions these words, they automatically become a link to this video — one word or phrase per line, like “medium dice” or “diced potatoes”. Leave blank to just use the technique name above.',
+                ui: { component: 'textarea' },
               },
             ],
           },

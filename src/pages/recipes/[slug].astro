@@ -8,7 +8,8 @@
 import Base from '../../layouts/Base.astro';
 import Footer from '../../components/Footer.astro';
 import Media from '../../components/Media.astro';
-import { site, recipes, emails } from '../../data/site';
+import { site, recipes, emails, linkTechniques } from '../../data/site';
+import type { TextSegment } from '../../data/site';
 
 export function getStaticPaths() {
   return recipes
@@ -19,18 +20,24 @@ export function getStaticPaths() {
 const { recipe } = Astro.props;
 const hasMethod = recipe.ingredients.length > 0 || recipe.steps.length > 0;
 
+// Technique mentions ("medium dice", "fabricate a chicken") become links to
+// Wickie's how-to videos — computed at build time in src/data/site.ts, plain
+// text again the moment no technique matches.
+const linkedIngredients = linkTechniques(recipe.ingredients);
+const linkedSteps = linkTechniques(recipe.steps);
+
 // Group the method into sections: an optional "Prep your burger" heading plus
 // its steps. Step numbering runs continuously across sections (the <ol start>
 // below), which is what makes the numbers keep counting under each heading.
-type StepSection = { heading?: string; start: number; steps: string[] };
+type StepSection = { heading?: string; start: number; steps: TextSegment[][] };
 const stepSections: StepSection[] = [];
 let stepCount = 0;
-for (const part of recipe.steps) {
+for (const part of linkedSteps) {
   if (part.kind === 'heading') {
     stepSections.push({ heading: part.text, start: stepCount + 1, steps: [] });
   } else {
     if (!stepSections.length) stepSections.push({ start: 1, steps: [] });
-    stepSections[stepSections.length - 1].steps.push(part.text);
+    stepSections[stepSections.length - 1].steps.push(part.segments);
     stepCount++;
   }
 }
@@ -235,7 +242,7 @@ const breadcrumbLd = {
                   <span class="mark-underline">Ingredients</span>
                 </h2>
                 <ul class="mt-5 space-y-3">
-                  {recipe.ingredients.map((part, i) =>
+                  {linkedIngredients.map((part, i) =>
                     part.kind === 'heading' ? (
                       <li class="list-none pt-3 first:pt-0 text-sm font-semibold uppercase tracking-wide text-primary-deep">
                         {part.text}
@@ -252,7 +259,10 @@ const breadcrumbLd = {
                             class="mt-1 h-4 w-4 flex-none cursor-pointer appearance-none rounded-full border-2 border-primary/60 transition-colors checked:border-primary checked:bg-primary"
                           />
                           <span class="transition-opacity group-has-[:checked]/ing:opacity-45 group-has-[:checked]/ing:line-through">
-                            {part.text}
+                            {part.segments.map((seg) =>
+                              /* prettier-ignore — one line so no whitespace lands inside the underlined link */
+                              seg.href ? <a href={seg.href} title={seg.title} class="howto-link">{seg.text}</a> : seg.text
+                            )}
                           </span>
                         </label>
                       </li>
@@ -290,7 +300,10 @@ const breadcrumbLd = {
                             {sec.start + i}
                           </button>
                           <p class="step-text pt-0.5 text-lg leading-relaxed text-ink/90 transition-opacity group-has-[[aria-pressed='true']]/step:opacity-40">
-                            {step}
+                            {step.map((seg) =>
+                              /* prettier-ignore — one line so no whitespace lands inside the underlined link */
+                              seg.href ? <a href={seg.href} title={seg.title} class="howto-link">{seg.text}</a> : seg.text
+                            )}
                           </p>
                         </li>
                       ))}
@@ -364,6 +377,22 @@ const breadcrumbLd = {
 </Base>
 
 <style is:global>
+  /* Technique links: a recipe mentioning "medium dice" links to Wickie's
+     how-to video (built in src/data/site.ts). Styled as a warm marker-ish
+     underline so it reads as hers, not as a default blue link. */
+  .howto-link {
+    font-weight: 600;
+    color: oklch(var(--primary-deep));
+    text-decoration: underline;
+    text-decoration-color: color-mix(in oklab, currentColor 45%, transparent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+  }
+  .howto-link:hover {
+    text-decoration-color: currentColor;
+  }
+
   /* Print-friendly recipe: drop the chrome and decoration, keep a clean
      ingredients + method card that reads well on paper. Only recipes with a
      written method expose the Print button, so this only ever runs on a page
@@ -403,6 +432,12 @@ const breadcrumbLd = {
     }
     * {
       box-shadow: none !important;
+    }
+    /* on paper a technique link is just words */
+    .howto-link {
+      text-decoration: none;
+      color: inherit;
+      font-weight: inherit;
     }
   }
 

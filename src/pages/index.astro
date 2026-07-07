@@ -4,7 +4,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Media from '../components/Media.astro';
 import RecipeCard from '../components/RecipeCard.astro';
-import { site, emails, socials, about, recipes, workWithMe, shop, stats, reels } from '../data/site';
+import { site, emails, socials, about, recipes, workWithMe, shop, stats, reels, howtos } from '../data/site';
 import { fmtM, fmtCount } from '../data/format';
 import { isVisible, orderIndex } from '../data/sections';
 
@@ -493,6 +493,72 @@ const jsonLd = [
               </div>
             </div>
           )}
+        </section>
+      )
+    }
+
+    <!-- =========================== HOW TO =========================== -->
+    <!-- Wickie's technique-video library (the culinary-school basics series).
+         Renders only once she's added at least one video in /admin — until
+         then the homepage, menu and sitemap don't mention it at all. -->
+    {
+      isVisible('howto') && howtos.length > 0 && (
+        <section id="howto" class="bg-surface" style={ord('howto')}>
+          <div class="mx-auto max-w-6xl px-5 py-16 sm:px-8 md:py-24">
+            <div data-reveal class="flex flex-wrap items-end justify-between gap-4">
+              <div class="max-w-prose">
+                <p class="font-hand text-2xl text-primary">Straight from culinary school</p>
+                <h2 class="mt-3 font-serif text-[clamp(2.1rem,5.5vw,3.2rem)] font-semibold text-ink">
+                  How to
+                </h2>
+                <p class="mt-4 text-lg leading-relaxed text-muted">
+                  The basic techniques my recipes are built on, each in a short video.
+                </p>
+              </div>
+              <a
+                href="/how-to"
+                class="hidden shrink-0 items-center gap-1.5 rounded-full border border-line px-5 py-2.5 text-sm font-semibold text-ink transition-all duration-300 ease-out-expo hover:border-primary hover:text-primary sm:inline-flex"
+              >
+                All how-tos
+                <span aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+
+            <div data-reveal class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {howtos.slice(0, 6).map((h) => (
+                <a
+                  href={`/how-to#${h.slug}`}
+                  class="group overflow-hidden rounded-3xl border border-line bg-bg shadow-soft transition-all duration-500 ease-out-expo hover:-translate-y-1 hover:shadow-lift"
+                >
+                  <div class="relative">
+                    <Media src={h.image} alt="" label="Video" ratio="16/9" />
+                    <span
+                      class="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-ink/55 text-bg backdrop-blur-sm transition-transform duration-300 ease-out-expo group-hover:scale-110"
+                      aria-hidden="true"
+                    >
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M7 4.5v15l13-7.5-13-7.5Z" />
+                      </svg>
+                    </span>
+                  </div>
+                  <div class="px-5 py-4">
+                    <h3 class="font-serif text-xl font-semibold text-ink transition-colors group-hover:text-primary">
+                      <span class="font-hand text-lg text-primary">how to</span> {h.title}
+                    </h3>
+                    {h.blurb && <p class="mt-1.5 text-sm leading-relaxed text-muted">{h.blurb}</p>}
+                  </div>
+                </a>
+              ))}
+            </div>
+
+            <a
+              href="/how-to"
+              class="mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-deep transition-colors hover:text-primary sm:hidden"
+            >
+              All how-tos
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
         </section>
       )
     }
