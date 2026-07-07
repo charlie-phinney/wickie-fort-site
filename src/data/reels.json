@@ -1,6 +1,13 @@
 {
-  "updated": "2026-07-06",
+  "updated": "2026-07-07",
   "reels": [
+    {
+      "id": "17950987293192706",
+      "permalink": "https://www.instagram.com/reel/DadcqINOSW8/",
+      "caption": "I can’t believe I’m officially done with culinary school! This chapter of my life has been",
+      "image": "/images/reels/17950987293192706.jpg",
+      "isVideo": true
+    },
     {
       "id": "18103502918027583",
       "permalink": "https://www.instagram.com/reel/DaS78p6uxJV/",
@@ -34,13 +41,6 @@
       "permalink": "https://www.instagram.com/reel/DZ75815uujf/",
       "caption": "It’s hard to believe that today is DAY 100 (!!!) of culinary school! We only have about 8 ",
       "image": "/images/reels/18066362783450386.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "17894015373524019",
-      "permalink": "https://www.instagram.com/reel/DZp9t0uurc3/",
-      "caption": "Let us know what we should cook next!!!!",
-      "image": "/images/reels/17894015373524019.jpg",
       "isVideo": true
     }
   ]

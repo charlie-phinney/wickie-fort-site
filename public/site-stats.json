@@ -1,11 +1,21 @@
 {
   "updated": "2026-07-07",
-  "days30": 1,
-  "days7": 1,
+  "days30": 5,
+  "days7": 5,
   "topPages": [
+    {
+      "path": "/how-to",
+      "title": "How To",
+      "count": 2
+    },
     {
       "path": "/",
       "title": "Wickie's Kitchen",
+      "count": 2
+    },
+    {
+      "path": "/recipes/spicy-calabrian-chilli-vodka-sauce",
+      "title": "Spicy Calabrian Chilli Vodka Sauce",
       "count": 1
     }
   ]
