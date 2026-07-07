@@ -139,6 +139,12 @@ jobs:
         run: node scripts/inject-admin-autorefresh.mjs
       - name: Build site
         run: npx astro build
+      # A real, linkable PDF of the media kit (dist/media-kit.pdf) rendered
+      # from the page just built — same live numbers, zero hand-maintenance.
+      - name: Render media-kit PDF
+        run: |
+          npx playwright install --with-deps chromium
+          node scripts/make-media-kit-pdf.mjs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

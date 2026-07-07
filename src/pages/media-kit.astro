@@ -147,12 +147,13 @@ const recentWork = stats.platforms
           >
             {workWithMe.cta}
           </a>
-          <button
-            onclick="window.print()"
+          <a
+            href="/media-kit.pdf"
+            download="wickies-kitchen-media-kit.pdf"
             class="rounded-full border-2 border-line px-6 py-3 text-base font-semibold text-ink transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-primary hover:text-primary"
           >
-            Save as PDF
-          </button>
+            Download PDF
+          </a>
         </div>
         <p class="mt-4 hidden text-ink print:block">{emails.general}</p>
       </div>
