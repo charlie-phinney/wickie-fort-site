@@ -1,7 +1,9 @@
 ---
+import fs from 'node:fs';
 import '../styles/global.css';
 import { site } from '../data/site';
 import { theme } from '../data/theme';
+import { googleCssUrl } from '../data/font-pairings.mjs';
 
 interface Props {
   title?: string;
@@ -38,9 +40,20 @@ const themeVars = [
   // handwritten accent back to the browser's default font.
   `font-size:${theme.rootPercent}%`,
 ].join(';');
-const fontsHref = `https://fonts.googleapis.com/css2?${theme.fonts.googleFamilies
-  .map((f) => `family=${f}`)
-  .join('&')}&family=Caveat:wght@600;700&display=swap`;
+// Fonts are self-hosted: scripts/vendor-fonts.mjs mirrors the active
+// pairing's files into public/fonts/ (committed, refreshed by CI), and the
+// small @font-face stylesheet is inlined below — no render-blocking
+// third-party CSS, no fonts.gstatic.com connection. Until the vendored
+// files exist for a new pairing, the Google links keep everything working.
+const vendoredCss = fs.existsSync('public/fonts/fonts.css')
+  ? fs.readFileSync('public/fonts/fonts.css', 'utf8')
+  : '';
+// Vendored for the active pairing? (A pairing switch in /admin deploys
+// before CI's housekeeping commit lands the new files — fall back to the
+// CDN for that one build instead of showing system fonts.)
+const primaryFamily = /'([^']+)'/.exec(theme.fonts.serif)?.[1] || '';
+const vendoredFresh = vendoredCss.includes(`font-family: '${primaryFamily}'`);
+const fontsHref = googleCssUrl(theme.fonts);
 ---
 
 <!doctype html>
@@ -78,10 +91,20 @@ const fontsHref = `https://fonts.googleapis.com/css2?${theme.fonts.googleFamilie
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
-    <!-- Fonts: Fraunces (display serif) + Inter (body) + Caveat (hand accent). Free via Google Fonts. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href={fontsHref} />
+    <!-- Fonts: display serif + body sans (Wickie's pairing) + Caveat (hand
+         accent). Self-hosted from /fonts (vendor-fonts.mjs); the @font-face
+         rules are inlined so nothing render-blocking leaves this origin. -->
+    {
+      vendoredFresh ? (
+        <style set:html={vendoredCss} />
+      ) : (
+        <>
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+          <link rel="stylesheet" href={fontsHref} />
+        </>
+      )
+    }
 
     <script
       is:inline
