@@ -1,6 +1,13 @@
 {
-  "updated": "2026-07-12",
+  "updated": "2026-07-13",
   "reels": [
+    {
+      "id": "17902076997467056",
+      "permalink": "https://www.instagram.com/reel/DatcM3kOaMj/",
+      "caption": "Some reflection before I start my new job tomorrow! Super excited for all that’s to come b",
+      "image": "/images/reels/17902076997467056.jpg",
+      "isVideo": true
+    },
     {
       "id": "17950987293192706",
       "permalink": "https://www.instagram.com/reel/DadcqINOSW8/",
@@ -34,13 +41,6 @@
       "permalink": "https://www.instagram.com/reel/DaLd4CTu3LJ/",
       "caption": "As my culinary school journey comes to an end, I’m looking forward to exploring different ",
       "image": "/images/reels/18217239229334928.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "18066362783450386",
-      "permalink": "https://www.instagram.com/reel/DZ75815uujf/",
-      "caption": "It’s hard to believe that today is DAY 100 (!!!) of culinary school! We only have about 8 ",
-      "image": "/images/reels/18066362783450386.jpg",
       "isVideo": true
     }
   ]
