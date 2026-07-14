@@ -1,6 +1,13 @@
 {
-  "updated": "2026-07-13",
+  "updated": "2026-07-14",
   "reels": [
+    {
+      "id": "18068824541651463",
+      "permalink": "https://www.instagram.com/reel/DawVhwtuJH6/",
+      "caption": "Eeek first day done! It was so fun!!! Still trying to figure out content. Since I’m shadow",
+      "image": "/images/reels/18068824541651463.jpg",
+      "isVideo": true
+    },
     {
       "id": "17902076997467056",
       "permalink": "https://www.instagram.com/reel/DatcM3kOaMj/",
@@ -34,13 +41,6 @@
       "permalink": "https://www.instagram.com/reel/DaOFHNAOB53/",
       "caption": "I can’t believe!!!!!!! Excited about how this turned out and even more excited to apply th",
       "image": "/images/reels/17907237153439547.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "18217239229334928",
-      "permalink": "https://www.instagram.com/reel/DaLd4CTu3LJ/",
-      "caption": "As my culinary school journey comes to an end, I’m looking forward to exploring different ",
-      "image": "/images/reels/18217239229334928.jpg",
       "isVideo": true
     }
   ]
