@@ -1,6 +1,13 @@
 {
-  "updated": "2026-07-14",
+  "updated": "2026-07-15",
   "reels": [
+    {
+      "id": "17893510995377855",
+      "permalink": "https://www.instagram.com/reel/Day0Thru_GI/",
+      "caption": "I was feeling so energized when I got home so I cooked more but now I’m so exhausted",
+      "image": "/images/reels/17893510995377855.jpg",
+      "isVideo": true
+    },
     {
       "id": "18068824541651463",
       "permalink": "https://www.instagram.com/reel/DawVhwtuJH6/",
@@ -34,13 +41,6 @@
       "permalink": "https://www.instagram.com/reel/DaRX18DOBpM/",
       "caption": "So today I had an insane craving for a rotisserie chicken. I didn’t want to waste the carc",
       "image": "/images/reels/18108025534955496.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "17907237153439547",
-      "permalink": "https://www.instagram.com/reel/DaOFHNAOB53/",
-      "caption": "I can’t believe!!!!!!! Excited about how this turned out and even more excited to apply th",
-      "image": "/images/reels/17907237153439547.jpg",
       "isVideo": true
     }
   ]
