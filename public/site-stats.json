@@ -1,12 +1,22 @@
 {
-  "updated": "2026-07-14",
-  "days30": 31,
-  "days7": 31,
+  "updated": "2026-07-17",
+  "days30": 42,
+  "days7": 27,
   "topPages": [
     {
       "path": "/",
       "title": "Wickie's Kitchen",
-      "count": 28
+      "count": 34
+    },
+    {
+      "path": "/recipes/chicken-breast-and-white-wine-pan-sauce",
+      "title": "Chicken Breast & White Wine Pan Sauce",
+      "count": 2
+    },
+    {
+      "path": "/recipes/spicy-calabrian-chilli-vodka-sauce",
+      "title": "Spicy Calabrian Chilli Vodka Sauce",
+      "count": 2
     },
     {
       "path": "/how-to",
@@ -14,8 +24,8 @@
       "count": 2
     },
     {
-      "path": "/recipes/spicy-calabrian-chilli-vodka-sauce",
-      "title": "Spicy Calabrian Chilli Vodka Sauce",
+      "path": "/recipes/peanut-butter-noodles",
+      "title": "Peanut Butter Noodles",
       "count": 1
     }
   ]
