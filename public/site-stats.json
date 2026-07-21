@@ -1,17 +1,17 @@
 {
-  "updated": "2026-07-17",
-  "days30": 42,
-  "days7": 27,
+  "updated": "2026-07-21",
+  "days30": 48,
+  "days7": 20,
   "topPages": [
     {
       "path": "/",
       "title": "Wickie's Kitchen",
-      "count": 34
+      "count": 39
     },
     {
       "path": "/recipes/chicken-breast-and-white-wine-pan-sauce",
       "title": "Chicken Breast & White Wine Pan Sauce",
-      "count": 2
+      "count": 3
     },
     {
       "path": "/recipes/spicy-calabrian-chilli-vodka-sauce",

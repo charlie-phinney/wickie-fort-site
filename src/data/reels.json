@@ -1,6 +1,13 @@
 {
-  "updated": "2026-07-20",
+  "updated": "2026-07-21",
   "reels": [
+    {
+      "id": "18149560078501901",
+      "permalink": "https://www.instagram.com/reel/DbCErQNOCOl/",
+      "caption": "I promise I’m trying to figure out how to get more content of what I’m actually doing… jus",
+      "image": "/images/reels/18149560078501901.jpg",
+      "isVideo": true
+    },
     {
       "id": "18092953319375393",
       "permalink": "https://www.instagram.com/reel/Da3NT3ru_VP/",
@@ -34,13 +41,6 @@
       "permalink": "https://www.instagram.com/reel/DadcqINOSW8/",
       "caption": "I can’t believe I’m officially done with culinary school! This chapter of my life has been",
       "image": "/images/reels/17950987293192706.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "18103502918027583",
-      "permalink": "https://www.instagram.com/reel/DaS78p6uxJV/",
-      "caption": "Final exam part one! Fish final!!!",
-      "image": "/images/reels/18103502918027583.jpg",
       "isVideo": true
     }
   ]
