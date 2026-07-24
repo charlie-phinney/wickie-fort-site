@@ -1,12 +1,12 @@
 {
-  "updated": "2026-07-21",
-  "days30": 48,
-  "days7": 20,
+  "updated": "2026-07-24",
+  "days30": 56,
+  "days7": 16,
   "topPages": [
     {
       "path": "/",
       "title": "Wickie's Kitchen",
-      "count": 39
+      "count": 47
     },
     {
       "path": "/recipes/chicken-breast-and-white-wine-pan-sauce",
