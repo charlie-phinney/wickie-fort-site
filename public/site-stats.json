@@ -1,17 +1,22 @@
 {
-  "updated": "2026-07-26",
-  "days30": 59,
-  "days7": 15,
+  "updated": "2026-07-28",
+  "days30": 73,
+  "days7": 27,
   "topPages": [
     {
       "path": "/",
       "title": "Wickie's Kitchen",
-      "count": 50
+      "count": 63
     },
     {
       "path": "/recipes/chicken-breast-and-white-wine-pan-sauce",
       "title": "Chicken Breast & White Wine Pan Sauce",
       "count": 3
+    },
+    {
+      "path": "/recipes/greek-style-chicken-and-rice-bowl",
+      "title": "Greek Style Chicken & Rice Bowl",
+      "count": 2
     },
     {
       "path": "/recipes/spicy-calabrian-chilli-vodka-sauce",
@@ -22,11 +27,6 @@
       "path": "/how-to",
       "title": "How To",
       "count": 2
-    },
-    {
-      "path": "/recipes/peanut-butter-noodles",
-      "title": "Peanut Butter Noodles",
-      "count": 1
     }
   ]
 }
