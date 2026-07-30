@@ -1,6 +1,13 @@
 {
-  "updated": "2026-07-29",
+  "updated": "2026-07-30",
   "reels": [
+    {
+      "id": "17947807614230518",
+      "permalink": "https://www.instagram.com/reel/DbZiWQgOpNj/",
+      "caption": "I’m having so much fun! Def overwhelming and I’m exhausted but no complaints",
+      "image": "/images/reels/17947807614230518.jpg",
+      "isVideo": true
+    },
     {
       "id": "18003954614959569",
       "permalink": "https://www.instagram.com/reel/DbWg0-FOQO4/",
@@ -34,13 +41,6 @@
       "permalink": "https://www.instagram.com/reel/Day0Thru_GI/",
       "caption": "I was feeling so energized when I got home so I cooked more but now I’m so exhausted",
       "image": "/images/reels/17893510995377855.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "18068824541651463",
-      "permalink": "https://www.instagram.com/reel/DawVhwtuJH6/",
-      "caption": "Eeek first day done! It was so fun!!! Still trying to figure out content. Since I’m shadow",
-      "image": "/images/reels/18068824541651463.jpg",
       "isVideo": true
     }
   ]
