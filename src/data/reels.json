@@ -1,6 +1,13 @@
 {
-  "updated": "2026-08-03",
+  "updated": "2026-08-04",
   "reels": [
+    {
+      "id": "18119294140790115",
+      "permalink": "https://www.instagram.com/reel/DblrcBAuMVI/",
+      "caption": "This was AMAZING. So beautiful and delicious! Full recipe at link below:",
+      "image": "/images/reels/18119294140790115.jpg",
+      "isVideo": true
+    },
     {
       "id": "17947807614230518",
       "permalink": "https://www.instagram.com/reel/DbZiWQgOpNj/",
@@ -34,13 +41,6 @@
       "permalink": "https://www.instagram.com/reel/Da3NT3ru_VP/",
       "caption": "I was trying out a new mic and it didn’t work so I wasn’t able to use the audio… so enjoy ",
       "image": "/images/reels/18092953319375393.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "17893510995377855",
-      "permalink": "https://www.instagram.com/reel/Day0Thru_GI/",
-      "caption": "I was feeling so energized when I got home so I cooked more but now I’m so exhausted",
-      "image": "/images/reels/17893510995377855.jpg",
       "isVideo": true
     }
   ]
