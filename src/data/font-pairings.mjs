@@ -90,10 +90,64 @@ export const fontPairings = {
   },
 };
 
-/* The css2 stylesheet URL for a pairing — the single definition used by
-   both the vendorer (to download) and Base.astro (as the CDN fallback when
-   no vendored fonts exist yet). Caveat rides along on every pairing. */
-export const googleCssUrl = (pairing) =>
-  `https://fonts.googleapis.com/css2?${pairing.googleFamilies
+/* ------------------------- handwritten accents ------------------------- */
+/* The accent font used for the little script phrases ("Straight from
+   culinary school", margin notes, the Ingredients card heading). Chosen
+   separately from the heading/body pairing in /admin. Every option is
+   x-height-normalized in global.css (font-size-adjust) so swapping fonts
+   never changes how much space the accents take up. */
+export const accentFonts = {
+  caveat: {
+    label: 'Caveat (light, flowy) — the original',
+    stack: "'Caveat', ui-rounded, cursive",
+    googleFamily: 'Caveat:wght@600;700',
+  },
+  kalam: {
+    label: 'Kalam (marker pen, thicker)',
+    stack: "'Kalam', ui-rounded, cursive",
+    googleFamily: 'Kalam:wght@400;700',
+  },
+  patrick: {
+    label: 'Patrick Hand (neat, solid print)',
+    stack: "'Patrick Hand', ui-rounded, cursive",
+    googleFamily: 'Patrick+Hand',
+  },
+  gochi: {
+    label: 'Gochi Hand (playful, bold print)',
+    stack: "'Gochi Hand', ui-rounded, cursive",
+    googleFamily: 'Gochi+Hand',
+  },
+  indie: {
+    label: 'Indie Flower (rounded, friendly)',
+    stack: "'Indie Flower', ui-rounded, cursive",
+    googleFamily: 'Indie+Flower',
+  },
+  architects: {
+    label: "Architects Daughter (sketchy print)",
+    stack: "'Architects Daughter', ui-rounded, cursive",
+    googleFamily: 'Architects+Daughter',
+  },
+  sriracha: {
+    label: 'Sriracha (thick brush script)',
+    stack: "'Sriracha', ui-rounded, cursive",
+    googleFamily: 'Sriracha',
+  },
+  pacifico: {
+    label: 'Pacifico (retro, chunky script)',
+    stack: "'Pacifico', ui-rounded, cursive",
+    googleFamily: 'Pacifico',
+  },
+  marker: {
+    label: 'Permanent Marker (bold marker)',
+    stack: "'Permanent Marker', ui-rounded, cursive",
+    googleFamily: 'Permanent+Marker',
+  },
+};
+
+/* The css2 stylesheet URL for a pairing + accent — the single definition
+   used by both the vendorer (to download) and Base.astro (as the CDN
+   fallback when no vendored fonts exist yet). */
+export const googleCssUrl = (pairing, accent = accentFonts.caveat) =>
+  `https://fonts.googleapis.com/css2?${[...pairing.googleFamilies, accent.googleFamily]
     .map((f) => `family=${f}`)
-    .join('&')}&family=Caveat:wght@600;700&display=swap`;
+    .join('&')}&display=swap`;

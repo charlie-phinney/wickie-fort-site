@@ -151,8 +151,8 @@ export const palettes: Record<string, { label: string; colors: Palette }> = {
 /* Moved to font-pairings.mjs (plain JS) so the build-time font vendorer
    (scripts/vendor-fonts.mjs) can import the same data under Node.
    Re-exported here so nothing else changes. */
-import { fontPairings } from './font-pairings.mjs';
-export { fontPairings };
+import { fontPairings, accentFonts } from './font-pairings.mjs';
+export { fontPairings, accentFonts };
 
 /* ------------------------------ text size ------------------------------ */
 /* A single global dial. The whole site is built in rem/clamp units, so
@@ -173,11 +173,13 @@ const pick = <T>(map: Record<string, T>, key: unknown, fallback: string): T =>
 const d = data as {
   colorTheme?: string;
   fontPairing?: string;
+  accentFont?: string;
   textSize?: string;
 };
 
 const activePalette = pick(palettes, d.colorTheme, 'tomato');
 const activeFonts = pick(fontPairings, d.fontPairing, 'fraunces');
+const activeAccent = pick(accentFonts, d.accentFont, 'caveat');
 const activeSize = pick(textSizes, d.textSize, 'medium');
 
 export const theme = {
@@ -192,6 +194,7 @@ export const theme = {
     ])
   ) as Palette,
   fonts: activeFonts,
+  accent: activeAccent,
   rootPercent: activeSize.rootPercent,
 };
 
@@ -199,5 +202,6 @@ export const theme = {
 export const themeOptions = {
   colorTheme: Object.entries(palettes).map(([value, p]) => ({ value, label: p.label })),
   fontPairing: Object.entries(fontPairings).map(([value, f]) => ({ value, label: f.label })),
+  accentFont: Object.entries(accentFonts).map(([value, a]) => ({ value, label: a.label })),
   textSize: Object.entries(textSizes).map(([value, s]) => ({ value, label: s.label })),
 };

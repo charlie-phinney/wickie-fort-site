@@ -58,6 +58,13 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
+  /* Handwriting accents are size-tuned for Caveat (x-height aspect 0.40,
+     measured from the font file). Normalizing every accent option to that
+     same x-height means Wickie can switch handwriting fonts in /admin and
+     nothing grows, shrinks, or wraps differently. */
+  .font-hand {
+    font-size-adjust: 0.4;
+  }
   h1, h2, h3 {
     font-family: theme('fontFamily.serif');
     text-wrap: balance;

@@ -19,7 +19,9 @@ interface Props {
   alt?: string;
   label?: string;
   class?: string;
-  ratio?: string; // e.g. '4/3', '1/1', '4/5'
+  ratio?: string; // e.g. '4/3', '1/1', '4/5' — or 'natural': show the whole
+  // photo at its own shape (no crop), height-capped so tall portraits
+  // can't swallow the page. The empty-state frame still uses 4/3.
   loading?: 'lazy' | 'eager'; // eager = above the fold (hero): load first, everything else waits
   sizes?: string; // how wide this image renders, for srcset selection
 }
@@ -32,6 +34,16 @@ const {
   loading = 'lazy',
   sizes = '(min-width: 768px) 50vw, 100vw',
 } = Astro.props;
+
+// 'natural': no forced aspect ratio — the photo shows whole. max-h caps a
+// very tall portrait shot; object-cover only kicks in (center-crop, mildly)
+// when that cap binds. Everything else keeps the fixed-ratio cover box.
+const natural = ratio === 'natural';
+const imgClass = natural
+  ? `h-auto max-h-[38rem] w-full object-cover ${klass}`
+  : `h-full w-full object-cover ${klass}`;
+const imgStyle = natural ? undefined : `aspect-ratio:${ratio}`;
+const frameRatio = natural ? '4/3' : ratio;
 
 // Find CI-generated webp variants for this photo: public/images/foo-<W>.webp
 let srcset = '';
@@ -67,8 +79,8 @@ if (src && /^\/images\/[^/]+\.(jpe?g|png)$/i.test(src)) {
           loading={loading}
           fetchpriority={loading === 'eager' ? 'high' : undefined}
           decoding="async"
-          class={`h-full w-full object-cover ${klass}`}
-          style={`aspect-ratio:${ratio}`}
+          class={imgClass}
+          style={imgStyle}
         />
       </picture>
     ) : (
@@ -78,14 +90,14 @@ if (src && /^\/images\/[^/]+\.(jpe?g|png)$/i.test(src)) {
         loading={loading}
         fetchpriority={loading === 'eager' ? 'high' : undefined}
         decoding="async"
-        class={`h-full w-full object-cover ${klass}`}
-        style={`aspect-ratio:${ratio}`}
+        class={imgClass}
+        style={imgStyle}
       />
     )
   ) : (
     <div
       class={`relative flex items-center justify-center overflow-hidden bg-primary-tint ${klass}`}
-      style={`aspect-ratio:${ratio}`}
+      style={`aspect-ratio:${frameRatio}`}
       role="img"
       aria-label={`${label} placeholder`}
     >

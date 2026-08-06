@@ -34,10 +34,7 @@ const themeVars = [
   ...Object.entries(theme.colors).map(([role, value]) => `--${role}:${value}`),
   `--font-serif:${theme.fonts.serif}`,
   `--font-sans:${theme.fonts.sans}`,
-  // --font-hand is NOT overridden here: Caveat is the site's constant
-  // signature (loaded below), and pairings don't define a `hand` stack —
-  // emitting one printed the literal string "undefined", which knocked every
-  // handwritten accent back to the browser's default font.
+  `--font-hand:${theme.accent.stack}`,
   `font-size:${theme.rootPercent}%`,
 ].join(';');
 // Fonts are self-hosted: scripts/vendor-fonts.mjs mirrors the active
@@ -48,12 +45,15 @@ const themeVars = [
 const vendoredCss = fs.existsSync('public/fonts/fonts.css')
   ? fs.readFileSync('public/fonts/fonts.css', 'utf8')
   : '';
-// Vendored for the active pairing? (A pairing switch in /admin deploys
+// Vendored for the active pairing + accent? (A font switch in /admin deploys
 // before CI's housekeeping commit lands the new files — fall back to the
 // CDN for that one build instead of showing system fonts.)
 const primaryFamily = /'([^']+)'/.exec(theme.fonts.serif)?.[1] || '';
-const vendoredFresh = vendoredCss.includes(`font-family: '${primaryFamily}'`);
-const fontsHref = googleCssUrl(theme.fonts);
+const handFamily = /'([^']+)'/.exec(theme.accent.stack)?.[1] || '';
+const vendoredFresh =
+  vendoredCss.includes(`font-family: '${primaryFamily}'`) &&
+  vendoredCss.includes(`font-family: '${handFamily}'`);
+const fontsHref = googleCssUrl(theme.fonts, theme.accent);
 ---
 
 <!doctype html>
