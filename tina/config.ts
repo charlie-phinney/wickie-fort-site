@@ -110,6 +110,24 @@ export default defineConfig({
           },
           {
             type: 'string',
+            name: 'accentFont',
+            label: '🖋 Handwriting font',
+            description:
+              "The handwritten accent lettering (little phrases like 'Straight from culinary school', the Ingredients card, margin notes). Pick a thicker one if it feels too wispy.",
+            options: [
+              { value: 'caveat', label: 'Caveat (light, flowy) — the original' },
+              { value: 'kalam', label: 'Kalam (marker pen, thicker)' },
+              { value: 'patrick', label: 'Patrick Hand (neat, solid print)' },
+              { value: 'gochi', label: 'Gochi Hand (playful, bold print)' },
+              { value: 'indie', label: 'Indie Flower (rounded, friendly)' },
+              { value: 'architects', label: 'Architects Daughter (sketchy print)' },
+              { value: 'sriracha', label: 'Sriracha (thick brush script)' },
+              { value: 'pacifico', label: 'Pacifico (retro, chunky script)' },
+              { value: 'marker', label: 'Permanent Marker (bold marker)' },
+            ],
+          },
+          {
+            type: 'string',
             name: 'textSize',
             label: '🔠 Text size',
             description: 'Make everything a little smaller or bigger, all at once.',
