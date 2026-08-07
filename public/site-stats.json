@@ -1,22 +1,22 @@
 {
-  "updated": "2026-08-04",
-  "days30": 98,
-  "days7": 31,
+  "updated": "2026-08-07",
+  "days30": 115,
+  "days7": 39,
   "topPages": [
     {
       "path": "/",
       "title": "Wickie's Kitchen",
-      "count": 85
+      "count": 97
     },
     {
       "path": "/recipes/chicken-breast-and-white-wine-pan-sauce",
       "title": "Chicken Breast & White Wine Pan Sauce",
-      "count": 4
+      "count": 6
     },
     {
-      "path": "/how-to",
-      "title": "How To",
-      "count": 3
+      "path": "/recipes/classic-hummus",
+      "title": "Classic Hummus",
+      "count": 4
     },
     {
       "path": "/recipes/peanut-butter-noodles",
