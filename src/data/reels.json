@@ -1,6 +1,13 @@
 {
-  "updated": "2026-08-09",
+  "updated": "2026-08-10",
   "reels": [
+    {
+      "id": "18053658605791298",
+      "permalink": "https://www.instagram.com/reel/Db0nvnSO1iU/",
+      "caption": "Ugh I’m so disappointed 😭",
+      "image": "/images/reels/18053658605791298.jpg",
+      "isVideo": true
+    },
     {
       "id": "18126250885794944",
       "permalink": "https://www.instagram.com/reel/DbygssJueux/",
@@ -34,13 +41,6 @@
       "permalink": "https://www.instagram.com/reel/DbJmK3zuuqt/",
       "caption": "Been feeling sentimental that school is over… externship has been so fun so far but I lowk",
       "image": "/images/reels/18614217022039249.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "18149560078501901",
-      "permalink": "https://www.instagram.com/reel/DbCErQNOCOl/",
-      "caption": "I promise I’m trying to figure out how to get more content of what I’m actually doing… jus",
-      "image": "/images/reels/18149560078501901.jpg",
       "isVideo": true
     }
   ]
