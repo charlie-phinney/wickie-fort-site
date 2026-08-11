@@ -1,31 +1,31 @@
 {
-  "updated": "2026-08-07",
-  "days30": 115,
-  "days7": 39,
+  "updated": "2026-08-11",
+  "days30": 112,
+  "days7": 38,
   "topPages": [
     {
       "path": "/",
       "title": "Wickie's Kitchen",
-      "count": 97
+      "count": 89
     },
     {
       "path": "/recipes/chicken-breast-and-white-wine-pan-sauce",
       "title": "Chicken Breast & White Wine Pan Sauce",
-      "count": 6
+      "count": 7
     },
     {
       "path": "/recipes/classic-hummus",
       "title": "Classic Hummus",
-      "count": 4
-    },
-    {
-      "path": "/recipes/peanut-butter-noodles",
-      "title": "Peanut Butter Noodles",
-      "count": 2
+      "count": 5
     },
     {
       "path": "/recipes/greek-style-chicken-and-rice-bowl",
       "title": "Greek Style Chicken & Rice Bowl",
+      "count": 3
+    },
+    {
+      "path": "/recipes/gochujang-chicken",
+      "title": "Gochujang Chicken",
       "count": 2
     }
   ]
