@@ -1,11 +1,13 @@
-# TEMP self-heal for the 2026-07-02 GitHub Pages outage: while the live site
-# lags main, re-fire the deploy every 20 min. No-ops once caught up.
-# Remove this file after the outage clears and the site matches main.
-name: Retry deploy until live matches main
+# Deploy drift guard: if the live site lags main, re-fire the deploy. No-ops
+# once caught up. Born as a 20-min self-heal for the 2026-07-02 GitHub Pages
+# outage; that outage is long over, so it now runs once a day (shortly after
+# the daily refresh-stats deploy, when drift is most likely) instead of 72x.
+# Use workflow_dispatch for an on-demand check.
+name: Deploy drift guard
 
 on:
   schedule:
-    - cron: "*/20 * * * *"
+    - cron: "40 15 * * *"
   workflow_dispatch:
 
 permissions:
