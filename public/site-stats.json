@@ -1,12 +1,17 @@
 {
-  "updated": "2026-08-11",
-  "days30": 112,
-  "days7": 38,
+  "updated": "2026-08-14",
+  "days30": 114,
+  "days7": 27,
   "topPages": [
     {
       "path": "/",
       "title": "Wickie's Kitchen",
-      "count": 89
+      "count": 88
+    },
+    {
+      "path": "/recipes/classic-hummus",
+      "title": "Classic Hummus",
+      "count": 7
     },
     {
       "path": "/recipes/chicken-breast-and-white-wine-pan-sauce",
@@ -14,18 +19,13 @@
       "count": 7
     },
     {
-      "path": "/recipes/classic-hummus",
-      "title": "Classic Hummus",
-      "count": 5
-    },
-    {
       "path": "/recipes/greek-style-chicken-and-rice-bowl",
       "title": "Greek Style Chicken & Rice Bowl",
       "count": 3
     },
     {
-      "path": "/recipes/gochujang-chicken",
-      "title": "Gochujang Chicken",
+      "path": "/recipes/smash-style-burgers-no-burger-press-needed",
+      "title": "Smash-Style Burgers (No Burger Press Needed)",
       "count": 2
     }
   ]
