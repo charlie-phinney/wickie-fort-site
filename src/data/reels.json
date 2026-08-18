@@ -1,6 +1,13 @@
 {
-  "updated": "2026-08-17",
+  "updated": "2026-08-18",
   "reels": [
+    {
+      "id": "18099388604256723",
+      "permalink": "https://www.instagram.com/reel/DcJuRqOulKh/",
+      "caption": "So this is actually only 5 shortcuts 🫣 BUT I think taking shortcuts isn’t always a bad th",
+      "image": "/images/reels/18099388604256723.jpg",
+      "isVideo": true
+    },
     {
       "id": "18085030076285122",
       "permalink": "https://www.instagram.com/reel/DcBm9qeuoom/",
@@ -34,13 +41,6 @@
       "permalink": "https://www.instagram.com/reel/DblrcBAuMVI/",
       "caption": "This was AMAZING. So beautiful and delicious! Full recipe at link below:",
       "image": "/images/reels/18119294140790115.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "17947807614230518",
-      "permalink": "https://www.instagram.com/reel/DbZiWQgOpNj/",
-      "caption": "I’m having so much fun! Def overwhelming and I’m exhausted but no complaints",
-      "image": "/images/reels/17947807614230518.jpg",
       "isVideo": true
     }
   ]
