@@ -1,6 +1,13 @@
 {
-  "updated": "2026-08-18",
+  "updated": "2026-08-19",
   "reels": [
+    {
+      "id": "18276404359292860",
+      "permalink": "https://www.instagram.com/reel/DcMiH5PuTde/",
+      "caption": "Seriously this takes no time and it’s so good",
+      "image": "/images/reels/18276404359292860.jpg",
+      "isVideo": true
+    },
     {
       "id": "18099388604256723",
       "permalink": "https://www.instagram.com/reel/DcJuRqOulKh/",
@@ -34,13 +41,6 @@
       "permalink": "https://www.instagram.com/reel/DbygssJueux/",
       "caption": "Definitely guilty of using a lot of these but the fresh ingredients taste so much better a",
       "image": "/images/reels/18126250885794944.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "18119294140790115",
-      "permalink": "https://www.instagram.com/reel/DblrcBAuMVI/",
-      "caption": "This was AMAZING. So beautiful and delicious! Full recipe at link below:",
-      "image": "/images/reels/18119294140790115.jpg",
       "isVideo": true
     }
   ]
