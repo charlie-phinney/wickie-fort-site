@@ -1,6 +1,13 @@
 {
-  "updated": "2026-08-19",
+  "updated": "2026-08-20",
   "reels": [
+    {
+      "id": "18111214306819835",
+      "permalink": "https://www.instagram.com/reel/DcOlyIoOnzl/",
+      "caption": "Here’s a peek into how my prep sessions look!!",
+      "image": "/images/reels/18111214306819835.jpg",
+      "isVideo": true
+    },
     {
       "id": "18276404359292860",
       "permalink": "https://www.instagram.com/reel/DcMiH5PuTde/",
@@ -34,13 +41,6 @@
       "permalink": "https://www.instagram.com/reel/Db0nvnSO1iU/",
       "caption": "Ugh I’m so disappointed 😭",
       "image": "/images/reels/18053658605791298.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "18126250885794944",
-      "permalink": "https://www.instagram.com/reel/DbygssJueux/",
-      "caption": "Definitely guilty of using a lot of these but the fresh ingredients taste so much better a",
-      "image": "/images/reels/18126250885794944.jpg",
       "isVideo": true
     }
   ]
