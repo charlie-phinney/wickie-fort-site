@@ -1,6 +1,13 @@
 {
-  "updated": "2026-08-21",
+  "updated": "2026-08-22",
   "reels": [
+    {
+      "id": "18086766032665037",
+      "permalink": "https://www.instagram.com/reel/DcT0SMAucnQ/",
+      "caption": "The quality of these pics got messed up for some reason when I was making this but here’s ",
+      "image": "/images/reels/18086766032665037.jpg",
+      "isVideo": true
+    },
     {
       "id": "18111214306819835",
       "permalink": "https://www.instagram.com/reel/DcOlyIoOnzl/",
@@ -34,13 +41,6 @@
       "permalink": "https://www.instagram.com/reel/Db55fX6uxFG/",
       "caption": "Some behind the scenes of how I plan / organize to make things easier in the kitchen!",
       "image": "/images/reels/18112143064785791.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "18053658605791298",
-      "permalink": "https://www.instagram.com/reel/Db0nvnSO1iU/",
-      "caption": "Ugh I’m so disappointed 😭",
-      "image": "/images/reels/18053658605791298.jpg",
       "isVideo": true
     }
   ]
