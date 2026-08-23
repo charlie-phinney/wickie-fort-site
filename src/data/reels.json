@@ -1,6 +1,13 @@
 {
-  "updated": "2026-08-22",
+  "updated": "2026-08-23",
   "reels": [
+    {
+      "id": "18124221943817746",
+      "permalink": "https://www.instagram.com/reel/DcWJ5N6uCsd/",
+      "caption": "I always find it interesting what people buy at the store",
+      "image": "/images/reels/18124221943817746.jpg",
+      "isVideo": true
+    },
     {
       "id": "18086766032665037",
       "permalink": "https://www.instagram.com/reel/DcT0SMAucnQ/",
@@ -34,13 +41,6 @@
       "permalink": "https://www.instagram.com/reel/DcBm9qeuoom/",
       "caption": "Dinner @misinewyork 🍝🍸💕",
       "image": "/images/reels/18085030076285122.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "18112143064785791",
-      "permalink": "https://www.instagram.com/reel/Db55fX6uxFG/",
-      "caption": "Some behind the scenes of how I plan / organize to make things easier in the kitchen!",
-      "image": "/images/reels/18112143064785791.jpg",
       "isVideo": true
     }
   ]
