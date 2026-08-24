@@ -1,12 +1,12 @@
 {
   "followers": {
-    "instagram": 31822,
+    "instagram": 31807,
     "tiktok": 13700,
     "youtube": 22600,
-    "facebook": 738
+    "facebook": 750
   },
-  "totalFollowers": 68860,
-  "updated": "2026-08-23",
+  "totalFollowers": 68857,
+  "updated": "2026-08-24",
   "sources": {
     "instagram": true,
     "tiktok": true,
@@ -14,7 +14,7 @@
     "facebook": true
   },
   "views": {
-    "youtube": 32592545
+    "youtube": 32598040
   },
   "likes": {
     "tiktok": 2100000
@@ -443,30 +443,38 @@
       "tl": 2100000,
       "iv": 57222007,
       "tv": 31595114
+    },
+    {
+      "d": "2026-08-24",
+      "f": 68857,
+      "yv": 32598040,
+      "tl": 2100000,
+      "iv": 57271292,
+      "tv": 31599771
     }
   ],
   "deep": {
-    "igMediaCount": 126,
-    "igPosts": 130,
-    "igLikes": 2676955,
-    "igComments": 9878,
-    "igRecentEngagement": 1982,
+    "igMediaCount": 127,
+    "igPosts": 131,
+    "igLikes": 2677834,
+    "igComments": 9882,
+    "igRecentEngagement": 1948,
     "igRecentCount": 12,
-    "igViews": 57222007,
-    "igViewsCounted": 119,
-    "igViews28": 48776,
-    "ytVideoCount": 97,
-    "updated": "2026-08-23",
-    "igMaxReelViews": 20303422,
+    "igViews": 57271292,
+    "igViewsCounted": 120,
+    "igViews28": 57699,
+    "ytVideoCount": 98,
+    "updated": "2026-08-24",
+    "igMaxReelViews": 20311604,
     "igReels1M": 6,
     "igCountries": 45,
-    "igReelEngagement": 2684666,
-    "igReelReach": 37653196,
-    "igTopReelReach": 12958811,
-    "ttViews": 31595114,
+    "igReelEngagement": 2685550,
+    "igReelReach": 37688819,
+    "igTopReelReach": 12965594,
+    "ttViews": 31599771,
     "ttTopViews": 18000000,
     "ttOver1M": 4,
-    "ttVideoCount": 216,
+    "ttVideoCount": 218,
     "ytTopViews": 27000000,
     "ytOver1M": 2
   },
@@ -478,15 +486,15 @@
       "avatar": "/images/profiles/tiktok-avatar.jpg",
       "recent": [
         {
-          "url": "https://www.tiktok.com/@wickieskitchen/video/7677025648241593630",
+          "url": "https://www.tiktok.com/@wickieskitchen/video/7677567268871589151",
           "image": "/images/profiles/tiktok-1.jpg"
         },
         {
-          "url": "https://www.tiktok.com/@wickieskitchen/video/7676867708972961055",
+          "url": "https://www.tiktok.com/@wickieskitchen/video/7677314823595609375",
           "image": "/images/profiles/tiktok-2.jpg"
         },
         {
-          "url": "https://www.tiktok.com/@wickieskitchen/video/7676528285488057630",
+          "url": "https://www.tiktok.com/@wickieskitchen/video/7677025648241593630",
           "image": "/images/profiles/tiktok-3.jpg"
         }
       ]
@@ -495,15 +503,15 @@
       "avatar": "/images/profiles/youtube-avatar.jpg",
       "recent": [
         {
-          "url": "https://www.youtube.com/shorts/OFH1CMXOV1w",
+          "url": "https://www.youtube.com/shorts/127KNP40gNw",
           "image": "/images/profiles/youtube-1.jpg"
         },
         {
-          "url": "https://www.youtube.com/shorts/nevCpQAMAcE",
+          "url": "https://www.youtube.com/shorts/OFH1CMXOV1w",
           "image": "/images/profiles/youtube-2.jpg"
         },
         {
-          "url": "https://www.youtube.com/shorts/11_-dzsTZ-I",
+          "url": "https://www.youtube.com/shorts/nevCpQAMAcE",
           "image": "/images/profiles/youtube-3.jpg"
         }
       ]

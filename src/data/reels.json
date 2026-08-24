@@ -1,6 +1,13 @@
 {
-  "updated": "2026-08-23",
+  "updated": "2026-08-24",
   "reels": [
+    {
+      "id": "18131554678564512",
+      "permalink": "https://www.instagram.com/reel/DcZRlhquKW7/",
+      "caption": "Not food but this was fun and needed to share",
+      "image": "/images/reels/18131554678564512.jpg",
+      "isVideo": true
+    },
     {
       "id": "18124221943817746",
       "permalink": "https://www.instagram.com/reel/DcWJ5N6uCsd/",
@@ -34,13 +41,6 @@
       "permalink": "https://www.instagram.com/reel/DcJuRqOulKh/",
       "caption": "So this is actually only 5 shortcuts 🫣 BUT I think taking shortcuts isn’t always a bad th",
       "image": "/images/reels/18099388604256723.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "18085030076285122",
-      "permalink": "https://www.instagram.com/reel/DcBm9qeuoom/",
-      "caption": "Dinner @misinewyork 🍝🍸💕",
-      "image": "/images/reels/18085030076285122.jpg",
       "isVideo": true
     }
   ]
