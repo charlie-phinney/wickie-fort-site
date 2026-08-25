@@ -1,12 +1,12 @@
 {
-  "updated": "2026-08-21",
+  "updated": "2026-08-25",
   "days30": 117,
-  "days7": 23,
+  "days7": 20,
   "topPages": [
     {
       "path": "/",
       "title": "Wickie's Kitchen",
-      "count": 94
+      "count": 93
     },
     {
       "path": "/recipes/classic-hummus",
