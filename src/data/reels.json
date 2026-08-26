@@ -1,6 +1,13 @@
 {
-  "updated": "2026-08-25",
+  "updated": "2026-08-26",
   "reels": [
+    {
+      "id": "18155365216501348",
+      "permalink": "https://www.instagram.com/reel/Dcemb9Kumyb/",
+      "caption": "Sorry it’s so hard to remember to film I promise im trying to get better",
+      "image": "/images/reels/18155365216501348.jpg",
+      "isVideo": true
+    },
     {
       "id": "18131554678564512",
       "permalink": "https://www.instagram.com/reel/DcZRlhquKW7/",
@@ -34,13 +41,6 @@
       "permalink": "https://www.instagram.com/reel/DcMiH5PuTde/",
       "caption": "Seriously this takes no time and it’s so good",
       "image": "/images/reels/18276404359292860.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "18099388604256723",
-      "permalink": "https://www.instagram.com/reel/DcJuRqOulKh/",
-      "caption": "So this is actually only 5 shortcuts 🫣 BUT I think taking shortcuts isn’t always a bad th",
-      "image": "/images/reels/18099388604256723.jpg",
       "isVideo": true
     }
   ]
