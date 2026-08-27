@@ -1,6 +1,13 @@
 {
-  "updated": "2026-08-26",
+  "updated": "2026-08-27",
   "reels": [
+    {
+      "id": "17867001783642689",
+      "permalink": "https://www.instagram.com/reel/Dcg3yMMOMBf/",
+      "caption": "Saw this all over TikTok and can confirm it literally took 20 mins, minimal cutting, delic",
+      "image": "/images/reels/17867001783642689.jpg",
+      "isVideo": true
+    },
     {
       "id": "18155365216501348",
       "permalink": "https://www.instagram.com/reel/Dcemb9Kumyb/",
@@ -34,13 +41,6 @@
       "permalink": "https://www.instagram.com/reel/DcOlyIoOnzl/",
       "caption": "Here’s a peek into how my prep sessions look!!",
       "image": "/images/reels/18111214306819835.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "18276404359292860",
-      "permalink": "https://www.instagram.com/reel/DcMiH5PuTde/",
-      "caption": "Seriously this takes no time and it’s so good",
-      "image": "/images/reels/18276404359292860.jpg",
       "isVideo": true
     }
   ]
