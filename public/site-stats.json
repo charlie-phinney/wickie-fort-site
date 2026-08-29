@@ -1,12 +1,12 @@
 {
-  "updated": "2026-08-25",
-  "days30": 117,
-  "days7": 20,
+  "updated": "2026-08-29",
+  "days30": 104,
+  "days7": 11,
   "topPages": [
     {
       "path": "/",
       "title": "Wickie's Kitchen",
-      "count": 93
+      "count": 81
     },
     {
       "path": "/recipes/classic-hummus",
@@ -24,9 +24,9 @@
       "count": 3
     },
     {
-      "path": "/recipes/greek-style-chicken-and-rice-bowl",
-      "title": "Greek Style Chicken & Rice Bowl",
-      "count": 3
+      "path": "/recipes/smash-style-burgers-no-burger-press-needed",
+      "title": "Smash-Style Burgers (No Burger Press Needed)",
+      "count": 2
     }
   ]
 }
