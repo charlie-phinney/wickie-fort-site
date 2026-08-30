@@ -1,6 +1,13 @@
 {
-  "updated": "2026-08-29",
+  "updated": "2026-08-30",
   "reels": [
+    {
+      "id": "17972208860934621",
+      "permalink": "https://www.instagram.com/reel/Dcqy_42uAyX/",
+      "caption": "Ugh missing these days right now",
+      "image": "/images/reels/17972208860934621.jpg",
+      "isVideo": true
+    },
     {
       "id": "17867001783642689",
       "permalink": "https://www.instagram.com/reel/Dcg3yMMOMBf/",
@@ -34,13 +41,6 @@
       "permalink": "https://www.instagram.com/reel/DcT0SMAucnQ/",
       "caption": "The quality of these pics got messed up for some reason when I was making this but here’s ",
       "image": "/images/reels/18086766032665037.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "18111214306819835",
-      "permalink": "https://www.instagram.com/reel/DcOlyIoOnzl/",
-      "caption": "Here’s a peek into how my prep sessions look!!",
-      "image": "/images/reels/18111214306819835.jpg",
       "isVideo": true
     }
   ]
