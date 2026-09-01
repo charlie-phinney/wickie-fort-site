@@ -1,12 +1,12 @@
 {
-  "updated": "2026-08-29",
-  "days30": 104,
-  "days7": 11,
+  "updated": "2026-09-01",
+  "days30": 98,
+  "days7": 12,
   "topPages": [
     {
       "path": "/",
       "title": "Wickie's Kitchen",
-      "count": 81
+      "count": 74
     },
     {
       "path": "/recipes/classic-hummus",
@@ -14,9 +14,9 @@
       "count": 7
     },
     {
-      "path": "/recipes/chicken-breast-and-white-wine-pan-sauce",
-      "title": "Chicken Breast & White Wine Pan Sauce",
-      "count": 4
+      "path": "/recipes/smash-style-burgers-no-burger-press-needed",
+      "title": "Smash-Style Burgers (No Burger Press Needed)",
+      "count": 3
     },
     {
       "path": "/recipes/gochujang-chicken",
@@ -24,9 +24,9 @@
       "count": 3
     },
     {
-      "path": "/recipes/smash-style-burgers-no-burger-press-needed",
-      "title": "Smash-Style Burgers (No Burger Press Needed)",
-      "count": 2
+      "path": "/recipes/chicken-breast-and-white-wine-pan-sauce",
+      "title": "Chicken Breast & White Wine Pan Sauce",
+      "count": 3
     }
   ]
 }
