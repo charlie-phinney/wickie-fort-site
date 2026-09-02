@@ -1,6 +1,13 @@
 {
-  "updated": "2026-09-01",
+  "updated": "2026-09-02",
   "reels": [
+    {
+      "id": "18617785441051813",
+      "permalink": "https://www.instagram.com/reel/DcwoBOWOQ-W/",
+      "caption": "There’s always a moment I have in the middle of cooking where I’m basically like holy f***",
+      "image": "/images/reels/18617785441051813.jpg",
+      "isVideo": true
+    },
     {
       "id": "17972208860934621",
       "permalink": "https://www.instagram.com/reel/Dcqy_42uAyX/",
@@ -34,13 +41,6 @@
       "permalink": "https://www.instagram.com/reel/DcWJ5N6uCsd/",
       "caption": "I always find it interesting what people buy at the store",
       "image": "/images/reels/18124221943817746.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "18086766032665037",
-      "permalink": "https://www.instagram.com/reel/DcT0SMAucnQ/",
-      "caption": "The quality of these pics got messed up for some reason when I was making this but here’s ",
-      "image": "/images/reels/18086766032665037.jpg",
       "isVideo": true
     }
   ]
