@@ -1,22 +1,12 @@
 {
-  "updated": "2026-09-05",
-  "days30": 72,
-  "days7": 9,
+  "updated": "2026-09-08",
+  "days30": 60,
+  "days7": 5,
   "topPages": [
     {
       "path": "/",
       "title": "Wickie's Kitchen",
-      "count": 57
-    },
-    {
-      "path": "/recipes/smash-style-burgers-no-burger-press-needed",
-      "title": "Smash-Style Burgers (No Burger Press Needed)",
-      "count": 3
-    },
-    {
-      "path": "/recipes/classic-hummus",
-      "title": "Classic Hummus",
-      "count": 3
+      "count": 50
     },
     {
       "path": "/recipes/green-goddess-crispy-rice-salad",
@@ -24,9 +14,19 @@
       "count": 2
     },
     {
-      "path": "/recipes/gochujang-chicken",
-      "title": "Gochujang Chicken",
+      "path": "/recipes/smash-style-burgers-no-burger-press-needed",
+      "title": "Smash-Style Burgers (No Burger Press Needed)",
       "count": 2
+    },
+    {
+      "path": "/recipes/classic-hummus",
+      "title": "Classic Hummus",
+      "count": 2
+    },
+    {
+      "path": "/recipes/steak-and-potatoes",
+      "title": "Steak & Potatoes",
+      "count": 1
     }
   ]
 }
