@@ -1,17 +1,17 @@
 {
-  "updated": "2026-09-12",
-  "days30": 70,
-  "days7": 23,
+  "updated": "2026-09-15",
+  "days30": 66,
+  "days7": 24,
   "topPages": [
     {
       "path": "/",
       "title": "Wickie's Kitchen",
-      "count": 56
+      "count": 53
     },
     {
       "path": "/how-to",
       "title": "How To",
-      "count": 3
+      "count": 4
     },
     {
       "path": "/recipes/steak-and-potatoes",
