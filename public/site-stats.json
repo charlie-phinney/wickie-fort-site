@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-15",
-  "days30": 66,
-  "days7": 24,
+  "updated": "2026-09-17",
+  "days30": 60,
+  "days7": 18,
   "topPages": [
     {
       "path": "/",
       "title": "Wickie's Kitchen",
-      "count": 53
+      "count": 48
     },
     {
       "path": "/how-to",
@@ -19,14 +19,14 @@
       "count": 2
     },
     {
-      "path": "/recipes/green-goddess-crispy-rice-salad",
-      "title": "Green Goddess Crispy Rice Salad",
-      "count": 2
-    },
-    {
       "path": "/recipes/smash-style-burgers-no-burger-press-needed",
       "title": "Smash-Style Burgers (No Burger Press Needed)",
       "count": 2
+    },
+    {
+      "path": "/recipes/green-goddess-crispy-rice-salad",
+      "title": "Green Goddess Crispy Rice Salad",
+      "count": 1
     }
   ]
 }
