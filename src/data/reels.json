@@ -1,6 +1,20 @@
 {
-  "updated": "2026-09-21",
+  "updated": "2026-09-22",
   "reels": [
+    {
+      "id": "18135822646627403",
+      "permalink": "https://www.instagram.com/reel/Ddlz-UJOMou/",
+      "caption": "Dimlll from yesterday",
+      "image": "/images/reels/18135822646627403.jpg",
+      "isVideo": true
+    },
+    {
+      "id": "18109049480134861",
+      "permalink": "https://www.instagram.com/reel/DdkGopYuu2u/",
+      "caption": "I’ve been lacking confidence and feeling a bit down on myself 😔 but I know it’s all a par",
+      "image": "/images/reels/18109049480134861.jpg",
+      "isVideo": true
+    },
     {
       "id": "17956137798234807",
       "permalink": "https://www.instagram.com/reel/DdcWDNluCMF/",
@@ -27,20 +41,6 @@
       "permalink": "https://www.instagram.com/reel/Dcqy_42uAyX/",
       "caption": "Ugh missing these days right now",
       "image": "/images/reels/17972208860934621.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "17867001783642689",
-      "permalink": "https://www.instagram.com/reel/Dcg3yMMOMBf/",
-      "caption": "Saw this all over TikTok and can confirm it literally took 20 mins, minimal cutting, delic",
-      "image": "/images/reels/17867001783642689.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "18155365216501348",
-      "permalink": "https://www.instagram.com/reel/Dcemb9Kumyb/",
-      "caption": "Sorry it’s so hard to remember to film I promise im trying to get better",
-      "image": "/images/reels/18155365216501348.jpg",
       "isVideo": true
     }
   ]
