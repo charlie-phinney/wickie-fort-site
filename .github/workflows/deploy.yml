@@ -68,9 +68,17 @@ jobs:
           for f in "${heics[@]}"; do
             out="${f%.*}.jpg"
             if [ ! -f "$out" ]; then
-              heif-convert -q 90 "$f" "$out"
-              mogrify -auto-orient -strip "$out"
-              echo "converted: $f -> $out"
+              # iPhone portrait HEICs carry a depth map noble's libheif rejects
+              # ("Non-existing depth image referenced"). Try both decoders;
+              # a photo that still won't convert must NOT block the deploy.
+              if heif-convert -q 90 "$f" "$out" 2>/dev/null || convert "$f[0]" -quality 90 "$out" 2>/dev/null; then
+                mogrify -auto-orient -strip "$out"
+                echo "converted: $f -> $out"
+              else
+                rm -f "$out"
+                echo "::warning::Could not convert $f (convert it on a Mac with sips and commit the JPG)"
+                continue
+              fi
             fi
             rel="${f#public}"; relout="${out#public}"
             # replace the reference in every content file, exact path match
