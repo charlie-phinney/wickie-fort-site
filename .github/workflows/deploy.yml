@@ -53,9 +53,42 @@ jobs:
       # limits their size. Downsize anything big in place (same filename, so
       # content references never break) and strip EXIF — her camera photos
       # carry GPS coordinates.
+      # iPhones upload HEIC when the picker's accept list is bypassed (Wickie
+      # did on 9/24). Chrome/Firefox cannot render HEIC, so convert to JPG and
+      # repoint every content reference. Idempotent: an existing JPG is kept,
+      # the HEIC is left in place so a stale /admin tab re-saving the old path
+      # just gets rewritten again on the next deploy.
+      - name: Convert HEIC uploads to JPG
+        run: |
+          shopt -s nullglob nocaseglob globstar
+          heics=(public/images/**/*.heic public/images/**/*.heif)
+          [ ${#heics[@]} -gt 0 ] || { echo "No HEIC uploads."; exit 0; }
+          sudo apt-get update -q
+          sudo apt-get install -y -q libheif-examples imagemagick
+          for f in "${heics[@]}"; do
+            out="${f%.*}.jpg"
+            if [ ! -f "$out" ]; then
+              heif-convert -q 90 "$f" "$out"
+              mogrify -auto-orient -strip "$out"
+              echo "converted: $f -> $out"
+            fi
+            rel="${f#public}"; relout="${out#public}"
+            # replace the reference in every content file, exact path match
+            grep -rl --fixed-strings "$rel" src/data/*.json 2>/dev/null | while read -r c; do
+              python3 - "$c" "$rel" "$relout" <<'EOF'
+          import sys
+          c,a,b=sys.argv[1:]
+          t=open(c).read(); n=t.replace(a,b)
+          if n!=t: open(c,'w').write(n); print(f"repointed {a} -> {b} in {c}")
+          EOF
+            done
+          done
       - name: Optimize oversized images
         run: |
-          # ubuntu-24.04 runners no longer preinstall ImageMagick
+          # ubuntu-24.04 runners no longer preinstall ImageMagick. The runner
+          # image ships a STALE apt index: installing without `update` first
+          # 404s on ghostscript (broke every deploy 9/23-9/24). Always refresh.
+          sudo apt-get update -q
           command -v mogrify >/dev/null || sudo apt-get install -y -q imagemagick
           command -v pngquant >/dev/null || sudo apt-get install -y -q pngquant
           # ** recurses into reels/ and profiles/ — the daily refresh writes
@@ -120,14 +153,14 @@ jobs:
         run: node scripts/vendor-fonts.mjs
       - name: Commit housekeeping changes (lock + optimized images + fonts)
         run: |
-          git add tina/tina-lock.json public/images public/fonts
+          git add tina/tina-lock.json public/images public/fonts src/data/site.json
           if git diff --staged --quiet; then
             echo "Nothing to commit."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "chore: sync tina-lock.json + optimize images [skip ci]"
+          git commit -m "chore: sync tina-lock.json + optimize images + convert HEIC [skip ci]"
           # Wickie saves to main constantly; retry around her commits instead
           # of silently dropping ours (a dropped lock = the stale-index bug).
           for i in 1 2 3; do
@@ -201,3 +234,26 @@ jobs:
           TINA_PUBLIC_CLIENT_ID: ${{ secrets.TINA_PUBLIC_CLIENT_ID }}
           TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
         run: node scripts/check-tina-index.mjs
+
+  # A red deploy used to reach nobody: bot-authored pushes get no GitHub
+  # failure email, so 9/23-9/24 sat broken for 27h until Wickie noticed.
+  # Email is the channel Charlie actually reads.
+  notify-failure:
+    needs: [build, deploy, verify-tinacloud-index]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Email charlie@pugs.media
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          [ -n "$RESEND_API_KEY" ] || { echo "RESEND_API_KEY not set; skipping email"; exit 0; }
+          url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          payload=$(python3 -c 'import json,sys; print(json.dumps({
+            "from": "wickiefort.com deploy <alerts@pugs.media>",
+            "to": ["charlie@pugs.media"],
+            "subject": "[wickiefort.com] deploy FAILED: " + sys.argv[2],
+            "text": "Deploy run failed on main.\n\nCommit: " + sys.argv[2] + "\nRun: " + sys.argv[1] + "\n\nWickie'"'"'s /admin saves are NOT live until this is green."}))' "$url" "${{ github.event.head_commit.message }}")
+          curl -sS -o /dev/null -w "resend %{http_code}\n" https://api.resend.com/emails \
+            -H "Authorization: Bearer $RESEND_API_KEY" -H "Content-Type: application/json" \
+            -A "wickie-fort-site-ci" --data "$payload"
