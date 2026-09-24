@@ -246,6 +246,7 @@ jobs:
       - name: Email charlie@pugs.media
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
         run: |
           [ -n "$RESEND_API_KEY" ] || { echo "RESEND_API_KEY not set; skipping email"; exit 0; }
           url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
@@ -253,7 +254,7 @@ jobs:
             "from": "wickiefort.com deploy <alerts@pugs.media>",
             "to": ["charlie@pugs.media"],
             "subject": "[wickiefort.com] deploy FAILED: " + sys.argv[2],
-            "text": "Deploy run failed on main.\n\nCommit: " + sys.argv[2] + "\nRun: " + sys.argv[1] + "\n\nWickie'"'"'s /admin saves are NOT live until this is green."}))' "$url" "${{ github.event.head_commit.message }}")
+            "text": "Deploy run failed on main.\n\nCommit: " + sys.argv[2] + "\nRun: " + sys.argv[1] + "\n\nWickie'"'"'s /admin saves are NOT live until this is green."}))' "$url" "$COMMIT_MSG")
           curl -sS -o /dev/null -w "resend %{http_code}\n" https://api.resend.com/emails \
             -H "Authorization: Bearer $RESEND_API_KEY" -H "Content-Type: application/json" \
             -A "wickie-fort-site-ci" --data "$payload"
