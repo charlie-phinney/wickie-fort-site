@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-22",
-  "days30": 65,
-  "days7": 21,
+  "updated": "2026-09-26",
+  "days30": 61,
+  "days7": 22,
   "topPages": [
     {
       "path": "/",
       "title": "Wickie's Kitchen",
-      "count": 53
+      "count": 49
     },
     {
       "path": "/how-to",
@@ -14,13 +14,13 @@
       "count": 4
     },
     {
-      "path": "/recipes/steak-and-potatoes",
-      "title": "Steak & Potatoes",
+      "path": "/recipes/green-goddess-crispy-rice-salad",
+      "title": "Green Goddess Crispy Rice Salad",
       "count": 3
     },
     {
-      "path": "/recipes/green-goddess-crispy-rice-salad",
-      "title": "Green Goddess Crispy Rice Salad",
+      "path": "/recipes/steak-and-potatoes",
+      "title": "Steak & Potatoes",
       "count": 2
     },
     {
