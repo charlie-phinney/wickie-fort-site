@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-26",
-  "days30": 61,
-  "days7": 22,
+  "updated": "2026-09-29",
+  "days30": 65,
+  "days7": 12,
   "topPages": [
     {
       "path": "/",
       "title": "Wickie's Kitchen",
-      "count": 49
+      "count": 53
     },
     {
       "path": "/how-to",
