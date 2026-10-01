@@ -1,6 +1,13 @@
 {
-  "updated": "2026-09-30",
+  "updated": "2026-10-01",
   "reels": [
+    {
+      "id": "18083897006322728",
+      "permalink": "https://www.instagram.com/reel/Dd7Buj3J8W8/",
+      "caption": "Guys new angle unlocked!!! yummy menu today! Fun fact the admin team makes the first coupl",
+      "image": "/images/reels/18083897006322728.jpg",
+      "isVideo": true
+    },
     {
       "id": "18234685621319155",
       "permalink": "https://www.instagram.com/reel/DdzLINnuGlW/",
@@ -34,13 +41,6 @@
       "permalink": "https://www.instagram.com/reel/DdcWDNluCMF/",
       "caption": "I’m crying this was crazy to witness ALSO apologies for my gap in posting I’ve been in a s",
       "image": "/images/reels/17956137798234807.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "18120402809293513",
-      "permalink": "https://www.instagram.com/reel/DdAB8o3OZYt/",
-      "caption": "So funnnn",
-      "image": "/images/reels/18120402809293513.jpg",
       "isVideo": true
     }
   ]
