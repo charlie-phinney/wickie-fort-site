@@ -226,7 +226,7 @@ const jsonLd = [
             </table>
 
             {stats.platforms.some((p) => p.profile) && (
-              <div data-reveal class="mt-12 grid gap-4 sm:grid-cols-3 sm:gap-5">
+              <div data-reveal class="mt-12 grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
                 {stats.platforms
                   .filter((p) => p.profile)
                   .map((p) => (
@@ -252,7 +252,7 @@ const jsonLd = [
                           <span class="block truncate font-serif text-lg font-semibold leading-tight">
                             {p.name}
                           </span>
-                          <span class="block truncate text-sm text-muted">
+                          <span class="block text-sm leading-snug text-muted">
                             {p.profile!.handle} · {fmtCount(p.followers)} followers
                           </span>
                         </span>

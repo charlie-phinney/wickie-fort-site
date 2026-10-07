@@ -102,18 +102,20 @@ const platforms = [
     },
     // Facebook: followers refresh daily like the others, but per-video views
     // sit behind a login (the public reels grid stops at ten tiles and the
-    // daily bot has no account), so the views number is the one hand-kept
-    // /admin field (statFacebookViews), read off her Professional dashboard.
-    // No 1M+ count or profile card for the same reason.
+    // daily bot has no account), so views and the 1M+ count are the two
+    // hand-kept /admin fields, read off her Professional dashboard. The
+    // profile card's avatar + strip were seeded by hand (10/6) and are kept
+    // by fetch-deep-stats' per-platform keep-last-good merge.
     {
       name: 'Facebook',
       followers: statsData.followers.facebook || 0,
       views: parseInt(String(data.statFacebookViews ?? '0'), 10) || 0,
-      over1M: 0,
-      profile: undefined,
+      over1M: parseInt(String(data.statFacebookOver1M ?? '0'), 10) || 0,
+      profile: profileFor('Facebook'),
     },
 ].filter((p) => p.followers > 0 && p.views > 0);
-const facebookViews = platforms.find((p) => p.name === 'Facebook')?.views || 0;
+const facebook = platforms.find((p) => p.name === 'Facebook');
+const facebookViews = facebook?.views || 0;
 
 export const stats = {
   updated: statsData.updated,
@@ -134,7 +136,7 @@ export const stats = {
   // she knows to be true.
   videos1M: Math.max(
     parseInt(String(data.statVideosOver1M ?? '0'), 10) || 0,
-    (deep.igReels1M || 0) + (deep.ttOver1M || 0) + (deep.ytOver1M || 0)
+    (deep.igReels1M || 0) + (deep.ttOver1M || 0) + (deep.ytOver1M || 0) + (facebook?.over1M || 0)
   ),
   // Countries her Instagram followers live in (media kit only — the band's
   // tile budget is spent).

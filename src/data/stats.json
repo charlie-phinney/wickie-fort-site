@@ -859,6 +859,23 @@
           "image": "/images/profiles/youtube-3.jpg"
         }
       ]
+    },
+    "facebook": {
+      "avatar": "/images/profiles/facebook-avatar.jpg",
+      "recent": [
+        {
+          "url": "https://www.facebook.com/reel/1550124826801580",
+          "image": "/images/profiles/facebook-1.jpg"
+        },
+        {
+          "url": "https://www.facebook.com/reel/1601562238365032",
+          "image": "/images/profiles/facebook-2.jpg"
+        },
+        {
+          "url": "https://www.facebook.com/reel/1408979977334852",
+          "image": "/images/profiles/facebook-3.jpg"
+        }
+      ]
     }
   }
 }
