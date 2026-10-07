@@ -399,6 +399,13 @@ export default defineConfig({
             description:
               'Facebook does not let the site count this on its own. Open your Facebook Professional dashboard, find your all-time views, and type the number here (just digits, like 2500000).',
           },
+          {
+            type: 'number',
+            name: 'statFacebookOver1M',
+            label: 'Facebook — how many videos have over 1 million views',
+            description:
+              'Facebook does not let the site count this on its own either. Type the number here when a reel passes a million.',
+          },
 
           // ===== Shop section =====
           {

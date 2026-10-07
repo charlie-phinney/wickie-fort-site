@@ -157,6 +157,7 @@
   "workOfferingsText": "Recipe development\nSponsored recipes & reels\nShort-form video (IG + TikTok)\nProduct features & reviews\nBrand partnerships\nUGC-style content",
   "statVideosOver1M": 11,
   "statFacebookViews": 1861000,
+  "statFacebookOver1M": 0,
   "shopHeading": "Shop my kitchen",
   "shopIntro": "The cookbooks I actually cook from and keep coming back to.",
   "shopEmbed": "<iframe title=\"Favorite Cookbooks\" src=\"https://shopmy.us/collections/embed/6101199?\" style=\"width: 100%; min-height: 340px; border: none;\"></iframe>",
