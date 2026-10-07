@@ -392,6 +392,13 @@ export default defineConfig({
             description:
               'Counted automatically every day — this is a safety minimum. The site shows whichever is higher.',
           },
+          {
+            type: 'number',
+            name: 'statFacebookViews',
+            label: 'Facebook — total views',
+            description:
+              'Facebook does not let the site count this on its own. Open your Facebook Professional dashboard, find your all-time views, and type the number here (just digits, like 2500000).',
+          },
 
           // ===== Shop section =====
           {

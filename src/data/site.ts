@@ -100,22 +100,34 @@ const platforms = [
       over1M: deep.ytOver1M || 0,
       profile: profileFor('YouTube'),
     },
+    // Facebook: followers refresh daily like the others, but per-video views
+    // sit behind a login (the public reels grid stops at ten tiles and the
+    // daily bot has no account), so the views number is the one hand-kept
+    // /admin field (statFacebookViews), read off her Professional dashboard.
+    // No 1M+ count or profile card for the same reason.
+    {
+      name: 'Facebook',
+      followers: statsData.followers.facebook || 0,
+      views: parseInt(String(data.statFacebookViews ?? '0'), 10) || 0,
+      over1M: 0,
+      profile: undefined,
+    },
 ].filter((p) => p.followers > 0 && p.views > 0);
+const facebookViews = platforms.find((p) => p.name === 'Facebook')?.views || 0;
 
 export const stats = {
   updated: statsData.updated,
   platforms,
-  // Combined line under the columns. `views` = the three platforms' measured
-  // totals, an honest FLOOR of her true total (Facebook isn't measurable
-  // without auth; the "+" carries it), ticking with real measured growth.
+  // Combined line under the columns. `views` = the three measured platforms
+  // plus the hand-kept Facebook number, an honest FLOOR of her true total
+  // (the "+" carries the rest), ticking with real measured growth.
   live: {
     views: {
-      value: (views.youtube || 0) + (deep.igViews || 0) + (deep.ttViews || 0),
+      value: (views.youtube || 0) + (deep.igViews || 0) + (deep.ttViews || 0) + facebookViews,
       perDay: perDay('yv') + perDay('iv') + perDay('tv'),
     },
   },
-  // Sum of the rows actually shown (Facebook never has a row — 378
-  // followers, nothing to show — and a dropped platform drops out of the
+  // Sum of the rows actually shown (a dropped platform drops out of the
   // headline too, so it always matches what the table adds up to).
   followersShown: platforms.reduce((s, p) => s + p.followers, 0),
   // Floored at Wickie's hand-kept /admin number so it never undercounts what
