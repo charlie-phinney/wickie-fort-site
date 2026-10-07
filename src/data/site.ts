@@ -110,6 +110,8 @@ const platforms = [
       name: 'Facebook',
       followers: statsData.followers.facebook || 0,
       views: parseInt(String(data.statFacebookViews ?? '0'), 10) || 0,
+      // Charlie 10/6 11:01pm: holds at 1 (placeholder while her 967K reel
+      // crosses); only moves to 2 once two reels are actually past a million.
       over1M: parseInt(String(data.statFacebookOver1M ?? '0'), 10) || 0,
       profile: profileFor('Facebook'),
     },
