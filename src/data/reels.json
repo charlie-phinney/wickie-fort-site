@@ -1,6 +1,13 @@
 {
-  "updated": "2026-10-06",
+  "updated": "2026-10-07",
   "reels": [
+    {
+      "id": "18184595026416969",
+      "permalink": "https://www.instagram.com/reel/DeM1JIHOE4X/",
+      "caption": "A good day in the kitchen!!!",
+      "image": "/images/reels/18184595026416969.jpg",
+      "isVideo": true
+    },
     {
       "id": "18010325201986786",
       "permalink": "https://www.instagram.com/reel/DeIZ9F-O5iX/",
@@ -34,13 +41,6 @@
       "permalink": "https://www.instagram.com/reel/Ddlz-UJOMou/",
       "caption": "Dimlll from yesterday",
       "image": "/images/reels/18135822646627403.jpg",
-      "isVideo": true
-    },
-    {
-      "id": "18109049480134861",
-      "permalink": "https://www.instagram.com/reel/DdkGopYuu2u/",
-      "caption": "I’ve been lacking confidence and feeling a bit down on myself 😔 but I know it’s all a par",
-      "image": "/images/reels/18109049480134861.jpg",
       "isVideo": true
     }
   ]

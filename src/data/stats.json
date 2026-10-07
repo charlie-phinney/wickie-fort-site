@@ -1,12 +1,12 @@
 {
   "followers": {
-    "instagram": 34185,
+    "instagram": 34220,
     "tiktok": 13500,
     "youtube": 22700,
-    "facebook": 3759
+    "facebook": 3777
   },
-  "totalFollowers": 74144,
-  "updated": "2026-10-06",
+  "totalFollowers": 74197,
+  "updated": "2026-10-07",
   "sources": {
     "instagram": true,
     "tiktok": true,
@@ -14,7 +14,7 @@
     "facebook": true
   },
   "views": {
-    "youtube": 32785521
+    "youtube": 32791294
   },
   "likes": {
     "tiktok": 2200000
@@ -795,30 +795,38 @@
       "tl": 2200000,
       "iv": 65809646,
       "tv": 31632243
+    },
+    {
+      "d": "2026-10-07",
+      "f": 74197,
+      "yv": 32791294,
+      "tl": 2200000,
+      "iv": 65880699,
+      "tv": 31633729
     }
   ],
   "deep": {
-    "igMediaCount": 140,
-    "igPosts": 146,
-    "igLikes": 2788022,
-    "igComments": 13829,
-    "igRecentEngagement": 93261,
+    "igMediaCount": 141,
+    "igPosts": 147,
+    "igLikes": 2789839,
+    "igComments": 13850,
+    "igRecentEngagement": 94278,
     "igRecentCount": 12,
-    "igViews": 65809646,
-    "igViewsCounted": 132,
-    "igViews28": 122468,
-    "ytVideoCount": 110,
-    "updated": "2026-10-06",
-    "igMaxReelViews": 20589975,
+    "igViews": 65880699,
+    "igViewsCounted": 133,
+    "igViews28": 112691,
+    "ytVideoCount": 111,
+    "updated": "2026-10-07",
+    "igMaxReelViews": 20597653,
     "igReels1M": 8,
     "igCountries": 45,
-    "igReelEngagement": 2799329,
-    "igReelReach": 44112775,
-    "igTopReelReach": 13116854,
-    "ttViews": 31632243,
+    "igReelEngagement": 2801148,
+    "igReelReach": 44190949,
+    "igTopReelReach": 13123804,
+    "ttViews": 31633729,
     "ttTopViews": 18000000,
     "ttOver1M": 4,
-    "ttVideoCount": 233,
+    "ttVideoCount": 235,
     "ytTopViews": 27000000,
     "ytOver1M": 2
   },
@@ -847,15 +855,15 @@
       "avatar": "/images/profiles/youtube-avatar.jpg",
       "recent": [
         {
-          "url": "https://www.youtube.com/shorts/Jkr44i4hoME",
+          "url": "https://www.youtube.com/shorts/0phpWGPJjfY",
           "image": "/images/profiles/youtube-1.jpg"
         },
         {
-          "url": "https://www.youtube.com/shorts/kyrBSy-GA-M",
+          "url": "https://www.youtube.com/shorts/Jkr44i4hoME",
           "image": "/images/profiles/youtube-2.jpg"
         },
         {
-          "url": "https://www.youtube.com/shorts/YccUvC1_cPk",
+          "url": "https://www.youtube.com/shorts/kyrBSy-GA-M",
           "image": "/images/profiles/youtube-3.jpg"
         }
       ]
