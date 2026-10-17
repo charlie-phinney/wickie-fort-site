@@ -1,22 +1,22 @@
 {
-  "updated": "2026-10-15",
-  "days30": 67,
-  "days7": 15,
+  "updated": "2026-10-17",
+  "days30": 70,
+  "days7": 14,
   "topPages": [
     {
       "path": "/",
       "title": "Wickie's Kitchen",
-      "count": 56
+      "count": 55
+    },
+    {
+      "path": "/recipes/coconut-lime-braised-chicken",
+      "title": "Coconut Lime Braised Chicken",
+      "count": 7
     },
     {
       "path": "/recipes/green-goddess-crispy-rice-salad",
       "title": "Green Goddess Crispy Rice Salad",
       "count": 4
-    },
-    {
-      "path": "/recipes/coconut-lime-braised-chicken",
-      "title": "Coconut Lime Braised Chicken",
-      "count": 3
     },
     {
       "path": "/recipes/steak-and-potatoes",
