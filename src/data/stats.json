@@ -1,12 +1,12 @@
 {
   "followers": {
-    "instagram": 34709,
-    "tiktok": 13500,
+    "instagram": 34747,
+    "tiktok": 13400,
     "youtube": 22900,
-    "facebook": 4078
+    "facebook": 4086
   },
-  "totalFollowers": 75187,
-  "updated": "2026-10-28",
+  "totalFollowers": 75133,
+  "updated": "2026-10-29",
   "sources": {
     "instagram": true,
     "tiktok": true,
@@ -14,7 +14,7 @@
     "facebook": true
   },
   "views": {
-    "youtube": 33120682
+    "youtube": 33328817
   },
   "likes": {
     "tiktok": 2200000
@@ -971,27 +971,35 @@
       "tl": 2200000,
       "iv": 67524672,
       "tv": 31641362
+    },
+    {
+      "d": "2026-10-29",
+      "f": 75133,
+      "yv": 33328817,
+      "tl": 2200000,
+      "iv": 67598452,
+      "tv": 31641772
     }
   ],
   "deep": {
     "igMediaCount": 142,
     "igPosts": 148,
-    "igLikes": 2818921,
-    "igComments": 14199,
-    "igRecentEngagement": 112823,
+    "igLikes": 2819635,
+    "igComments": 14220,
+    "igRecentEngagement": 113622,
     "igRecentCount": 12,
-    "igViews": 67524672,
+    "igViews": 67598452,
     "igViewsCounted": 134,
-    "igViews28": 104082,
+    "igViews28": 110410,
     "ytVideoCount": 112,
-    "updated": "2026-10-28",
-    "igMaxReelViews": 20629103,
+    "updated": "2026-10-29",
+    "igMaxReelViews": 20629148,
     "igReels1M": 8,
     "igCountries": 45,
-    "igReelEngagement": 2830553,
-    "igReelReach": 45424313,
+    "igReelEngagement": 2831288,
+    "igReelReach": 45508913,
     "igTopReelReach": 13161284,
-    "ttViews": 31641362,
+    "ttViews": 31641772,
     "ttTopViews": 18000000,
     "ttOver1M": 4,
     "ttVideoCount": 236,
@@ -1006,15 +1014,15 @@
       "avatar": "/images/profiles/tiktok-avatar.jpg",
       "recent": [
         {
-          "url": "https://www.tiktok.com/@wickieskitchen/video/7683245167976910111",
+          "url": "https://www.tiktok.com/@wickieskitchen/video/7698858467171306782",
           "image": "/images/profiles/tiktok-1.jpg"
         },
         {
-          "url": "https://www.tiktok.com/@wickieskitchen/video/7682903720576765214",
+          "url": "https://www.tiktok.com/@wickieskitchen/video/7693970020849814815",
           "image": "/images/profiles/tiktok-2.jpg"
         },
         {
-          "url": "https://www.tiktok.com/@wickieskitchen/video/7681349399087205662",
+          "url": "https://www.tiktok.com/@wickieskitchen/video/7693745069811125534",
           "image": "/images/profiles/tiktok-3.jpg"
         }
       ]
