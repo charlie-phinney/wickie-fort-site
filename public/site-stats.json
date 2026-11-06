@@ -1,12 +1,12 @@
 {
-  "updated": "2026-11-03",
-  "days30": 61,
-  "days7": 7,
+  "updated": "2026-11-06",
+  "days30": 56,
+  "days7": 10,
   "topPages": [
     {
       "path": "/",
       "title": "Wickie's Kitchen",
-      "count": 37
+      "count": 33
     },
     {
       "path": "/recipes/coconut-lime-braised-chicken",
@@ -16,7 +16,7 @@
     {
       "path": "/recipes/green-goddess-crispy-rice-salad",
       "title": "Green Goddess Crispy Rice Salad",
-      "count": 2
+      "count": 1
     }
   ]
 }
