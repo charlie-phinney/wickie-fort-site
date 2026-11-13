@@ -1,12 +1,12 @@
 {
   "followers": {
-    "instagram": 34654,
+    "instagram": 34643,
     "tiktok": 13400,
-    "youtube": 24700,
-    "facebook": 4369
+    "youtube": 24800,
+    "facebook": 4381
   },
-  "totalFollowers": 77123,
-  "updated": "2026-11-12",
+  "totalFollowers": 77224,
+  "updated": "2026-11-13",
   "sources": {
     "instagram": true,
     "tiktok": true,
@@ -14,7 +14,7 @@
     "facebook": true
   },
   "views": {
-    "youtube": 36306391
+    "youtube": 36433882
   },
   "likes": {
     "tiktok": 2200000
@@ -1091,27 +1091,35 @@
       "tl": 2200000,
       "iv": 68206976,
       "tv": 31457782
+    },
+    {
+      "d": "2026-11-13",
+      "f": 77224,
+      "yv": 36433882,
+      "tl": 2200000,
+      "iv": 68225695,
+      "tv": 31752756
     }
   ],
   "deep": {
     "igMediaCount": 144,
     "igPosts": 150,
-    "igLikes": 2824006,
-    "igComments": 14417,
-    "igRecentEngagement": 118739,
+    "igLikes": 2823993,
+    "igComments": 14423,
+    "igRecentEngagement": 118868,
     "igRecentCount": 12,
-    "igViews": 68206976,
+    "igViews": 68225695,
     "igViewsCounted": 135,
-    "igViews28": 60827,
+    "igViews28": 33871,
     "ytVideoCount": 113,
-    "updated": "2026-11-12",
-    "igMaxReelViews": 20629744,
+    "updated": "2026-11-13",
+    "igMaxReelViews": 20629782,
     "igReels1M": 8,
     "igCountries": 45,
-    "igReelEngagement": 2835803,
-    "igReelReach": 45926617,
+    "igReelEngagement": 2835794,
+    "igReelReach": 45944896,
     "igTopReelReach": 13161284,
-    "ttViews": 31457782,
+    "ttViews": 31752756,
     "ttTopViews": 18100000,
     "ttOver1M": 4,
     "ttVideoCount": 240,
