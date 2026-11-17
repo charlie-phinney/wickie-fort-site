@@ -17,6 +17,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # 11/16 run 43973686526 died on the default ~2GB Node heap; runner has 16GB
+      NODE_OPTIONS: --max-old-space-size=6144
     permissions:
       contents: write
     steps:
