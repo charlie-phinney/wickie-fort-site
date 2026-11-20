@@ -1,17 +1,17 @@
 {
-  "updated": "2026-11-17",
-  "days30": 50,
-  "days7": 17,
+  "updated": "2026-11-20",
+  "days30": 39,
+  "days7": 14,
   "topPages": [
     {
       "path": "/",
       "title": "Wickie's Kitchen",
-      "count": 30
+      "count": 28
     },
     {
       "path": "/recipes/coconut-lime-braised-chicken",
       "title": "Coconut Lime Braised Chicken",
-      "count": 17
+      "count": 8
     },
     {
       "path": "/how-to",
